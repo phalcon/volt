@@ -11,13 +11,18 @@
 
 declare(strict_types=1);
 
-namespace Phalcon\Volt;
+namespace Phalcon\Volt\Parser;
 
-class ParserStatus
+use Phalcon\Volt\Scanner\State;
+
+class Status
 {
+    public const PHVOLT_PARSING_OK = 1;
+    public const PHVOLT_PARSING_FAILED = 0;
+
     protected $ret = null;
 
-    protected ScannerState $scannerState;
+    protected State $scannerState;
 
     protected int $status;
 
@@ -25,15 +30,11 @@ class ParserStatus
 
     protected ?string $syntaxError = null;
 
-    protected ScannerToken $token;
-
     public function __construct(
-        ScannerState $scannerState,
-        ScannerToken $token,
-        int $status
+        State $scannerState,
+        int   $status = self::PHVOLT_PARSING_OK,
     ) {
         $this->scannerState = $scannerState;
-        $this->token = $token;
         $this->status = $status;
     }
 
@@ -42,5 +43,10 @@ class ParserStatus
         $this->status = $status;
 
         return $this;
+    }
+
+    public function getState(): State
+    {
+        return $this->scannerState;
     }
 }

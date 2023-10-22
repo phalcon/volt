@@ -15,6 +15,7 @@ namespace Phalcon\Volt;
 
 use Closure;
 use Phalcon\Exception;
+use Phalcon\Volt\Parser\Parser;
 
 /**
  * This class reads and compiles Volt templates into PHP plain code
@@ -218,7 +219,7 @@ class Compiler
     protected int $level = 0;
     protected $loopPointers;
     protected $macros;
-    protected array $options;
+    protected array $options = [];
     protected $prefix;
     protected $view; // string?
 
@@ -2166,13 +2167,8 @@ class Compiler
             $this->autoescape = $this->options['autoescape'];
         }
 
-        // TODO: rewrite from C
-        $intermediate = phvolt_parse_view($viewCode, $this->currentPath);
-
-        if (false === is_array($intermediate)) {
-            throw new Exception("Invalid intermediate representation");
-        }
-
+        $parser = new Parser($viewCode);
+        $intermediate = $parser->parseView($this->currentPath);
         $compilation = $this->statementList($intermediate, $extendsMode);
 
         /**
@@ -3032,67 +3028,5 @@ class Compiler
         }
 
         return $hash;
-    }
-
-    /**
-     * Receives the volt code tokenizes and parses it.
-     * Parses a volt template returning an intermediate array representation.
-     * Checks whether the token has only blank characters.
-     *
-     * @param string $result
-     * @param string $viewCode
-     * @param string $templatePath
-     * @return array
-     */
-    private function phvolt_parse_view(string $result, string $viewCode, string $templatePath): array
-    {
-        if (empty($viewCode)) {
-            return [];
-        }
-
-        $state = new ScannerState();
-        $token = new ScannerToken();
-        $parserStatus = new ParserStatus($state, $token, self::PHVOLT_PARSING_OK);
-
-        $state = new ScannerState();
-        $state
-            ->setStart($viewCode)
-            ->setActiveFile($templatePath);
-
-        while (0 <= ($scannerStatus = $this->phvolt_get_token($state, $token))) {
-            //$state->setActiveToken()
-        }
-    }
-
-    private function phvolt_get_token(ScannerState $state, &$token): int
-    {
-        $status = self::PHVOLT_SCANNER_RETCODE_IMPOSSIBLE;
-
-        while (self::PHVOLT_SCANNER_RETCODE_IMPOSSIBLE === $status) {
-            if ($state->mode === self::PHVOLT_MODE_RAW || $state->mode === self::PHVOLT_MODE_COMMENT) {
-                $next = "\0";
-                $doubleNext = "\0";
-            }
-        }
-    }
-
-    /**
-     * The main parser program.
-     *
-     * The first argument is a pointer to a structure obtained from
-     * "phvolt_Alloc" which describes the current state of the parser.
-     * The second argument is the major token number.  The third is
-     * the minor token.  The fourth optional argument is whatever the
-     * user wants (and specified in the grammar) and is available for
-     * use by the action routines.
-     *
-     * @param mixed $pointer A pointer to the parser (an opaque structure.)
-     * @param mixed $majorToken The major token number.
-     * @param mixed $minorToken The minor token number.
-     * @param mixed $extraArgs An option argument of a grammar-specified type.
-     */
-    private function phvolt_($pointer, $majorToken, $minorToken, $extraArgs)
-    {
-        // TODO: Rewrite from C
     }
 }

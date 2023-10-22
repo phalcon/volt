@@ -11,23 +11,25 @@
 
 declare(strict_types=1);
 
-namespace Phalcon\Volt;
+namespace Phalcon\Volt\Scanner;
 
-class ScannerState
+use Phalcon\Volt\Compiler;
+
+class State
 {
     public int $activeToken = 0;
 
-    public int $mode = Compiler::PHVOLT_MODE_RAW;
+    protected int $mode = Compiler::PHVOLT_MODE_RAW;
 
-    public string $start;
+    protected int $start = 0;
 
-    public string $end;
+    protected int $end;
 
     public string $marker;
 
     public int $startLength;
 
-    public int $activeLine = 1;
+    protected int $activeLine = 1;
 
     public string $activeFile;
 
@@ -53,9 +55,15 @@ class ScannerState
 
     public int $switchLevel = 0;
 
-    public int $whitespaceControl = 0;
+    public bool $whitespaceControl = false;
 
     public int $forcedRawState = 0;
+
+    public function __construct(string $buffer)
+    {
+        $this->rawBuffer = $buffer;
+        $this->end = mb_strlen($buffer);
+    }
 
     public function setActiveToken(int $activeToken): self
     {
@@ -71,9 +79,26 @@ class ScannerState
         return $this;
     }
 
+    public function getMode(): int
+    {
+        return $this->mode;
+    }
+
     public function setStart(string $start): self
     {
         $this->start = $start;
+
+        return $this;
+    }
+
+    public function getStart(): string
+    {
+        return $this->start;
+    }
+
+    public function incrementStart(int $value = 1): self
+    {
+        $this->start += $value;
 
         return $this;
     }
@@ -102,6 +127,13 @@ class ScannerState
     public function setActiveLine(int $activeLine): self
     {
         $this->activeLine = $activeLine;
+
+        return $this;
+    }
+
+    public function incrementActiveLine(): self
+    {
+        $this->activeLine++;
 
         return $this;
     }
@@ -155,6 +187,11 @@ class ScannerState
         return $this;
     }
 
+    public function getRawBufferCursor(): int
+    {
+        return $this->rawBufferCursor;
+    }
+
     public function setRawBufferSize(int $rawBufferSize): self
     {
         $this->rawBufferSize = $rawBufferSize;
@@ -190,11 +227,16 @@ class ScannerState
         return $this;
     }
 
-    public function setWhitespaceControl(int $whitespaceControl): self
+    public function setWhitespaceControl(bool $whitespaceControl): self
     {
         $this->whitespaceControl = $whitespaceControl;
 
         return $this;
+    }
+
+    public function getWhitespaceControl(): bool
+    {
+        return $this->whitespaceControl;
     }
 
     public function setForcedRawState(int $forcedRawState): self
