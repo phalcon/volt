@@ -720,6 +720,10 @@ class Compiler
         $exprCode = $this->expression($expr);
 
         if ($expr == static::PHVOLT_T_FCALL) {
+            if ($this->isTagFactory($expr)) {
+                $exprCode = $this->expression($expr, true);
+            }
+
             $name = $expr['name'];
             if ($name == static::PHVOLT_T_IDENTIFIER) {
                 /**
@@ -1344,7 +1348,7 @@ class Compiler
     /**
      * Resolves an expression node in an AST volt tree
      */
-    final public function expression(array $expr): string
+    final public function expression(array $expr, bool $doubleQuotes = false): string
     {
         $leftCode = '';
         $exprCode = null;
@@ -1375,7 +1379,7 @@ class Compiler
                 $items = [];
 
                 foreach ($expr as $singleExpr) {
-                    $singleExprCode = $this->expression($singleExpr['expr']);
+                    $singleExprCode = $this->expression($singleExpr['expr'], $doubleQuotes);
 
                     if (isset($singleExpr['name'])) {
                         $items[] = '\'' . $singleExpr['name'] . '\' => ' . $singleExprCode;
@@ -1404,7 +1408,7 @@ class Compiler
              * Left part of expression is always resolved
              */
             if (isset($expr['left'])) {
-                $leftCode = $this->expression($expr['left']);
+                $leftCode = $this->expression($expr['left'], $doubleQuotes);
             }
 
             /**
@@ -1429,7 +1433,7 @@ class Compiler
              * From here, right part of expression is always resolved
              */
             $exprCode = null;
-            $rightCode = isset($expr['right']) ? $this->expression($expr['right']) : '';
+            $rightCode = isset($expr['right']) ? $this->expression($expr['right'], $doubleQuotes) : '';
 
             switch ($type) {
                 case static::PHVOLT_T_NOT:
@@ -1484,7 +1488,11 @@ class Compiler
                     break;
 
                 case static::PHVOLT_T_STRING:
-                    $exprCode = '\'' . str_replace('\'', '\\\'', $expr['value']) . '\'';
+                    if ($doubleQuotes === false) {
+                        $exprCode = '\'' . str_replace('\'', '\\\'', $expr['value']) . '\'';
+                    } else {
+                        $exprCode = '"' . $expr['value'] . '"';
+                    }
                     break;
 
                 case static::PHVOLT_T_NULL:
@@ -1540,7 +1548,7 @@ class Compiler
                     break;
 
                 case static::PHVOLT_T_FCALL:
-                    $exprCode = $this->functionalCall($expr);
+                    $exprCode = $this->functionCall($expr, $doubleQuotes);
                     break;
 
                 case static::PHVOLT_T_ENCLOSED:
@@ -1551,12 +1559,12 @@ class Compiler
                     /**
                      * Evaluate the start part of the slice
                      */
-                    $startCode = isset($expr['start']) ? $this->expression($expr['start']) : 'null';
+                    $startCode = isset($expr['start']) ? $this->expression($expr['start'], $doubleQuotes) : 'null';
 
                     /**
                      * Evaluate the end part of the slice
                      */
-                    $endCode = isset($expr['end']) ? $this->expression($expr['end']) : 'null';
+                    $endCode = isset($expr['end']) ? $this->expression($expr['end'], $doubleQuotes) : 'null';
 
                     $exprCode = '$this->slice(' . $leftCode . ', ' . $startCode . ', ' . $endCode . ')';
                     break;
@@ -1626,7 +1634,7 @@ class Compiler
                     break;
 
                 case static::PHVOLT_T_TERNARY:
-                    $exprCode = '(' . $this->expression($expr['ternary']) . ' ? ' . $leftCode . ' : ' . $rightCode . ')';
+                    $exprCode = '(' . $this->expression($expr['ternary'], $doubleQuotes) . ' ? ' . $leftCode . ' : ' . $rightCode . ')';
                     break;
 
                 case static::PHVOLT_T_MINUS:
@@ -1697,12 +1705,12 @@ class Compiler
      * @param array $expr
      * @return string
      */
-    public function functionCall(array $expr): string
+    public function functionCall(array $expr, bool $doubleQuotes = false): string
     {
         $code = null;
         $funcArguments = null;
 
-        $arguments = isset($expr['arguments']) ? $this->expression($expr['arguments']) : '';
+        $arguments = isset($expr['arguments']) ? $this->expression($expr['arguments'], $doubleQuotes) : '';
 
         $nameExpr = $expr['name'];
         $nameType = $nameExpr['type'];
@@ -1896,7 +1904,7 @@ class Compiler
             return '$this->>callMacro(' . $name . '\', [' . $arguments . '])';
         }
 
-        return $this->expression($nameExpr) . '(' . $arguments . ')';
+        return $this->expression($nameExpr, $doubleQuotes) . '(' . $arguments . ')';
     }
 
     /**
@@ -2893,6 +2901,28 @@ class Compiler
          * Is an array but not a statement list?
          */
         return $statements;
+    }
+
+    private function isTagFactory(array $expression): bool
+    {
+        if (isset($expression['name']['left'])) {
+            /**
+             * There is a value, get it and check it
+             */
+            $left = $expression['name']['left'];
+            if (isset($left['value'])) {
+                return $left['value'] === 'tag';
+            }
+
+            /**
+             * There is a "name" so that is nested, recursion
+             */
+            if (isset($left['name']) && is_array($left['name'])) {
+                return $this->isTagFactory($left);
+            }
+        }
+
+        return false;
     }
 
     /**
