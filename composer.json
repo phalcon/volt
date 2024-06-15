@@ -42,17 +42,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Zephir\\Optimizers\\FunctionCall\\": "optimizers/",
-            "Phalcon\\Tests\\Cli\\": "tests/cli/",
-            "Phalcon\\Tests\\Unit\\": "tests/unit/",
-            "Phalcon\\Tests\\Integration\\": "tests/integration/",
-            "Phalcon\\Tests\\Database\\": "tests/database/",
-            "Phalcon\\Tests\\Controllers\\": "tests/_data/fixtures/controllers/",
-            "Phalcon\\Tests\\Fixtures\\": "tests/_data/fixtures/",
-            "Phalcon\\Tests\\Models\\": "tests/_data/fixtures/models/",
-            "Phalcon\\Tests\\Module\\": "tests/_support/Module/",
-            "Phalcon\\Tests\\Listener\\": "tests/_data/listener/",
-            "Phalcon\\Tests\\Db\\": "tests/_data/db/"
+            "Tests\\": "tests/"
         }
     },
     "support": {
