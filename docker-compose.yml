@@ -1,7 +1,5 @@
 # For local development only.
 
-version: '3.5'
-
 services:
   phalcon-volt-8.0:
     container_name: phalcon-volt-8.0
