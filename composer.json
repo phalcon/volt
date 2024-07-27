@@ -41,7 +41,7 @@
             "Phalcon\\Volt\\": "src/"
         },
         "files": [
-            "lemon-php/parser.php.php"
+            "files/parser.php.php"
         ]
     },
     "autoload-dev": {
