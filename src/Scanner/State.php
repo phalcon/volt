@@ -21,9 +21,11 @@ class State
 
     protected int $mode = Compiler::PHVOLT_MODE_RAW;
 
-    protected int $start = 0;
+    protected ?string $start = null;
 
-    protected int $end;
+    protected int $cursor = 0;
+
+    protected ?string $end = null;
 
     public string $marker;
 
@@ -62,7 +64,11 @@ class State
     public function __construct(string $buffer)
     {
         $this->rawBuffer = $buffer;
-        $this->end = mb_strlen($buffer);
+        $this->startLength = mb_strlen($buffer);
+        if ($this->startLength > 0) {
+            $this->setStart($buffer[0]);
+            $this->setEnd($buffer[0]);
+        }
     }
 
     public function setActiveToken(int $activeToken): self
@@ -84,7 +90,7 @@ class State
         return $this->mode;
     }
 
-    public function setStart(string $start): self
+    public function setStart(?string $start): self
     {
         $this->start = $start;
 
@@ -96,9 +102,15 @@ class State
         return $this->start;
     }
 
+    public function getNext(int $increment = 1): ?string
+    {
+        return $this->rawBuffer[$this->cursor + $increment] ?? null;
+    }
+
     public function incrementStart(int $value = 1): self
     {
-        $this->start += $value;
+        $this->cursor += $value;
+        $this->setStart($this->rawBuffer[$this->cursor] ?? null);
 
         return $this;
     }
