@@ -21,7 +21,8 @@
         }
     ],
     "require": {
-        "php": ">=8.0"
+        "php": ">=8.0",
+        "ext-mbstring": "*"
     },
     "require-dev": {
         "phalcon/ide-stubs": "^5.0",
@@ -38,7 +39,10 @@
     "autoload": {
         "psr-4": {
             "Phalcon\\Volt\\": "src/"
-        }
+        },
+        "files": [
+            "lemon-php/parser.php.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
