@@ -45,6 +45,11 @@ class Status
         return $this;
     }
 
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
     public function getState(): State
     {
         return $this->scannerState;
