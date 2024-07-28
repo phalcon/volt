@@ -1824,7 +1824,8 @@ class Compiler
             }
 
             $method = lcfirst(
-                \Phalcon\Text::camelize($name)
+                //\Phalcon\Text::camelize($name)
+                ucwords($name)
             );
 
             $arrayHelpers = [
