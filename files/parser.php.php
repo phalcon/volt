@@ -123,9 +123,8 @@ class phvolt_Parser
 
     /* since we cant use expressions to initialize these as class
    * constants, we do so during parser init. */
-    var $YY_NO_ACTION;
-    var $YY_ACCEPT_ACTION;
-    var $YY_ERROR_ACTION;
+    var $YY_NO_ACTION = self::YYNSTATE + self::YYNRULE + 2;
+    var $YY_ERROR_ACTION = self::YYNSTATE + self::YYNRULE;
 
     /* Next are that tables used to determine what action to take based on the
 ** current state and lookahead token.  These tables are used to implement
@@ -3527,10 +3526,6 @@ static const struct {
             $ent->stateno = 0;
             $ent->major = 0;
             $this->yystack = array(0 => $ent);
-
-            $this->YY_NO_ACTION = self::YYNSTATE + self::YYNRULE + 2;
-            $this->YY_ACCEPT_ACTION = self::YYNSTATE + self::YYNRULE + 1;
-            $this->YY_ERROR_ACTION = self::YYNSTATE + self::YYNRULE;
         }
         $yyendofinput = ($yymajor == 0);
 
