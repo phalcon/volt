@@ -17,7 +17,7 @@ use Phalcon\Volt\Compiler;
 
 class State
 {
-    public int $activeToken = 0;
+    public mixed $activeToken = null;
 
     protected int $mode = Compiler::PHVOLT_MODE_RAW;
 
@@ -27,13 +27,13 @@ class State
 
     protected ?string $end = null;
 
-    public string $marker;
+    public mixed $marker = null;
 
     public int $startLength;
 
     protected int $activeLine = 1;
 
-    public string $activeFile;
+    protected string $activeFile = 'eval code';
 
     public int $statementPosition = 0;
 
@@ -71,11 +71,26 @@ class State
         }
     }
 
-    public function setActiveToken(int $activeToken): self
+    public function getRawBuffer(): string
+    {
+        return $this->rawBuffer;
+    }
+
+    public function getCursor(): int
+    {
+        return $this->cursor;
+    }
+
+    public function setActiveToken(mixed $activeToken): self
     {
         $this->activeToken = $activeToken;
 
         return $this;
+    }
+
+    public function getActiveToken(): mixed
+    {
+        return $this->activeToken;
     }
 
     public function setMode(int $mode): self
@@ -97,9 +112,14 @@ class State
         return $this;
     }
 
-    public function getStart(): string
+    public function getStart(): ?string
     {
         return $this->start;
+    }
+
+    public function getPrevious(int $decrement = 1): ?string
+    {
+        return $this->rawBuffer[$this->cursor - $decrement] ?? null;
     }
 
     public function getNext(int $increment = 1): ?string
@@ -115,18 +135,23 @@ class State
         return $this;
     }
 
-    public function setEnd(string $end): self
+    public function setEnd(?string $end): self
     {
         $this->end = $end;
 
         return $this;
     }
 
-    public function setMarker(string $marker): self
+    public function setMarker(mixed $marker): self
     {
         $this->marker = $marker;
 
         return $this;
+    }
+
+    public function getMarker(): mixed
+    {
+        return $this->marker;
     }
 
     public function setStartLength(int $startLength): self
@@ -134,6 +159,11 @@ class State
         $this->startLength = $startLength;
 
         return $this;
+    }
+
+    public function getStartLength(): int
+    {
+        return $this->startLength;
     }
 
     public function setActiveLine(int $activeLine): self
@@ -256,5 +286,20 @@ class State
         $this->forcedRawState = $forcedRawState;
 
         return $this;
+    }
+
+    public function getActiveFile(): string
+    {
+        return $this->activeFile;
+    }
+
+    public function getActiveLine(): int
+    {
+        return $this->activeLine;
+    }
+
+    public function getIfLevel(): int
+    {
+        return $this->ifLevel;
     }
 }
