@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Phalcon\Volt;
 
 use Closure;
-use Phalcon\Exception;
 use Phalcon\Volt\Parser\Parser;
 
 /**
@@ -590,7 +589,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupt statement', $statement);
+            throw new \Exception('Corrupt statement: ' . var_export($statement, true));
         }
 
         /**
@@ -668,7 +667,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupt statement', $statement);
+            throw new \Exception('Corrupt statement: ' . var_export($statement, true));
         }
 
         /**
@@ -711,7 +710,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupt statement', $statement);
+            throw new \Exception('Corrupt statement: ' . var_export($statement, true));
         }
 
         /**
@@ -760,7 +759,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupt statement', $statement);
+            throw new \Exception('Corrupt statement: ' . var_export($statement, true));
         }
 
         /**
@@ -1018,7 +1017,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupt statement', $statement);
+            throw new \Exception('Corrupt statement: ' . var_export($statement, true));
         }
 
         /**
@@ -1296,7 +1295,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupt statement', $statement);
+            throw new \Exception('Corrupt statement: ' . var_export($statement, true));
         }
 
         $expr = $statement['expr'];
@@ -2169,6 +2168,7 @@ class Compiler
 
         $parser = new Parser($viewCode);
         $intermediate = $parser->parseView($this->currentPath);
+        print_r($intermediate);
         $compilation = $this->statementList($intermediate, $extendsMode);
 
         /**
@@ -2621,8 +2621,7 @@ class Compiler
              */
             if (false === isset($statement['type'])) {
                 throw new Exception(
-                    "Invalid statement in " . $statement["file"] . " on line " . $statement["line"],
-                    $statement
+                    "Invalid statement in " . $statement["file"] . " on line " . $statement["line"]
                 );
             }
 
