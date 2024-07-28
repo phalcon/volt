@@ -1791,17 +1791,6 @@ class phvolt_Parser
         "expr ::= TRUE",
     );
 
-    /*
-** This function returns the symbolic name associated with a token
-** value.
-*/
-    function phvolt_TokenName(/* int */ $tokenType)
-    {
-        if (isset(self::$yyTokenName[$tokenType]))
-            return self::$yyTokenName[$tokenType];
-        return "Unknown";
-    }
-
     /* The following function deletes the value associated with a
 ** symbol.  The symbol can be either a terminal or nonterminal.
 ** "yymajor" is the symbol code, and "yypminor" is a pointer to
