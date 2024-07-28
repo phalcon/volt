@@ -2035,9 +2035,9 @@ class phvolt_Parser
                 }
             }
             return self::$yy_default[$stateno];
-        } else {
-            return self::$yy_action[$i];
         }
+
+        return self::$yy_action[$i];
     }
 
     /*
