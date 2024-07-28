@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Phalcon\Volt\Parser;
 
 use Phalcon\Volt\Scanner\State;
+use Phalcon\Volt\Scanner\Token;
 
 class Status
 {
@@ -24,9 +25,9 @@ class Status
 
     protected State $scannerState;
 
-    protected int $status;
+    protected ?Token $token = null;
 
-    protected int $syntaxErrorLength;
+    protected int $status;
 
     protected ?string $syntaxError = null;
 
@@ -53,5 +54,29 @@ class Status
     public function getState(): State
     {
         return $this->scannerState;
+    }
+
+    public function setToken(Token $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    public function getToken(): ?Token
+    {
+        return $this->token;
+    }
+
+    public function setSyntaxError(string $syntaxError): self
+    {
+        $this->syntaxError = $syntaxError;
+
+        return $this;
+    }
+
+    public function getSyntaxError(): ?string
+    {
+        return $this->syntaxError;
     }
 }
