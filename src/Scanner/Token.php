@@ -15,20 +15,22 @@ namespace Phalcon\Volt\Scanner;
 
 class Token
 {
-    protected int $opcode = 0;
+    protected mixed $opcode = null;
 
     protected int $length = 0;
 
     protected mixed $value = null;
 
-    public function setOpcode(int $opcode): self
+    protected bool $freeFlag = false;
+
+    public function setOpcode(mixed $opcode): self
     {
         $this->opcode = $opcode;
 
         return $this;
     }
 
-    public function getOpcode(): int
+    public function getOpcode(): mixed
     {
         return $this->opcode;
     }
@@ -48,6 +50,9 @@ class Token
     public function setValue(mixed $value): self
     {
         $this->value = $value;
+        if (!empty($value)) {
+            $this->setLength(mb_strlen($value));
+        }
 
         return $this;
     }
@@ -55,5 +60,17 @@ class Token
     public function getValue(): ?string
     {
         return $this->value;
+    }
+
+    public function setFreeFlag(bool $free): self
+    {
+        $this->freeFlag = $free;
+
+        return $this;
+    }
+
+    public function getFreeFlag(): bool
+    {
+        return $this->freeFlag;
     }
 }
