@@ -10,4 +10,4 @@ $compiler = new Compiler();
 
 $source = '{{ str_replace("a", "b", "aabb") }}';
 $actual = $compiler->compileString($source);
-var_dump($actual);
+var_dump($actual); // string(57) "<?= $this->>callMacro(str_replace', ['a', 'b', 'aabb'])\?\>"
