@@ -35,6 +35,10 @@
 **      It is sometimes called the "minor" token.
 */
 
+use Phalcon\Volt\Compiler;
+use Phalcon\Volt\Scanner\State;
+use Phalcon\Volt\Scanner\Token;
+
 class phvolt_yyStackEntry
 {
     var /* int */
@@ -60,6 +64,11 @@ class phvolt_Parser
         $this->status = $status;
     }
 
+    public function getOutput(): array
+    {
+        return $this->output;
+    }
+
     var /* int */
         $yyidx = -1;                    /* Index of top element in stack */
     var /* int */
@@ -72,105 +81,6 @@ class phvolt_Parser
     var $yyTraceFILE = null;
     var $yyTracePrompt = null;
 
-
-    /* Next is all token values, in a form suitable for use by makeheaders.
-** This section will be null unless lemon is run with the -m switch.
-*/
-    /*
-** These constants (all generated automatically by the parser generator)
-** specify the various kinds of tokens (terminals) that the parser
-** understands.
-**
-** Each symbol here is a terminal symbol in the grammar.
-*/
-    const PHVOLT_OPEN_DELIMITER = 1;
-    const PHVOLT_COMMA = 2;
-    const PHVOLT_QUESTION = 3;
-    const PHVOLT_COLON = 4;
-    const PHVOLT_RANGE = 5;
-    const PHVOLT_AND = 6;
-    const PHVOLT_OR = 7;
-    const PHVOLT_IN = 8;
-    const PHVOLT_IS = 9;
-    const PHVOLT_EQUALS = 10;
-    const PHVOLT_NOTEQUALS = 11;
-    const PHVOLT_LESS = 12;
-    const PHVOLT_GREATER = 13;
-    const PHVOLT_GREATEREQUAL = 14;
-    const PHVOLT_LESSEQUAL = 15;
-    const PHVOLT_IDENTICAL = 16;
-    const PHVOLT_NOTIDENTICAL = 17;
-    const PHVOLT_DIVIDE = 18;
-    const PHVOLT_TIMES = 19;
-    const PHVOLT_MOD = 20;
-    const PHVOLT_PLUS = 21;
-    const PHVOLT_MINUS = 22;
-    const PHVOLT_CONCAT = 23;
-    const PHVOLT_SBRACKET_OPEN = 24;
-    const PHVOLT_PIPE = 25;
-    const PHVOLT_NOT = 26;
-    const PHVOLT_INCR = 27;
-    const PHVOLT_DECR = 28;
-    const PHVOLT_PARENTHESES_OPEN = 29;
-    const PHVOLT_DOT = 30;
-    const PHVOLT_IF = 31;
-    const PHVOLT_CLOSE_DELIMITER = 32;
-    const PHVOLT_ENDIF = 33;
-    const PHVOLT_ELSE = 34;
-    const PHVOLT_ELSEIF = 35;
-    const PHVOLT_ELSEFOR = 36;
-    const PHVOLT_FOR = 37;
-    const PHVOLT_IDENTIFIER = 38;
-    const PHVOLT_ENDFOR = 39;
-    const PHVOLT_SWITCH = 40;
-    const PHVOLT_ENDSWITCH = 41;
-    const PHVOLT_CASE = 42;
-    const PHVOLT_DEFAULT = 43;
-    const PHVOLT_SET = 44;
-    const PHVOLT_ASSIGN = 45;
-    const PHVOLT_ADD_ASSIGN = 46;
-    const PHVOLT_SUB_ASSIGN = 47;
-    const PHVOLT_MUL_ASSIGN = 48;
-    const PHVOLT_DIV_ASSIGN = 49;
-    const PHVOLT_SBRACKET_CLOSE = 50;
-    const PHVOLT_MACRO = 51;
-    const PHVOLT_PARENTHESES_CLOSE = 52;
-    const PHVOLT_ENDMACRO = 53;
-    const PHVOLT_INTEGER = 54;
-    const PHVOLT_STRING = 55;
-    const PHVOLT_DOUBLE = 56;
-    const PHVOLT_NULL = 57;
-    const PHVOLT_FALSE = 58;
-    const PHVOLT_TRUE = 59;
-    const PHVOLT_CALL = 60;
-    const PHVOLT_ENDCALL = 61;
-    const PHVOLT_OPEN_EDELIMITER = 62;
-    const PHVOLT_CLOSE_EDELIMITER = 63;
-    const PHVOLT_BLOCK = 64;
-    const PHVOLT_ENDBLOCK = 65;
-    const PHVOLT_CACHE = 66;
-    const PHVOLT_ENDCACHE = 67;
-    const PHVOLT_RAW = 68;
-    const PHVOLT_ENDRAW = 69;
-    const PHVOLT_EXTENDS = 70;
-    const PHVOLT_INCLUDE = 71;
-    const PHVOLT_WITH = 72;
-    const PHVOLT_DO = 73;
-    const PHVOLT_RETURN = 74;
-    const PHVOLT_AUTOESCAPE = 75;
-    const PHVOLT_ENDAUTOESCAPE = 76;
-    const PHVOLT_BREAK = 77;
-    const PHVOLT_CONTINUE = 78;
-    const PHVOLT_RAW_FRAGMENT = 79;
-    const PHVOLT_DEFINED = 80;
-    const PHVOLT_EMPTY = 81;
-    const PHVOLT_EVEN = 82;
-    const PHVOLT_ODD = 83;
-    const PHVOLT_NUMERIC = 84;
-    const PHVOLT_SCALAR = 85;
-    const PHVOLT_ITERABLE = 86;
-    const PHVOLT_CBRACKET_OPEN = 87;
-    const PHVOLT_CBRACKET_CLOSE = 88;
     /* The next thing included is series of defines which control
 ** various aspects of the generated parser.
 **    YYCODETYPE         is the data type used for storing terminal
@@ -1998,16 +1908,12 @@ class phvolt_Parser
             case 86:
             case 87:
             case 88:
-#line 158 "parser.php.lemon"
-                {
-                    if (isset($yypminor->yy0)) {
-                        if (($yypminor->yy0)->free_flag) {
-                            unset(($yypminor->yy0)->token);
-                        }
-                        unset($yypminor->yy0);
+                if (isset($yypminor->yy0)) {
+                    if (($yypminor->yy0)->free_flag) {
+                        unset(($yypminor->yy0)->token);
                     }
+                    unset($yypminor->yy0);
                 }
-#line 1138 "parser.php.php"
                 break;
             case 89:
             case 90:
@@ -2048,23 +1954,11 @@ class phvolt_Parser
             case 126:
             case 127:
             case 128:
-            case 129:
-#line 14 "parser.php.lemon"
-                {
-                    /*if (&($yypminor->yy186)) {
-		zval_ptr_dtor(&(yypminor->yy186));
-	}*/
-                }
-#line 1186 "parser.php.php"
-                break;
             case 91:
-#line 171 "parser.php.lemon"
-                {
-                    /*if (&(yypminor->yy186)) {
-		zval_ptr_dtor(&(yypminor->yy186));
-	}*/
+            case 129:
+                if (isset($yypminor->yy186)) {
+                    unset($yypminor->yy186);
                 }
-#line 1195 "parser.php.php"
                 break;
             default:
                 break;   /* If no destructor action specified: do nothing */
@@ -2081,16 +1975,25 @@ class phvolt_Parser
 */
     private function yy_pop_parser_stack()
     {
-        if ($this->yyidx < 0) return 0;
-        $yytos = $this->yystack[$this->yyidx];
-        if ($this->yyTraceFILE) {
-            fprintf($this->yyTraceFILE, "%sPopping %s\n",
-                $this->yyTracePrompt,
-                self::$yyTokenName[$yytos->major]);
+        if ($this->yyidx < 0) {
+            return 0;
         }
+
+        $yytos = $this->yystack[$this->yyidx];
+
+        if ($this->yyTraceFILE) {
+            fprintf(
+                $this->yyTraceFILE,
+                "%sPopping %s\n",
+                $this->yyTracePrompt,
+                self::$yyTokenName[$yytos->major],
+            );
+        }
+
         $this->yy_destructor($yytos->major, $yytos->minor);
         unset($this->yystack[$this->yyidx]);
         $this->yyidx--;
+
         return $yytos->major;
     }
 
@@ -2120,15 +2023,11 @@ class phvolt_Parser
 ** independent of the look-ahead.  If it is, return the action, otherwise
 ** return YY_NO_ACTION.
 */
-    private function yy_find_shift_action(
-        $iLookAhead     /* The look-ahead token */
-    )
+    private function yy_find_shift_action($iLookAhead)
     {
-        $i = 0;
         $stateno = $this->yystack[$this->yyidx]->stateno;
 
-        if ($stateno > self::YY_SHIFT_MAX ||
-            ($i = self::$yy_shift_ofst[$stateno]) == self::YY_SHIFT_USE_DFLT) {
+        if ($stateno > self::YY_SHIFT_MAX || ($i = self::$yy_shift_ofst[$stateno]) == self::YY_SHIFT_USE_DFLT) {
             return self::$yy_default[$stateno];
         }
         if ($iLookAhead == self::YYNOCODE) {
@@ -2178,14 +2077,14 @@ class phvolt_Parser
         $i += $iLookAhead;
         if ($i < 0 || $i >= count(self::$yy_action) || self::$yy_lookahead[$i] != $iLookAhead) {
             return self::$yy_default[$stateno];
-        } else {
-            return self::$yy_action[$i];
         }
+
+        return self::$yy_action[$i];
     }
 
-    /*
-** Perform a shift action.
-*/
+    /**
+     * Perform a shift action.
+     */
     private function yy_shift(
         $yyNewState,               /* The new state to shift in */
         $yyMajor,                  /* The major token to shift in */
@@ -2199,9 +2098,11 @@ class phvolt_Parser
             $yytos = new phvolt_yyStackEntry;
             $this->yystack[$this->yyidx] = $yytos;
         }
+
         $yytos->stateno = $yyNewState;
         $yytos->major = $yyMajor;
         $yytos->minor = $yypMinor;
+
         if ($this->yyTraceFILE) {
             fprintf($this->yyTraceFILE, "%sShift %d\n", $this->yyTracePrompt, $yyNewState);
             fprintf($this->yyTraceFILE, "%sStack:", $this->yyTracePrompt);
@@ -2400,8 +2301,7 @@ static const struct {
 
         $yymsp = $this->yystack[$this->yyidx];
         if ($this->yyTraceFILE && isset(self::$yyRuleName[$yyruleno])) {
-            fprintf($this->yyTraceFILE, "%sReduce [%s].\n", $this->yyTracePrompt,
-                self::$yyRuleName[$yyruleno]);
+            fprintf($this->yyTraceFILE, "%sReduce [%s].\n", $this->yyTracePrompt, self::$yyRuleName[$yyruleno]);
         }
 
         switch ($yyruleno) {
@@ -2442,201 +2342,153 @@ static const struct {
             case 24:
             case 25:
             case 144:
-#line 177 "parser.php.lemon"
-                {
-                    $yygotominor = $this->yystack[$this->yyidx + 0]->minor;
-                }
-#line 1589 "parser.php.php"
+                $yygotominor = $this->yystack[$this->yyidx + 0]->minor;
+                print_r($yygotominor);
                 break;
             case 2:
-#line 181 "parser.php.lemon"
-                {
-                    phvolt_ret_zval_list($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1596 "parser.php.php"
+                phvolt_ret_zval_list($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 3:
             case 43:
             case 55:
             case 141:
             case 148:
-#line 185 "parser.php.lemon"
-                {
-                    phvolt_ret_zval_list($yygotominor, NULL, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1607 "parser.php.php"
+                phvolt_ret_zval_list($yygotominor, NULL, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 26:
-#line 278 "parser.php.lemon"
-                {
-                    phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, NULL, $this->status->getState());
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -7]->minor);
-                    $this->yy_destructor(31, $this->yystack[$this->yyidx + -6]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(33, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1620 "parser.php.php"
+                phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, NULL, $this->status->getState());
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -7]->minor);
+                $this->yy_destructor(31, $this->yystack[$this->yyidx + -6]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(33, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 27:
-#line 283 "parser.php.lemon"
-                {
-                    phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -4]->minor, NULL, NULL, $this->status->getState());
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -6]->minor);
-                    $this->yy_destructor(31, $this->yystack[$this->yyidx + -5]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -3]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(33, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1633 "parser.php.php"
+                phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -4]->minor, NULL, NULL, $this->status->getState());
+
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -6]->minor);
+                $this->yy_destructor(31, $this->yystack[$this->yyidx + -5]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -3]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(33, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 28:
-#line 288 "parser.php.lemon"
-                {
-                    phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -9]->minor, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -11]->minor);
-                    $this->yy_destructor(31, $this->yystack[$this->yyidx + -10]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -8]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -6]->minor);
-                    $this->yy_destructor(34, $this->yystack[$this->yyidx + -5]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(33, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1649 "parser.php.php"
+                phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -9]->minor, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -11]->minor);
+                $this->yy_destructor(31, $this->yystack[$this->yyidx + -10]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -8]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -6]->minor);
+                $this->yy_destructor(34, $this->yystack[$this->yyidx + -5]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(33, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 29:
-#line 293 "parser.php.lemon"
-                {
-                    phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -8]->minor, $this->yystack[$this->yyidx + -6]->minor, NULL, $this->status->getState());
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -10]->minor);
-                    $this->yy_destructor(31, $this->yystack[$this->yyidx + -9]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -7]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -5]->minor);
-                    $this->yy_destructor(34, $this->yystack[$this->yyidx + -4]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -3]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(33, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1665 "parser.php.php"
+                phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -8]->minor, $this->yystack[$this->yyidx + -6]->minor, NULL, $this->status->getState());
+
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -10]->minor);
+                $this->yy_destructor(31, $this->yystack[$this->yyidx + -9]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -7]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -5]->minor);
+                $this->yy_destructor(34, $this->yystack[$this->yyidx + -4]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -3]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(33, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 30:
-#line 298 "parser.php.lemon"
-                {
-                    phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -7]->minor, NULL, NULL, $this->status->getState());
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -9]->minor);
-                    $this->yy_destructor(31, $this->yystack[$this->yyidx + -8]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -6]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -5]->minor);
-                    $this->yy_destructor(34, $this->yystack[$this->yyidx + -4]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -3]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(33, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1681 "parser.php.php"
+                phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -7]->minor, NULL, NULL, $this->status->getState());
+
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -9]->minor);
+                $this->yy_destructor(31, $this->yystack[$this->yyidx + -8]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -6]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -5]->minor);
+                $this->yy_destructor(34, $this->yystack[$this->yyidx + -4]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -3]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(33, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 31:
-#line 302 "parser.php.lemon"
-                {
-                    phvolt_ret_elseif_statement($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -3]->minor);
-                    $this->yy_destructor(35, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1691 "parser.php.php"
+                phvolt_ret_elseif_statement($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
+
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -3]->minor);
+                $this->yy_destructor(35, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 32:
-#line 306 "parser.php.lemon"
-                {
-                    phvolt_ret_elsefor_statement($yygotominor, $this->status->getState());
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(36, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1701 "parser.php.php"
+                phvolt_ret_elsefor_statement($yygotominor, $this->status->getState());
+
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(36, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 33:
-#line 310 "parser.php.lemon"
-                {
-                    phvolt_ret_for_statement($yygotominor, $this->yystack[$this->yyidx + -7]->minor, NULL, $this->yystack[$this->yyidx + -5]->minor, NULL, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -9]->minor);
-                    $this->yy_destructor(37, $this->yystack[$this->yyidx + -8]->minor);
-                    $this->yy_destructor(8, $this->yystack[$this->yyidx + -6]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(39, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1715 "parser.php.php"
+                phvolt_ret_for_statement($yygotominor, $this->yystack[$this->yyidx + -7]->minor, NULL, $this->yystack[$this->yyidx + -5]->minor, NULL, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -9]->minor);
+                $this->yy_destructor(37, $this->yystack[$this->yyidx + -8]->minor);
+                $this->yy_destructor(8, $this->yystack[$this->yyidx + -6]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(39, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 34:
-#line 314 "parser.php.lemon"
-                {
-                    phvolt_ret_for_statement($yygotominor, $this->yystack[$this->yyidx + -9]->minor, NULL, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -11]->minor);
-                    $this->yy_destructor(37, $this->yystack[$this->yyidx + -10]->minor);
-                    $this->yy_destructor(8, $this->yystack[$this->yyidx + -8]->minor);
-                    $this->yy_destructor(31, $this->yystack[$this->yyidx + -6]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(39, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1730 "parser.php.php"
+                phvolt_ret_for_statement($yygotominor, $this->yystack[$this->yyidx + -9]->minor, NULL, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -11]->minor);
+                $this->yy_destructor(37, $this->yystack[$this->yyidx + -10]->minor);
+                $this->yy_destructor(8, $this->yystack[$this->yyidx + -8]->minor);
+                $this->yy_destructor(31, $this->yystack[$this->yyidx + -6]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(39, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 35:
-#line 318 "parser.php.lemon"
-                {
-                    phvolt_ret_for_statement($yygotominor, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -9]->minor, $this->yystack[$this->yyidx + -5]->minor, NULL, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -11]->minor);
-                    $this->yy_destructor(37, $this->yystack[$this->yyidx + -10]->minor);
-                    $this->yy_destructor(2, $this->yystack[$this->yyidx + -8]->minor);
-                    $this->yy_destructor(8, $this->yystack[$this->yyidx + -6]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(39, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1745 "parser.php.php"
+                phvolt_ret_for_statement($yygotominor, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -9]->minor, $this->yystack[$this->yyidx + -5]->minor, NULL, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -11]->minor);
+                $this->yy_destructor(37, $this->yystack[$this->yyidx + -10]->minor);
+                $this->yy_destructor(2, $this->yystack[$this->yyidx + -8]->minor);
+                $this->yy_destructor(8, $this->yystack[$this->yyidx + -6]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(39, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 36:
-#line 322 "parser.php.lemon"
-                {
-                    phvolt_ret_for_statement($yygotominor, $this->yystack[$this->yyidx + -9]->minor, $this->yystack[$this->yyidx + -11]->minor, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -13]->minor);
-                    $this->yy_destructor(37, $this->yystack[$this->yyidx + -12]->minor);
-                    $this->yy_destructor(2, $this->yystack[$this->yyidx + -10]->minor);
-                    $this->yy_destructor(8, $this->yystack[$this->yyidx + -8]->minor);
-                    $this->yy_destructor(31, $this->yystack[$this->yyidx + -6]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(39, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1761 "parser.php.php"
+                phvolt_ret_for_statement($yygotominor, $this->yystack[$this->yyidx + -9]->minor, $this->yystack[$this->yyidx + -11]->minor, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -13]->minor);
+                $this->yy_destructor(37, $this->yystack[$this->yyidx + -12]->minor);
+                $this->yy_destructor(2, $this->yystack[$this->yyidx + -10]->minor);
+                $this->yy_destructor(8, $this->yystack[$this->yyidx + -8]->minor);
+                $this->yy_destructor(31, $this->yystack[$this->yyidx + -6]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(39, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 37:
-#line 327 "parser.php.lemon"
-                {
-                    phvolt_ret_switch_statement($yygotominor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -7]->minor);
-                    $this->yy_destructor(40, $this->yystack[$this->yyidx + -6]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(41, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 1774 "parser.php.php"
+                phvolt_ret_switch_statement($yygotominor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -7]->minor);
+                $this->yy_destructor(40, $this->yystack[$this->yyidx + -6]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(41, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 38:
 #line 332 "parser.php.lemon"
                 {
-                    phvolt_ret_switch_statement($yygotominor, $this->yystack[$this->yyidx + -4]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_switch_statement($this->output, $this->yystack[$this->yyidx + -4]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -6]->minor);
                     $this->yy_destructor(40, $this->yystack[$this->yyidx + -5]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + -3]->minor);
@@ -2649,7 +2501,7 @@ static const struct {
             case 39:
 #line 337 "parser.php.lemon"
                 {
-                    phvolt_ret_case_clause($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->status->scanner_state);
+                    phvolt_ret_case_clause($this->output, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -3]->minor);
                     $this->yy_destructor(42, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
@@ -2659,7 +2511,7 @@ static const struct {
             case 40:
 #line 342 "parser.php.lemon"
                 {
-                    phvolt_ret_case_clause($yygotominor, NULL, $this->status->scanner_state);
+                    phvolt_ret_case_clause($this->output, NULL, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(43, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
@@ -2669,7 +2521,7 @@ static const struct {
             case 41:
 #line 346 "parser.php.lemon"
                 {
-                    phvolt_ret_set_statement($yygotominor, $this->yystack[$this->yyidx + -1]->minor);
+                    phvolt_ret_set_statement($this->output, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -3]->minor);
                     $this->yy_destructor(44, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
@@ -2683,6 +2535,7 @@ static const struct {
 #line 350 "parser.php.lemon"
                 {
                     phvolt_ret_zval_list($yygotominor, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
+
                     $this->yy_destructor(2, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 1828 "parser.php.php"
@@ -2690,7 +2543,7 @@ static const struct {
             case 44:
 #line 358 "parser.php.lemon"
                 {
-                    phvolt_ret_set_assignment($yygotominor, $this->yystack[$this->yyidx + -2]->minor, \Phalcon\Volt\Compiler::PHVOLT_T_ASSIGN, $this->yystack[$this->yyidx + 0]->minor, $this->status->scanner_state);
+                    phvolt_ret_set_assignment($this->output, $this->yystack[$this->yyidx + -2]->minor, Compiler::PHVOLT_T_ASSIGN, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                     $this->yy_destructor(45, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 1836 "parser.php.php"
@@ -2698,7 +2551,7 @@ static const struct {
             case 45:
 #line 362 "parser.php.lemon"
                 {
-                    phvolt_ret_set_assignment($yygotominor, $this->yystack[$this->yyidx + -2]->minor, \Phalcon\Volt\Compiler::PHVOLT_T_ADD_ASSIGN, $this->yystack[$this->yyidx + 0]->minor, $this->status->scanner_state);
+                    phvolt_ret_set_assignment($this->output, $this->yystack[$this->yyidx + -2]->minor, Compiler::PHVOLT_T_ADD_ASSIGN, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                     $this->yy_destructor(46, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 1844 "parser.php.php"
@@ -2706,7 +2559,7 @@ static const struct {
             case 46:
 #line 366 "parser.php.lemon"
                 {
-                    phvolt_ret_set_assignment($yygotominor, $this->yystack[$this->yyidx + -2]->minor, \Phalcon\Volt\Compiler::PHVOLT_T_SUB_ASSIGN, $this->yystack[$this->yyidx + 0]->minor, $this->status->scanner_state);
+                    phvolt_ret_set_assignment($this->output, $this->yystack[$this->yyidx + -2]->minor, Compiler::PHVOLT_T_SUB_ASSIGN, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                     $this->yy_destructor(47, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 1852 "parser.php.php"
@@ -2714,7 +2567,7 @@ static const struct {
             case 47:
 #line 370 "parser.php.lemon"
                 {
-                    phvolt_ret_set_assignment($yygotominor, $this->yystack[$this->yyidx + -2]->minor, \Phalcon\Volt\Compiler::PHVOLT_T_MUL_ASSIGN, $this->yystack[$this->yyidx + 0]->minor, $this->status->scanner_state);
+                    phvolt_ret_set_assignment($this->output, $this->yystack[$this->yyidx + -2]->minor, Compiler::PHVOLT_T_MUL_ASSIGN, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                     $this->yy_destructor(48, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 1860 "parser.php.php"
@@ -2722,7 +2575,7 @@ static const struct {
             case 48:
 #line 374 "parser.php.lemon"
                 {
-                    phvolt_ret_set_assignment($yygotominor, $this->yystack[$this->yyidx + -2]->minor, \Phalcon\Volt\Compiler::PHVOLT_T_DIV_ASSIGN, $this->yystack[$this->yyidx + 0]->minor, $this->status->scanner_state);
+                    phvolt_ret_set_assignment($this->output, $this->yystack[$this->yyidx + -2]->minor, Compiler::PHVOLT_T_DIV_ASSIGN, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                     $this->yy_destructor(49, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 1868 "parser.php.php"
@@ -2731,17 +2584,14 @@ static const struct {
             case 73:
             case 139:
             case 151:
-#line 378 "parser.php.lemon"
-                {
-                    phvolt_ret_literal_zval($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_IDENTIFIER, $this->yystack[$this->yyidx + 0]->minor, $this->status->scanner_state);
-                }
-#line 1878 "parser.php.php"
+                phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_IDENTIFIER, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+
                 break;
             case 50:
             case 133:
 #line 382 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ARRAYACCESS, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ARRAYACCESS, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(24, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(50, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -2751,7 +2601,7 @@ static const struct {
             case 122:
 #line 386 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_DOT, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_DOT, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(30, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 1897 "parser.php.php"
@@ -2759,7 +2609,7 @@ static const struct {
             case 52:
 #line 390 "parser.php.lemon"
                 {
-                    phvolt_ret_macro_statement($yygotominor, $this->yystack[$this->yyidx + -7]->minor, NULL, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
+                    phvolt_ret_macro_statement($this->output, $this->yystack[$this->yyidx + -7]->minor, NULL, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -9]->minor);
                     $this->yy_destructor(51, $this->yystack[$this->yyidx + -8]->minor);
                     $this->yy_destructor(29, $this->yystack[$this->yyidx + -6]->minor);
@@ -2774,7 +2624,7 @@ static const struct {
             case 53:
 #line 394 "parser.php.lemon"
                 {
-                    phvolt_ret_macro_statement($yygotominor, $this->yystack[$this->yyidx + -8]->minor, $this->yystack[$this->yyidx + -6]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
+                    phvolt_ret_macro_statement($this->output, $this->yystack[$this->yyidx + -8]->minor, $this->yystack[$this->yyidx + -6]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -10]->minor);
                     $this->yy_destructor(51, $this->yystack[$this->yyidx + -9]->minor);
                     $this->yy_destructor(29, $this->yystack[$this->yyidx + -7]->minor);
@@ -2789,14 +2639,14 @@ static const struct {
             case 56:
 #line 406 "parser.php.lemon"
                 {
-                    phvolt_ret_macro_parameter($yygotominor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_macro_parameter($this->output, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                 }
 #line 1934 "parser.php.php"
                 break;
             case 57:
 #line 410 "parser.php.lemon"
                 {
-                    phvolt_ret_macro_parameter($yygotominor, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, $this->status->scanner_state);
+                    phvolt_ret_macro_parameter($this->output, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                     $this->yy_destructor(45, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 1942 "parser.php.php"
@@ -2807,7 +2657,8 @@ static const struct {
             case 152:
 #line 414 "parser.php.lemon"
                 {
-                    phvolt_ret_literal_zval($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_INTEGER, $this->yystack[$this->yyidx + 0]->minor, $this->status->scanner_state);
+                    phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_INTEGER, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+
                 }
 #line 1952 "parser.php.php"
                 break;
@@ -2815,23 +2666,21 @@ static const struct {
             case 153:
 #line 418 "parser.php.lemon"
                 {
-                    phvolt_ret_literal_zval($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_STRING, $this->yystack[$this->yyidx + 0]->minor, $this->status->scanner_state);
+                    phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_STRING, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+
                 }
 #line 1960 "parser.php.php"
                 break;
             case 60:
             case 154:
-#line 422 "parser.php.lemon"
-                {
-                    phvolt_ret_literal_zval($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_DOUBLE, $this->yystack[$this->yyidx + 0]->minor, $this->status->scanner_state);
-                }
-#line 1968 "parser.php.php"
+            phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_DOUBLE, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                 break;
             case 61:
             case 155:
 #line 426 "parser.php.lemon"
                 {
-                    phvolt_ret_literal_zval($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_NULL, NULL, $this->status->getState());
+
                     $this->yy_destructor(57, $this->yystack[$this->yyidx + 0]->minor);
                 }
 #line 1977 "parser.php.php"
@@ -2840,7 +2689,7 @@ static const struct {
             case 156:
 #line 430 "parser.php.lemon"
                 {
-                    phvolt_ret_literal_zval($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_FALSE, NULL, $this->status->scanner_state);
+                    phvolt_ret_literal_zval($this->output, Compiler::PHVOLT_T_FALSE, NULL, $this->status->getState());
                     $this->yy_destructor(58, $this->yystack[$this->yyidx + 0]->minor);
                 }
 #line 1986 "parser.php.php"
@@ -2849,7 +2698,8 @@ static const struct {
             case 157:
 #line 434 "parser.php.lemon"
                 {
-                    phvolt_ret_literal_zval($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_TRUE, NULL, $this->status->scanner_state);
+                    phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_TRUE, NULL, $this->status->getState());
+
                     $this->yy_destructor(59, $this->yystack[$this->yyidx + 0]->minor);
                 }
 #line 1995 "parser.php.php"
@@ -2857,7 +2707,8 @@ static const struct {
             case 64:
 #line 438 "parser.php.lemon"
                 {
-                    phvolt_ret_macro_call_statement($yygotominor, $this->yystack[$this->yyidx + -8]->minor, $this->yystack[$this->yyidx + -6]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
+                    phvolt_ret_macro_call_statement($yygotominor, $this->yystack[$this->yyidx + -8]->minor, $this->yystack[$this->yyidx + -6]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -10]->minor);
                     $this->yy_destructor(60, $this->yystack[$this->yyidx + -9]->minor);
                     $this->yy_destructor(29, $this->yystack[$this->yyidx + -7]->minor);
@@ -2872,7 +2723,8 @@ static const struct {
             case 65:
 #line 442 "parser.php.lemon"
                 {
-                    phvolt_ret_macro_call_statement($yygotominor, $this->yystack[$this->yyidx + -6]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_macro_call_statement($yygotominor, $this->yystack[$this->yyidx + -6]->minor, NULL, NULL, $this->status->getState());
+
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -8]->minor);
                     $this->yy_destructor(60, $this->yystack[$this->yyidx + -7]->minor);
                     $this->yy_destructor(29, $this->yystack[$this->yyidx + -5]->minor);
@@ -2887,7 +2739,7 @@ static const struct {
             case 66:
 #line 446 "parser.php.lemon"
                 {
-                    phvolt_ret_empty_statement($yygotominor, $this->status->scanner_state);
+                    phvolt_ret_empty_statement($this->output, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -2895,17 +2747,15 @@ static const struct {
                 break;
             case 67:
 #line 450 "parser.php.lemon"
-                {
-                    phvolt_ret_echo_statement($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->status->scanner_state);
-                    $this->yy_destructor(62, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(63, $this->yystack[$this->yyidx + 0]->minor);
-                }
+                phvolt_ret_echo_statement($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
+                $this->yy_destructor(62, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(63, $this->yystack[$this->yyidx + 0]->minor);
 #line 2043 "parser.php.php"
                 break;
             case 68:
 #line 454 "parser.php.lemon"
                 {
-                    phvolt_ret_block_statement($yygotominor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
+                    phvolt_ret_block_statement($this->output, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -7]->minor);
                     $this->yy_destructor(64, $this->yystack[$this->yyidx + -6]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
@@ -2918,7 +2768,7 @@ static const struct {
             case 69:
 #line 458 "parser.php.lemon"
                 {
-                    phvolt_ret_block_statement($yygotominor, $this->yystack[$this->yyidx + -4]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_block_statement($this->output, $this->yystack[$this->yyidx + -4]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -6]->minor);
                     $this->yy_destructor(64, $this->yystack[$this->yyidx + -5]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + -3]->minor);
@@ -2931,7 +2781,7 @@ static const struct {
             case 70:
 #line 462 "parser.php.lemon"
                 {
-                    phvolt_ret_cache_statement($yygotominor, $this->yystack[$this->yyidx + -5]->minor, NULL, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
+                    phvolt_ret_cache_statement($this->output, $this->yystack[$this->yyidx + -5]->minor, NULL, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -7]->minor);
                     $this->yy_destructor(66, $this->yystack[$this->yyidx + -6]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
@@ -2944,7 +2794,7 @@ static const struct {
             case 71:
 #line 466 "parser.php.lemon"
                 {
-                    phvolt_ret_cache_statement($yygotominor, $this->yystack[$this->yyidx + -6]->minor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
+                    phvolt_ret_cache_statement($this->output, $this->yystack[$this->yyidx + -6]->minor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -8]->minor);
                     $this->yy_destructor(66, $this->yystack[$this->yyidx + -7]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
@@ -2957,7 +2807,7 @@ static const struct {
             case 74:
 #line 478 "parser.php.lemon"
                 {
-                    phvolt_ret_raw_statement($yygotominor, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
+                    phvolt_ret_raw_statement($this->output, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -6]->minor);
                     $this->yy_destructor(68, $this->yystack[$this->yyidx + -5]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
@@ -2970,7 +2820,7 @@ static const struct {
             case 75:
 #line 482 "parser.php.lemon"
                 {
-                    phvolt_ret_extends_statement($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->status->scanner_state);
+                    phvolt_ret_extends_statement($this->output, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -3]->minor);
                     $this->yy_destructor(70, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
@@ -2980,7 +2830,7 @@ static const struct {
             case 76:
 #line 486 "parser.php.lemon"
                 {
-                    phvolt_ret_include_statement($yygotominor, $this->yystack[$this->yyidx + -1]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_include_statement($this->output, $this->yystack[$this->yyidx + -1]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -3]->minor);
                     $this->yy_destructor(71, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
@@ -2990,7 +2840,7 @@ static const struct {
             case 77:
 #line 490 "parser.php.lemon"
                 {
-                    phvolt_ret_include_statement($yygotominor, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->scanner_state);
+                    phvolt_ret_include_statement($this->output, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -5]->minor);
                     $this->yy_destructor(71, $this->yystack[$this->yyidx + -4]->minor);
                     $this->yy_destructor(72, $this->yystack[$this->yyidx + -2]->minor);
@@ -3001,7 +2851,7 @@ static const struct {
             case 78:
 #line 494 "parser.php.lemon"
                 {
-                    phvolt_ret_do_statement($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->status->scanner_state);
+                    phvolt_ret_do_statement($this->output, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -3]->minor);
                     $this->yy_destructor(73, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
@@ -3011,7 +2861,7 @@ static const struct {
             case 79:
 #line 498 "parser.php.lemon"
                 {
-                    phvolt_ret_return_statement($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->status->scanner_state);
+                    phvolt_ret_return_statement($this->output, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -3]->minor);
                     $this->yy_destructor(74, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
@@ -3021,7 +2871,7 @@ static const struct {
             case 80:
 #line 502 "parser.php.lemon"
                 {
-                    phvolt_ret_autoescape_statement($yygotominor, 0, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
+                    phvolt_ret_autoescape_statement($this->output, 0, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -7]->minor);
                     $this->yy_destructor(75, $this->yystack[$this->yyidx + -6]->minor);
                     $this->yy_destructor(58, $this->yystack[$this->yyidx + -5]->minor);
@@ -3035,7 +2885,7 @@ static const struct {
             case 81:
 #line 506 "parser.php.lemon"
                 {
-                    phvolt_ret_autoescape_statement($yygotominor, 1, $this->yystack[$this->yyidx + -3]->minor, $this->status->scanner_state);
+                    phvolt_ret_autoescape_statement($this->output, 1, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -7]->minor);
                     $this->yy_destructor(75, $this->yystack[$this->yyidx + -6]->minor);
                     $this->yy_destructor(59, $this->yystack[$this->yyidx + -5]->minor);
@@ -3049,7 +2899,7 @@ static const struct {
             case 82:
 #line 510 "parser.php.lemon"
                 {
-                    phvolt_ret_break_statement($yygotominor, $this->status->scanner_state);
+                    phvolt_ret_break_statement($this->output, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(77, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
@@ -3059,7 +2909,7 @@ static const struct {
             case 83:
 #line 514 "parser.php.lemon"
                 {
-                    phvolt_ret_continue_statement($yygotominor, $this->status->scanner_state);
+                    phvolt_ret_continue_statement($this->output, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(78, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
@@ -3069,14 +2919,15 @@ static const struct {
             case 84:
 #line 518 "parser.php.lemon"
                 {
-                    phvolt_ret_literal_zval($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_RAW_FRAGMENT, $this->yystack[$this->yyidx + 0]->minor, $this->status->scanner_state);
+                    phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_RAW_FRAGMENT, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+
                 }
 #line 2214 "parser.php.php"
                 break;
             case 85:
 #line 522 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_MINUS, NULL, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_MINUS, NULL, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(22, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2222 "parser.php.php"
@@ -3084,7 +2935,7 @@ static const struct {
             case 86:
 #line 526 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_PLUS, NULL, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_PLUS, NULL, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(21, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2230 "parser.php.php"
@@ -3092,7 +2943,7 @@ static const struct {
             case 87:
 #line 530 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_SUB, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_SUB, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(22, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2238 "parser.php.php"
@@ -3100,7 +2951,7 @@ static const struct {
             case 88:
 #line 534 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ADD, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ADD, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(21, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2246 "parser.php.php"
@@ -3108,7 +2959,7 @@ static const struct {
             case 89:
 #line 538 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_MUL, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_MUL, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(19, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2254 "parser.php.php"
@@ -3116,7 +2967,7 @@ static const struct {
             case 90:
 #line 542 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_POW, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_POW, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(19, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(19, $this->yystack[$this->yyidx + -1]->minor);
                 }
@@ -3125,7 +2976,7 @@ static const struct {
             case 91:
 #line 546 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_DIV, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_DIV, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(18, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2271 "parser.php.php"
@@ -3133,7 +2984,7 @@ static const struct {
             case 92:
 #line 550 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_MOD, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_MOD, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(18, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(18, $this->yystack[$this->yyidx + -1]->minor);
                 }
@@ -3142,7 +2993,7 @@ static const struct {
             case 93:
 #line 554 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_MOD, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_MOD, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(20, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2288 "parser.php.php"
@@ -3150,7 +3001,7 @@ static const struct {
             case 94:
 #line 558 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_AND, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_AND, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(6, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2296 "parser.php.php"
@@ -3158,7 +3009,7 @@ static const struct {
             case 95:
 #line 562 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_OR, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_OR, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(7, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2304 "parser.php.php"
@@ -3166,7 +3017,7 @@ static const struct {
             case 96:
 #line 566 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_CONCAT, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_CONCAT, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(23, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2312 "parser.php.php"
@@ -3174,7 +3025,7 @@ static const struct {
             case 97:
 #line 570 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_PIPE, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_PIPE, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(25, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2320 "parser.php.php"
@@ -3182,7 +3033,7 @@ static const struct {
             case 98:
 #line 574 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_RANGE, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_RANGE, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(5, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2328 "parser.php.php"
@@ -3190,7 +3041,7 @@ static const struct {
             case 99:
 #line 578 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_EQUALS, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_EQUALS, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(10, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2336 "parser.php.php"
@@ -3198,7 +3049,7 @@ static const struct {
             case 100:
 #line 582 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_NOT_ISSET, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOT_ISSET, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(11, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(80, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3207,7 +3058,7 @@ static const struct {
             case 101:
 #line 586 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ISSET, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ISSET, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(9, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(80, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3216,7 +3067,7 @@ static const struct {
             case 102:
 #line 590 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_NOT_ISEMPTY, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOT_ISEMPTY, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(11, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(81, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3225,7 +3076,7 @@ static const struct {
             case 103:
 #line 594 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ISEMPTY, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ISEMPTY, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(9, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(81, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3234,7 +3085,7 @@ static const struct {
             case 104:
 #line 598 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_NOT_ISEVEN, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOT_ISEVEN, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(11, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(82, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3243,7 +3094,7 @@ static const struct {
             case 105:
 #line 602 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ISEVEN, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ISEVEN, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(9, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(82, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3252,7 +3103,7 @@ static const struct {
             case 106:
 #line 606 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_NOT_ISODD, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOT_ISODD, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(11, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(83, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3261,7 +3112,7 @@ static const struct {
             case 107:
 #line 610 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ISODD, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ISODD, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(9, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(83, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3270,7 +3121,7 @@ static const struct {
             case 108:
 #line 614 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_NOT_ISNUMERIC, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOT_ISNUMERIC, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(11, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(84, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3279,7 +3130,7 @@ static const struct {
             case 109:
 #line 618 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ISNUMERIC, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ISNUMERIC, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(9, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(84, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3288,7 +3139,7 @@ static const struct {
             case 110:
 #line 622 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_NOT_ISSCALAR, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOT_ISSCALAR, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(11, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(85, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3297,7 +3148,7 @@ static const struct {
             case 111:
 #line 626 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ISSCALAR, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ISSCALAR, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(9, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(85, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3306,7 +3157,7 @@ static const struct {
             case 112:
 #line 630 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_NOT_ISITERABLE, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOT_ISITERABLE, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(11, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(86, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3315,7 +3166,7 @@ static const struct {
             case 113:
 #line 634 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ISITERABLE, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ISITERABLE, $this->yystack[$this->yyidx + -2]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(9, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(86, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3324,7 +3175,7 @@ static const struct {
             case 114:
 #line 638 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_IS, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_IS, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(9, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2470 "parser.php.php"
@@ -3332,7 +3183,7 @@ static const struct {
             case 115:
 #line 642 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_NOTEQUALS, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOTEQUALS, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(11, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2478 "parser.php.php"
@@ -3340,7 +3191,7 @@ static const struct {
             case 116:
 #line 646 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_IDENTICAL, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_IDENTICAL, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(16, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2486 "parser.php.php"
@@ -3348,7 +3199,7 @@ static const struct {
             case 117:
 #line 650 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_NOTIDENTICAL, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOTIDENTICAL, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(17, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2494 "parser.php.php"
@@ -3356,7 +3207,7 @@ static const struct {
             case 118:
 #line 654 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_LESS, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_LESS, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(12, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2502 "parser.php.php"
@@ -3364,7 +3215,7 @@ static const struct {
             case 119:
 #line 658 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_GREATER, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_GREATER, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(13, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2510 "parser.php.php"
@@ -3372,7 +3223,7 @@ static const struct {
             case 120:
 #line 662 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_GREATEREQUAL, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_GREATEREQUAL, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(14, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2518 "parser.php.php"
@@ -3380,7 +3231,7 @@ static const struct {
             case 121:
 #line 666 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_LESSEQUAL, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_LESSEQUAL, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(15, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2526 "parser.php.php"
@@ -3388,7 +3239,7 @@ static const struct {
             case 123:
 #line 674 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_IN, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_IN, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(8, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2534 "parser.php.php"
@@ -3396,7 +3247,7 @@ static const struct {
             case 124:
 #line 678 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_NOT_IN, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOT_IN, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(26, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(8, $this->yystack[$this->yyidx + -1]->minor);
                 }
@@ -3405,7 +3256,7 @@ static const struct {
             case 125:
 #line 682 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_NOT, NULL, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOT, NULL, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(26, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2551 "parser.php.php"
@@ -3413,7 +3264,7 @@ static const struct {
             case 126:
 #line 686 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_INCR, $this->yystack[$this->yyidx + -1]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_INCR, $this->yystack[$this->yyidx + -1]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(27, $this->yystack[$this->yyidx + 0]->minor);
                 }
 #line 2559 "parser.php.php"
@@ -3421,7 +3272,7 @@ static const struct {
             case 127:
 #line 690 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_DECR, $this->yystack[$this->yyidx + -1]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_DECR, $this->yystack[$this->yyidx + -1]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(28, $this->yystack[$this->yyidx + 0]->minor);
                 }
 #line 2567 "parser.php.php"
@@ -3429,7 +3280,7 @@ static const struct {
             case 128:
 #line 694 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ENCLOSED, $this->yystack[$this->yyidx + -1]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ENCLOSED, $this->yystack[$this->yyidx + -1]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(29, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(52, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3438,7 +3289,7 @@ static const struct {
             case 129:
 #line 698 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ARRAY, NULL, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ARRAY, NULL, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(24, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(50, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3447,7 +3298,7 @@ static const struct {
             case 130:
 #line 702 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ARRAY, $this->yystack[$this->yyidx + -1]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ARRAY, $this->yystack[$this->yyidx + -1]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(24, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(50, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3456,7 +3307,7 @@ static const struct {
             case 131:
 #line 706 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ARRAY, NULL, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ARRAY, NULL, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(87, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(88, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3465,7 +3316,7 @@ static const struct {
             case 132:
 #line 710 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_ARRAY, $this->yystack[$this->yyidx + -1]->minor, NULL, NULL, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ARRAY, $this->yystack[$this->yyidx + -1]->minor, NULL, NULL, $this->status->getState());
                     $this->yy_destructor(87, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(88, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -3474,7 +3325,7 @@ static const struct {
             case 134:
 #line 718 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, \Phalcon\Volt\Compiler::PHVOLT_T_TERNARY, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, $this->yystack[$this->yyidx + -4]->minor, $this->status->scanner_state);
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_TERNARY, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, $this->yystack[$this->yyidx + -4]->minor, $this->status->getState());
                     $this->yy_destructor(3, $this->yystack[$this->yyidx + -3]->minor);
                     $this->yy_destructor(4, $this->yystack[$this->yyidx + -1]->minor);
                 }
@@ -3483,7 +3334,7 @@ static const struct {
             case 135:
 #line 722 "parser.php.lemon"
                 {
-                    phvolt_ret_slice($yygotominor, $this->yystack[$this->yyidx + -4]->minor, NULL, $this->yystack[$this->yyidx + -1]->minor, $this->status->scanner_state);
+                    phvolt_ret_slice($this->output, $this->yystack[$this->yyidx + -4]->minor, NULL, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
                     $this->yy_destructor(24, $this->yystack[$this->yyidx + -3]->minor);
                     $this->yy_destructor(4, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(50, $this->yystack[$this->yyidx + 0]->minor);
@@ -3493,7 +3344,7 @@ static const struct {
             case 136:
 #line 726 "parser.php.lemon"
                 {
-                    phvolt_ret_slice($yygotominor, $this->yystack[$this->yyidx + -4]->minor, $this->yystack[$this->yyidx + -2]->minor, NULL, $this->status->scanner_state);
+                    phvolt_ret_slice($this->output, $this->yystack[$this->yyidx + -4]->minor, $this->yystack[$this->yyidx + -2]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(24, $this->yystack[$this->yyidx + -3]->minor);
                     $this->yy_destructor(4, $this->yystack[$this->yyidx + -1]->minor);
                     $this->yy_destructor(50, $this->yystack[$this->yyidx + 0]->minor);
@@ -3503,7 +3354,7 @@ static const struct {
             case 137:
 #line 730 "parser.php.lemon"
                 {
-                    phvolt_ret_slice($yygotominor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->scanner_state);
+                    phvolt_ret_slice($this->output, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
                     $this->yy_destructor(24, $this->yystack[$this->yyidx + -4]->minor);
                     $this->yy_destructor(4, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(50, $this->yystack[$this->yyidx + 0]->minor);
@@ -3514,38 +3365,32 @@ static const struct {
             case 150:
 #line 750 "parser.php.lemon"
                 {
-                    phvolt_ret_named_item($yygotominor, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, $this->status->scanner_state);
+                    phvolt_ret_named_item($yygotominor, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+
                     $this->yy_destructor(4, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2660 "parser.php.php"
                 break;
             case 143:
             case 149:
-#line 754 "parser.php.lemon"
-                {
-                    phvolt_ret_named_item($yygotominor, NULL, $this->yystack[$this->yyidx + 0]->minor, $this->status->scanner_state);
-                }
-#line 2668 "parser.php.php"
+                phvolt_ret_named_item($yygotominor, NULL, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                 break;
             case 145:
-#line 762 "parser.php.lemon"
                 {
-                    phvolt_ret_func_call($yygotominor, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->scanner_state);
+                    phvolt_ret_func_call($yygotominor, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
+
                     $this->yy_destructor(29, $this->yystack[$this->yyidx + -2]->minor);
                     $this->yy_destructor(52, $this->yystack[$this->yyidx + 0]->minor);
                 }
-#line 2677 "parser.php.php"
                 break;
             case 146:
-#line 766 "parser.php.lemon"
-                {
-                    phvolt_ret_func_call($yygotominor, $this->yystack[$this->yyidx + -2]->minor, NULL, $this->status->scanner_state);
-                    $this->yy_destructor(29, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(52, $this->yystack[$this->yyidx + 0]->minor);
-                }
-#line 2686 "parser.php.php"
+                phvolt_ret_func_call($yygotominor, $this->yystack[$this->yyidx + -2]->minor, NULL, $this->status->getState());
+
+                $this->yy_destructor(29, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(52, $this->yystack[$this->yyidx + 0]->minor);
                 break;
         }
+
         $yygoto = self::$yyRuleInfo[2 * $yyruleno];
         $yysize = self::$yyRuleInfo[(2 * $yyruleno) + 1];
 
@@ -3553,6 +3398,7 @@ static const struct {
 
         $this->yyidx -= $yysize;
         $yyact = $this->yy_find_reduce_action($state_for_reduce, $yygoto);
+
         if ($yyact < self::YYNSTATE) {
             $this->yy_shift($yyact, $yygoto, $yygotominor);
         } else if ($yyact == self::YYNSTATE + self::YYNRULE + 1) {
@@ -3560,10 +3406,10 @@ static const struct {
         }
     }
 
-    /*
-** The following code executes when the parse fails
-*/
-    private function yy_parse_failed()
+    /**
+     ** The following code executes when the parse fails
+     */
+    private function yy_parse_failed(): void
     {
         if ($this->yyTraceFILE) {
             fprintf($this->yyTraceFILE, "%sFail!\n", $this->yyTracePrompt);
@@ -3584,72 +3430,69 @@ static const struct {
         $error_str = '';
         $token_name = null;
         $tokens = \Phalcon\Volt\Tokens::$names;
-        $active_token = $this->status->scanner_state->active_token;
+        $active_token = $this->status->getState()->getActiveToken();
 
-        if ($this->status->scanner_state->start_length) {
+        if ($this->status->getState()->getStartLength()) {
             if ($active_token) {
                 if (in_array($active_token, $tokens)) {
-                    $token_name = $tokens[$active_token];
+                    $token_name = array_search($active_token, $tokens);
                 }
             }
 
-            $error_str += "Syntax error, unexpected token ";
+            $error_str .= "Syntax error, unexpected token ";
             if (!$token_name) {
-                $error_str += "UNKNOWN";
+                $error_str .= "UNKNOWN";
             } else {
-                $error_str += $token_name;
+                $error_str .= $token_name;
             }
 
-            if ($this->status->token->value) {
-                $error_str += "(" + $this->status->token->value + ")";
+            if ($this->status->getToken()->getValue()) {
+                $error_str .= "(" . $this->status->getToken()->getValue() . ")";
             }
 
-            $error_str += " in ";
-            $error_str += $this->status->scanner_state->active_file;
-            $error_str += " on line " + $this->status->scanner_state->active_line;
+            $error_str .= " in ";
+            $error_str .= $this->status->getState()->getActiveFile();
+            $error_str .= " on line " . $this->status->getState()->getActiveLine();
         } else {
-            $error_str = "Syntax error, unexpected EOF in " + $this->status->scanner_state->active_file;
+            $error_str .= "Syntax error, unexpected EOF in " . $this->status->getState()->getActiveFile();
 
             /* Report unclosed 'if' blocks */
-            if (($this->status->scanner_state->if_level + $this->status->scanner_state->old_if_level) > 0) {
-                if (($this->status->scanner_state->if_level + $this->status->scanner_state->old_if_level) == 1) {
-                    $error_str += ", there is one 'if' block without close";
+            if (($this->status->getState()->getIfLevel() + $this->status->getState()->oldIfLevel) > 0) {
+                if (($this->status->getState()->getIfLevel() + $this->status->getState()->oldIfLevel) == 1) {
+                    $error_str .= ", there is one 'if' block without close";
                 } else {
-                    $error_str += ", there are ";
-                    $error_str += $this->status->scanner_state->if_level + $this->status->scanner_state->old_if_level;
-                    $error_str += " 'if' blocks without close";
+                    $error_str .= ", there are ";
+                    $error_str .= $this->status->getState()->ifLevel + $this->status->getState()->oldIfLevel;
+                    $error_str .= " 'if' blocks without close";
                 }
             }
 
             /* Report unclosed 'for' blocks */
-            if ($this->status->scanner_state->for_level > 0) {
-                if ($this->status->scanner_state->for_level == 1) {
-                    $error_str += ", there is one 'for' block without close";
+            if ($this->status->getState()->forLevel > 0) {
+                if ($this->status->getState()->forLevel == 1) {
+                    $error_str .= ", there is one 'for' block without close";
                 } else {
-                    $error_str += ", there are " + $this->status->scanner_state->if_level + " 'for' blocks without close";
+                    $error_str .= ", there are " . $this->status->getState()->ifLevel . " 'for' blocks without close";
                 }
             }
 
             /* Report unclosed 'switch' blocks */
-            if ($this->status->scanner_state->switch_level > 0) {
-                $error_str += ", there is a 'switch' block without 'endswitch'";
+            if ($this->status->getState()->switchLevel > 0) {
+                $error_str .= ", there is a 'switch' block without 'endswitch'";
             }
         }
 
         if ($error_str) {
-            $this->status->syntax_error = $error_str;
-            $this->status->syntax_error_len = strlen($error_str);
-        } else {
-            $this->status->syntax_error = NULL;
+            $this->status->setSyntaxError($error_str);
         }
 
-        $this->status->setStatus(\Phalcon\Volt\Compiler::PHVOLT_PARSING_FAILED);
+        $this->status->setStatus(Compiler::PHVOLT_PARSING_FAILED);
     }
 
     /*
 ** The following is executed when the parser accepts
 */
-    private function yy_accept()
+    private function yy_accept(): void
     {
         if ($this->yyTraceFILE) {
             fprintf($this->yyTraceFILE, "%sAccept!\n", $this->yyTracePrompt);
@@ -3703,8 +3546,7 @@ static const struct {
         $yyendofinput = ($yymajor == 0);
 
         if ($this->yyTraceFILE) {
-            fprintf($this->yyTraceFILE, "%sInput %s\n", $this->yyTracePrompt,
-                self::$yyTokenName[$yymajor]);
+            fprintf($this->yyTraceFILE, "%s Input %s\n", $this->yyTracePrompt, self::$yyTokenName[$yymajor]);
         }
 
         do {
@@ -3721,7 +3563,7 @@ static const struct {
                 $this->yy_reduce($yyact - self::YYNSTATE);
             } else if ($yyact == $this->YY_ERROR_ACTION) {
                 if ($this->yyTraceFILE) {
-                    fprintf($this->yyTraceFILE, "%sSyntax Error!\n", $this->yyTracePrompt);
+                    fprintf($this->yyTraceFILE, "%s Syntax Error!\n", $this->yyTracePrompt);
                 }
                 if (self::YYERRORSYMBOL) {
                     /* A syntax error has occurred.
@@ -3802,7 +3644,7 @@ static const struct {
     }
 }
 
-function phvolt_ret_zval_list(&$ret, $list_left = null, $right_list)
+function phvolt_ret_zval_list(&$ret, $list_left = null, $right_list = null): void
 {
     $ret = [];
 
@@ -3821,10 +3663,10 @@ function phvolt_ret_zval_list(&$ret, $list_left = null, $right_list)
     $ret[] = $right_list;
 }
 
-function phvolt_ret_if_statement(&$ret, $expr, $true_statements = null, $false_statements = null, $state)
+function phvolt_ret_if_statement(&$ret, $expr, $true_statements = null, $false_statements = null, $state = null): void
 {
     $ret = [
-        "type" => \Phalcon\Volt\Compiler::PHVOLT_T_IF,
+        "type" => Compiler::PHVOLT_T_IF,
         "expr" => $expr,
         "file" => $state->active_file,
         "line" => $state->active_line
@@ -3842,7 +3684,7 @@ function phvolt_ret_if_statement(&$ret, $expr, $true_statements = null, $false_s
 function phvolt_ret_elseif_statement(&$ret, $expr, $state): void
 {
     $ret = [
-        "type" => \Phalcon\Volt\Compiler::PHVOLT_T_ELSEIF,
+        "type" => Compiler::PHVOLT_T_ELSEIF,
         "expr" => $expr,
         "file" => $state->active_file,
         "line" => $state->active_line
@@ -3852,15 +3694,15 @@ function phvolt_ret_elseif_statement(&$ret, $expr, $state): void
 function phvolt_ret_elsefor_statement(&$ret, $state): void
 {
     $ret = [
-        "type" => \Phalcon\Volt\Compiler::PHVOLT_T_ELSEFOR,
+        "type" => Compiler::PHVOLT_T_ELSEFOR,
         "file" => $state->active_file,
         "line" => $state->active_line
     ];
 }
 
-function phvolt_ret_for_statement(&$ret, $variable, $key = null, $expr, $if_expr = null, $block_statements, $state): void {
+function phvolt_ret_for_statement(&$ret, $variable, $key = null, array $expr = [], $if_expr = null, $block_statements = null, $state = null): void {
     $ret = [
-        "type" => \Phalcon\Volt\Compiler::PHVOLT_T_FOR,
+        "type" => Compiler::PHVOLT_T_FOR,
         "variable" => $variable->token,
         "expr" => $expr,
         "block_statements" => $block_statements,
@@ -3884,3 +3726,77 @@ function phvolt_ret_for_statement(&$ret, $variable, $key = null, $expr, $if_expr
     }
 }
 
+function phvolt_ret_literal_zval(&$ret, $type, ?Token $T = null, ?State $state = null): void
+{
+    $ret = [
+        "type" => $type,
+        "file" => $state->getActiveFile(),
+        "line" => $state->getActiveLine(),
+    ];
+
+    if ($T->getValue()) {
+        $ret["value"] = $T->getValue();
+
+        // Free memory for the token
+        //unset($T->token);
+        //unset($T);
+    }
+}
+
+function phvolt_ret_named_item(&$ret, $name, $expr, State $state): void
+{
+    $ret["expr"] = $expr;
+
+    // Add the name if provided
+    if ($name !== null) {
+        $ret["name"] = substr($name->token, 0, $name->token_len);
+
+        // Free memory for the name token
+        unset($name->token);
+        unset($name);
+    }
+
+    // Add file and line information from the state
+    $ret["file"] = $state->getActiveFile();
+    $ret["line"] = $state->getActiveLine();
+}
+
+function phvolt_ret_func_call(&$ret, $expr, $arguments, State $state): void
+{
+    $ret = [
+        "type" => Compiler::PHVOLT_T_FCALL,
+        "name" => $expr,
+        "file" => $state->getActiveFile(),
+        "line" => $state->getActiveLine(),
+    ];
+
+    if ($arguments !== null) {
+        $ret["arguments"] = $arguments;
+    }
+}
+
+function phvolt_ret_macro_call_statement(&$ret, $expr, $arguments, $caller, $state): void {
+    $ret = [
+        "type" => Compiler::PHVOLT_T_CALL,
+        "name" => $expr,
+        "file" => $state->active_file,
+        "line" => $state->active_line
+    ];
+
+    if ($arguments !== null) {
+        $ret["arguments"] = $arguments;
+    }
+
+    if ($caller !== null) {
+        $ret["caller"] = $caller;
+    }
+}
+
+function phvolt_ret_echo_statement(&$ret, $expr, State $state): void
+{
+    $ret = [];
+    $ret["type"] = Compiler::PHVOLT_T_ECHO;
+    $ret["expr"] = $expr;
+    $ret["file"] = $state->getActiveFile();
+    $ret["line"] = $state->getActiveLine();
+}
