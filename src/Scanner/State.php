@@ -229,6 +229,13 @@ class State
         return $this;
     }
 
+    public function incrementRawBufferCursor(): self
+    {
+        $this->rawBufferCursor++;
+
+        return $this;
+    }
+
     public function getRawBufferCursor(): int
     {
         return $this->rawBufferCursor;
