@@ -33,7 +33,7 @@ class Parser
         $parser = new \phvolt_Parser($parserStatus);
         $parser->phvolt_Trace($debug);
 
-        while (0 <= $scanner->scanForToken()) {
+        while (0 <= $scannerStatus = $scanner->scanForToken()) {
             $this->token = $scanner->getToken();
             $parserStatus->setToken($this->token);
 
@@ -523,6 +523,10 @@ class Parser
             }
 
             $state->setEnd($state->getStart());
+        }
+
+        if ($scannerStatus === Scanner::PHVOLT_SCANNER_RETCODE_EOF) {
+            $parser->phvolt_(0);
         }
 
         return $parser->getOutput();
