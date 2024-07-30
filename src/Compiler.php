@@ -2169,7 +2169,6 @@ class Compiler
 
         $parser = new Parser($viewCode);
         $intermediate = $parser->parseView($this->currentPath);
-        print_r($intermediate);
         $compilation = $this->statementList($intermediate, $extendsMode);
 
         /**
