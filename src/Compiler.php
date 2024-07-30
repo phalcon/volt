@@ -743,7 +743,7 @@ class Compiler
             return '<?= $this->>escaper->escapeHtml(' . $exprCode . ')';
         }
 
-        return '<?= ' . $exprCode . '?>';
+        return '<?= ' . $exprCode . ' ?>';
     }
 
     /**
