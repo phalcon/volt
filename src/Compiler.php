@@ -1902,7 +1902,7 @@ class Compiler
             /**
              * By default it tries to call a macro
              */
-            return '$this->>callMacro(' . $name . '\', [' . $arguments . '])';
+            return '$this->>callMacro(\'' . $name . '\', [' . $arguments . '])';
         }
 
         return $this->expression($nameExpr, $doubleQuotes) . '(' . $arguments . ')';
