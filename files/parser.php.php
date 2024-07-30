@@ -74,8 +74,7 @@ class phvolt_Parser
     var /* int */
         $yyerrcnt;                 /* Shifts left before out of the error */
     // phvolt_ARG_SDECL                /* A place to hold %extra_argument */
-    var /* yyStackEntry */
-        $yystack = array(/* of YYSTACKDEPTH elements */
+    var $yystack = array(/* of YYSTACKDEPTH elements */
     );  /* The parser's stack */
 
     var $yyTraceFILE = null;
@@ -2053,8 +2052,6 @@ class phvolt_Parser
         $iLookAhead     /* The look-ahead token */
     )
     {
-        $i = 0;
-
         if ($stateno > self::YY_REDUCE_MAX ||
             ($i = self::$yy_reduce_ofst[$stateno]) == self::YY_REDUCE_USE_DFLT) {
             return self::$yy_default[$stateno];
@@ -2273,20 +2270,17 @@ static const struct {
         116, 1,
     );
 
-    /*
-** Perform a reduce action and the shift that must immediately
-** follow the reduce.
-*/
-    private function yy_reduce(
-        $yyruleno                 /* Number of the rule by which to reduce */
-    )
+    /**
+     * Perform a reduce action and the shift that must immediately
+     * follow the reduce.
+     *
+     * @param int $yyruleno Number of the rule by which to reduce
+     */
+    private function yy_reduce($yyruleno)
     {
-        $yygoto = 0;                     /* The next state */
-        $yyact = 0;                      /* The next action */
         $yygotominor = null;        /* The LHS of the rule reduced */
-        $yymsp = null;            /* The top of the parser's stack */
-        $yysize = 0;                     /* Amount to pop the stack */
 
+        /* The top of the parser's stack */
         $yymsp = $this->yystack[$this->yyidx];
         if ($this->yyTraceFILE && isset(self::$yyRuleName[$yyruleno])) {
             fprintf($this->yyTraceFILE, "%sReduce [%s].\n", $this->yyTracePrompt, self::$yyRuleName[$yyruleno]);
@@ -2302,9 +2296,7 @@ static const struct {
   **     break;
   */
             case 0:
-#line 167 "parser.php.lemon"
-                $this->output[] = $this->yystack[$this->yyidx + 0]->minor;
-#line 1559 "parser.php.php"
+                $this->output = $yymsp->minor;
                 break;
             case 1:
             case 4:
@@ -2330,8 +2322,7 @@ static const struct {
             case 24:
             case 25:
             case 144:
-                $yygotominor = $this->yystack[$this->yyidx + 0]->minor;
-                print_r($yygotominor);
+                $yygotominor = $yymsp->minor;
                 break;
             case 2:
                 phvolt_ret_zval_list($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
@@ -2734,11 +2725,9 @@ static const struct {
 #line 2034 "parser.php.php"
                 break;
             case 67:
-#line 450 "parser.php.lemon"
                 phvolt_ret_echo_statement($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
                 $this->yy_destructor(62, $this->yystack[$this->yyidx + -2]->minor);
                 $this->yy_destructor(63, $this->yystack[$this->yyidx + 0]->minor);
-#line 2043 "parser.php.php"
                 break;
             case 68:
 #line 454 "parser.php.lemon"
@@ -2905,12 +2894,7 @@ static const struct {
 #line 2207 "parser.php.php"
                 break;
             case 84:
-#line 518 "parser.php.lemon"
-                {
-                    phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_RAW_FRAGMENT, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
-
-                }
-#line 2214 "parser.php.php"
+                phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_RAW_FRAGMENT, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                 break;
             case 85:
 #line 522 "parser.php.lemon"
@@ -3364,12 +3348,10 @@ static const struct {
                 phvolt_ret_named_item($yygotominor, NULL, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                 break;
             case 145:
-                {
-                    phvolt_ret_func_call($yygotominor, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
+                phvolt_ret_func_call($yygotominor, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
 
-                    $this->yy_destructor(29, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(52, $this->yystack[$this->yyidx + 0]->minor);
-                }
+                $this->yy_destructor(29, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(52, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 146:
                 phvolt_ret_func_call($yygotominor, $this->yystack[$this->yyidx + -2]->minor, NULL, $this->status->getState());
@@ -3379,12 +3361,15 @@ static const struct {
                 break;
         }
 
+        /* The next state */
         $yygoto = self::$yyRuleInfo[2 * $yyruleno];
-        $yysize = self::$yyRuleInfo[(2 * $yyruleno) + 1];
+        /* Amount to pop the stack */
+        $yysize = self::$yyRuleInfo[2 * $yyruleno + 1];
 
         $state_for_reduce = $this->yystack[$this->yyidx - $yysize]->stateno;
 
         $this->yyidx -= $yysize;
+        /* The next action */
         $yyact = $this->yy_find_reduce_action($state_for_reduce, $yygoto);
 
         if ($yyact < self::YYNSTATE) {
@@ -3509,13 +3494,8 @@ static const struct {
 ** Outputs:
 ** None.
 */
-    function phvolt_(
-        $yymajor,                 /* The major token code number */
-        $yyminor = null           /* The value for the token */
-    )
+    public function phvolt_($yymajor, $yyminor = null)
     {
-        $yyact = 0;            /* The parser action. */
-        $yyendofinput = 0;     /* True if we are at the end of input */
         $yyerrorhit = 0;   /* True if yymajor has invoked an error */
 
         /* (re)initialize the parser, if necessary */
@@ -3527,7 +3507,7 @@ static const struct {
             $ent->major = 0;
             $this->yystack = array(0 => $ent);
         }
-        $yyendofinput = ($yymajor == 0);
+        $yyendofinput = $yymajor === 0;
 
         if ($this->yyTraceFILE) {
             fprintf($this->yyTraceFILE, "%s Input %s\n", $this->yyTracePrompt, self::$yyTokenName[$yymajor]);
@@ -3720,10 +3700,6 @@ function phvolt_ret_literal_zval(&$ret, $type, ?Token $T = null, ?State $state =
 
     if ($T->getValue()) {
         $ret["value"] = $T->getValue();
-
-        // Free memory for the token
-        //unset($T->token);
-        //unset($T);
     }
 }
 
