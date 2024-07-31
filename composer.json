@@ -27,9 +27,9 @@
         "pds/skeleton": "^1.0"
     },
     "require-dev": {
-        "phalcon/ide-stubs": "^5.0",
+        "phalcon/ide-stubs": "^5.8",
         "phpstan/phpstan": "^1.11",
-        "phpunit/phpunit": "^9.0",
+        "phpunit/phpunit": "^9.6",
         "squizlabs/php_codesniffer": "^3.10"
     },
     "config": {
