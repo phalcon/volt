@@ -3,3 +3,4 @@ composer.phar
 /lemon-php/
 log.txt
 tests/support/output/
+tests/support/coverage/
