@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests;
+namespace Phalcon\Tests\Unit;
 
 use Phalcon\Volt\Compiler;
 use PHPUnit\Framework\TestCase;
