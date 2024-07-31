@@ -65,6 +65,7 @@
         "cs": "vendor/bin/phpcs --standard=phpcs.xml",
         "cs-fix": "vendor/bin/phpcbf --standard=phpcs.xml",
         "test": "vendor/bin/phpunit",
-        "test-coverage": "vendor/bin/phpunit --coverage-clover ./tests/support/coverage.xml"
+        "test-coverage": "vendor/bin/phpunit --coverage-clover ./tests/support/coverage.xml",
+        "test-coverage-html": "vendor/bin/phpunit --testdox --coverage-html ./tests/support/coverage/"
     }
 }
