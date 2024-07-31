@@ -1465,17 +1465,17 @@ class Scanner
                 }
                 vv136:
                 {
-                    if ($this->state->activeToken === Compiler::PHVOLT_T_DOT) {
-                        $this->token->setOpcode(Compiler::PHVOLT_T_IDENTIFIER);
-                        $this->token->setValue(
-                            substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
-                        );
-                    } else {
-                        $this->state->statementPosition++;
-                        $this->token->setOpcode(Compiler::PHVOLT_T_IS);
-                    }
+                if ($this->state->activeToken === Compiler::PHVOLT_T_DOT) {
+                    $this->token->setOpcode(Compiler::PHVOLT_T_IDENTIFIER);
+                    $this->token->setValue(
+                        substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
+                    );
+                } else {
+                    $this->state->statementPosition++;
+                    $this->token->setOpcode(Compiler::PHVOLT_T_IS);
+                }
 
-                    return 0;
+                return 0;
                 }
                 vv137:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -2499,16 +2499,16 @@ class Scanner
                 }
                 vv202:
                 {
-                    if ($this->state->activeToken === Compiler::PHVOLT_T_DOT) {
-                        $this->token->setOpcode(Compiler::PHVOLT_T_IDENTIFIER);
-                        $this->token->setValue(
-                            substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
-                        );
-                    } else {
-                        $this->token->setOpcode(Compiler::PHVOLT_T_SET);
-                    }
+                if ($this->state->activeToken === Compiler::PHVOLT_T_DOT) {
+                    $this->token->setOpcode(Compiler::PHVOLT_T_IDENTIFIER);
+                    $this->token->setValue(
+                        substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
+                    );
+                } else {
+                    $this->token->setOpcode(Compiler::PHVOLT_T_SET);
+                }
 
-                    return 0;
+                return 0;
                 }
                 vv203:
                 $vvch = $this->state->incrementStart()->getStart();

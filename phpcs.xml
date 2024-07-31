@@ -6,6 +6,7 @@
     <arg value="p"/>
     <rule ref="PSR12">
         <exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+        <exclude name="PSR2.ControlStructures.SwitchDeclaration.TerminatingComment"/>
     </rule>
     <file>src</file>
     <file>tests</file>

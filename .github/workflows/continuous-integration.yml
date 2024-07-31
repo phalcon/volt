@@ -1,0 +1,223 @@
+# This file is part of Phalcon.
+#
+# (c) Phalcon Team <team@phalcon.io>
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+
+name: "Phalcon Volt CI"
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # Daily at 02:00 runs only on default branch
+  push:
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+  pull_request:
+  workflow_dispatch:
+
+env:
+  fail-fast: true
+
+  # All versions should be declared here
+  PHALCON_VERSION: 6.0.0
+  CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+
+  # For tests
+  LANG: en_US.UTF-8
+  LANGUAGE: en_US.UTF-8
+  LC_ALL: en_US.UTF-8
+
+  # Windows specific
+  TOOLS_DIR: 'C:\tools'
+
+  # PHP extensions required by Composer
+  EXTENSIONS: mbstring, phalcon
+
+permissions: { }
+jobs:
+
+  # PHP CodeSniffer inspection
+  phpcs:
+    name: "Validate Tests code style"
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+    permissions:
+      contents: read
+
+    runs-on: ubuntu-20.04
+
+    strategy:
+      fail-fast: true
+      matrix:
+        php:
+          - '8.1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Setup PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ${{ env.EXTENSIONS }}
+          ini-values: apc.enable_cli=on, session.save_path=/tmp
+          tools: pecl
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PHALCON_PATH: ext
+
+      - name: "Install development dependencies with Composer"
+        uses: "ramsey/composer-install@v2"
+        with:
+          composer-options: "--prefer-dist"
+
+      - name: "PHPCS"
+        run: |
+          composer cs
+
+      - name: "Psalm"
+        run: |
+          composer analyze
+
+  unit-tests:
+    needs: phpcs
+
+    permissions:
+      contents: read # to fetch code (actions/checkout)
+
+    name: Unit tests / PHP-${{ matrix.php }}-${{ matrix.ts }}-${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        php:
+          - '8.1'
+        ts:
+          - 'ts'
+        name:
+          - ubuntu-gcc
+        include:
+          # Linux
+          - { name: ubuntu-gcc, os: ubuntu-20.04, compiler: gcc }
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: "Setup platform specific environment"
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          $SessionSavePath = if ("${{ runner.os }}" -eq "Windows") { 'C:\temp' } else { '/tmp' }
+          Write-Output "SESSION_SAVE_PATH=$SessionSavePath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: "Setup PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ${{ env.EXTENSIONS }}
+          tools: pecl, composer:v2
+          coverage: xdebug
+        env:
+          PHPTS: ${{ matrix.ts }}
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Validate composer"
+        run: composer validate --no-check-all --no-check-publish
+
+      - name: "Install development dependencies with Composer"
+        uses: "ramsey/composer-install@v2"
+        with:
+          composer-options: "--prefer-dist"
+
+      - name: "Run Unit Tests"
+        if: always()
+        run: |
+          vendor/bin/phpunit --coverage-clover ./tests/support/coverage.xml
+
+      - name: "Upload coverage file artifact"
+        uses: "actions/upload-artifact@v4"
+        with:
+          name: "unit-${{ matrix.php }}.coverage"
+          path: "tests/support/coverage.xml"
+
+  qodana-analysis:
+    permissions:
+      contents: read
+
+    name: "Qodana Analysis"
+    runs-on: "ubuntu-22.04"
+    needs:
+      - "unit-tests"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}  # to check out the actual pull request commit, not the merge commit
+          fetch-depth: 0  # a full history is required for pull request analysis
+
+      - name: 'Qodana Scan'
+        uses: JetBrains/qodana-action@v2023.2
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        with:
+          args: --baseline,qodana.sarif.json
+
+  upload-coverage:
+    permissions:
+      contents: read
+
+    name: "Upload coverage"
+    runs-on: "ubuntu-22.04"
+    needs:
+      - "unit-tests"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+        with:
+          fetch-depth: 2
+
+      - name: "Display structure of downloaded files"
+        run: |
+          mkdir -p reports
+
+      - name: "Download coverage files"
+        uses: "actions/download-artifact@v4"
+        with:
+          path: "reports"
+
+      - name: "Display structure of downloaded files"
+        run: ls -R
+        working-directory: reports
+
+#      - name: "Upload to Codacy"
+#        run: |
+#          bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
+#            -l php $(find ./reports/ -name '*.xml' | sed 's,^, -r ,' | xargs echo)
+
+#      - name: "Upload to Codacy"
+#        uses: codacy/codacy-coverage-reporter-action@v1.3.0
+#        with:
+#          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+#          # or
+#          # api-token: ${{ secrets.CODACY_API_TOKEN }}
+#          coverage-reports: reports
+#          # or a comma-separated list for multiple reports
+#          # coverage-reports: <PATH_TO_REPORT>, <PATH_TO_REPORT>
+
+#      - name: "Upload to Codecov"
+#        uses: "codecov/codecov-action@v3"
+#        with:
+#          token: ${{ secrets.CODECOV_TOKEN }}
+#          directory: reports
+#          fail_ci_if_error: true
+#          verbose: true
+#
+      - name: "Upload to Qodana"
+        run: |
+          docker run \
+            -v $(pwd):/data/project/ \
+            -v ./reports/:/data/coverage \
+            -e QODANA_TOKEN="${{ secrets.QODANA_TOKEN }}" \
+            jetbrains/qodana-php
