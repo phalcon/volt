@@ -50,7 +50,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Phalcon\\Tests\\": "tests/"
+            "Phalcon\\Tests\\Unit\\": "tests/unit/"
         }
     },
     "support": {
@@ -65,14 +65,6 @@
         "analyze": "vendor/bin/phpstan analyse -c phpstan.neon",
         "cs": "vendor/bin/phpcs --standard=phpcs.xml",
         "cs-fix": "vendor/bin/phpcbf --standard=phpcs.xml",
-        "test-unit": "php vendor/bin/codecept run --ext DotReporter unit",
-        "test-cli": "php vendor/bin/codecept run --ext DotReporter cli",
-        "test-integration": "php vendor/bin/codecept run --ext DotReporter integration",
-        "test-db-common": "php vendor/bin/codecept run --ext DotReporter database -g common",
-        "test-db-mysql": "php vendor/bin/codecept run --ext DotReporter database --env mysql -g mysql",
-        "test-db-pgsql": "php vendor/bin/codecept run --ext DotReporter database --env pgsql -g pgsql",
-        "test-db-sqlite": "php vendor/bin/codecept run --ext DotReporter database --env sqlite -g sqlite",
-        "test-db": "test-db-common && test-db-mysql && test-db-pgsql && test-db-sqlite",
-        "test-all": "test-unit && test-cli && test-integration && test-db"
+        "test": "vendor/bin/phpunit"
     }
 }

@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Phalcon\Volt;
 
 use Closure;
+use Phalcon\Di\DiInterface;
+use Phalcon\Mvc\ViewBaseInterface;
 use Phalcon\Volt\Parser\Parser;
 
 use function addslashes;
@@ -210,31 +212,107 @@ class Compiler
     public const PHVOLT_T_TRUE    = 263;
     public const PHVOLT_T_WITH    = 324;
 
-    protected bool  $autoescape   = false;
-    protected int   $blockLevel   = 0;
-    protected       $blocks;
-    protected       $compiledTemplatePath;
-    protected       $container;
-    protected       $currentBlock;
-    protected       $currentPath;
-    protected int   $exprLevel    = 0;
-    protected bool  $extended     = false;
-    protected       $extendedBlocks;
-    protected       $extensions;
-    protected       $filters;
-    protected       $forElsePointers;
-    protected int   $foreachLevel = 0;
-    protected       $functions;
-    protected int   $level        = 0;
-    protected       $loopPointers;
-    protected       $macros;
-    protected array $options      = [];
-    protected       $prefix;
-    protected       $view; // string?
+    /**
+     * @var bool
+     */
+    protected bool $autoescape   = false;
 
-    public function __construct($view = null)
-    {
-        $this->view = $view;
+    /**
+     * @var int
+     */
+    protected int $blockLevel   = 0;
+
+    /**
+     * @var array|null
+     *
+     * TODO: Make array only?
+     */
+    protected ?array $blocks = null;
+
+    /**
+     * @var string|null
+     */
+    protected ?string $compiledTemplatePath;
+
+    /**
+     * @var DiInterface|null
+     */
+    protected ?DiInterface $container = null;
+
+    /**
+     * @var string|null
+     */
+    protected ?string $currentBlock = null;
+
+    /**
+     * @var string|null
+     */
+    protected ?string $currentPath = null;
+
+    /**
+     * @var int
+     */
+    protected int $exprLevel = 0;
+
+    /**
+     * @var bool
+     */
+    protected bool $extended = false;
+    /**
+     * @var array|bool
+     *
+     * TODO: Make it always array
+     */
+    protected array | bool $extendedBlocks;
+    /**
+     * @var array
+     */
+    protected array $extensions = [];
+    /**
+     * @var array
+     */
+    protected array $filters = [];
+    /**
+     * @var array
+     */
+    protected array $forElsePointers = [];
+    /**
+     * @var int
+     */
+    protected int $foreachLevel = 0;
+    /**
+     * @var array
+     */
+    protected array $functions = [];
+
+    /**
+     * @var int
+     */
+    protected int $level = 0;
+
+    /**
+     * @var array
+     */
+    protected array $loopPointers = [];
+
+    /**
+     * @var array
+     */
+    protected array $macros = [];
+
+    /**
+     * @var array
+     */
+    protected array $options = [];
+
+    /**
+     * @var string
+     */
+    protected string $prefix = "";
+
+    public function __construct(
+        protected ?ViewBaseInterface $view = null
+    ) {
     }
 
     /**
@@ -640,14 +718,17 @@ class Compiler
          */
         if ($lifetime !== null) {
             if ($lifetime['type'] == static::PHVOLT_T_IDENTIFIER) {
-                $compilation .= '<?php $_cache[' . $exprCode . ']->save(' . $exprCode . ', null, $' . $lifetime['value'] . '); ';
+                $compilation .= '<?php $_cache[' . $exprCode
+                    . ']->save(' . $exprCode . ', null, $' . $lifetime['value'] . '); ';
             } else {
-                $compilation .= '<?php $_cache[' . $exprCode . ']->save(' . $exprCode . ', null, ' . $lifetime['value'] . '); ';
+                $compilation .= '<?php $_cache[' . $exprCode
+                    . ']->save(' . $exprCode . ', null, ' . $lifetime['value'] . '); ';
             }
 
             $compilation .= '} else { echo $_cacheKey[' . $exprCode . ']; } ?>';
         } else {
-            $compilation .= '<?php $_cache[' . $exprCode . ']->save(' . $exprCode . '); } else { echo $_cacheKey[' . $exprCode . ']; } ?>';
+            $compilation .= '<?php $_cache[' . $exprCode
+                . ']->save(' . $exprCode . '); } else { echo $_cacheKey[' . $exprCode . ']; } ?>';
         }
 
         return $compilation;
@@ -762,7 +843,7 @@ class Compiler
             return '<?= $this->>escaper->escapeHtml(' . $exprCode . ')';
         }
 
-        return '<?= ' . $exprCode . '?>';
+        return '<?= ' . $exprCode . ' ?>';
     }
 
     /**
@@ -986,11 +1067,16 @@ class Compiler
          */
         if (isset($loopContext[$level])) {
             $compilation .= '<?php $' . $prefixLevel . 'loop->first = ($' . $prefixLevel . 'incr == 0); ';
-            $compilation .= '$' . $prefixLevel . 'loop->index = $' . $prefixLevel . 'incr + 1; ';
-            $compilation .= '$' . $prefixLevel . 'loop->index0 = $' . $prefixLevel . 'incr; ';
-            $compilation .= '$' . $prefixLevel . 'loop->revindex = $' . $prefixLevel . 'loop->length - $' . $prefixLevel . 'incr; ';
-            $compilation .= '$' . $prefixLevel . 'loop->revindex0 = $' . $prefixLevel . 'loop->length - ($' . $prefixLevel . 'incr + 1); ';
-            $compilation .= '$' . $prefixLevel . 'loop->last = ($' . $prefixLevel . 'incr == ($' . $prefixLevel . 'loop->length - 1)); ?>';
+            $compilation .= '$' . $prefixLevel . 'loop->index = $'
+                . $prefixLevel . 'incr + 1; ';
+            $compilation .= '$' . $prefixLevel . 'loop->index0 = $'
+                . $prefixLevel . 'incr; ';
+            $compilation .= '$' . $prefixLevel . 'loop->revindex = $'
+                . $prefixLevel . 'loop->length - $' . $prefixLevel . 'incr; ';
+            $compilation .= '$' . $prefixLevel . 'loop->revindex0 = $'
+                . $prefixLevel . 'loop->length - ($' . $prefixLevel . 'incr + 1); ';
+            $compilation .= '$' . $prefixLevel . 'loop->last = ($'
+                . $prefixLevel . 'incr == ($' . $prefixLevel . 'loop->length - 1)); ?>';
         }
 
         /**
@@ -1046,7 +1132,8 @@ class Compiler
         /**
          * Process statements in the "true" block
          */
-        $compilation = '<?php if (' . $this->expression($statement['expr']) . ') { ?>' . $this->statementList(
+        $compilation = '<?php if (' . $this->expression($statement['expr']) . ') { ?>'
+            . $this->statementList(
                 $statement['true_statements'],
                 $extendsMode
             );
@@ -1058,7 +1145,8 @@ class Compiler
             /**
              * Process statements in the "false" block
              */
-            $compilation .= '<?php } else { ?>' . $this->statementList($statement['false_statements'], $extendsMode);
+            $compilation .= '<?php } else { ?>'
+                . $this->statementList($statement['false_statements'], $extendsMode);
         }
 
         $compilation .= '<?php } ?>';
@@ -1187,7 +1275,8 @@ class Compiler
                 if (isset($parameter['default'])) {
                     $code .= '$' . $variableName . ' = ' . $this->expression($parameter['default']) . ';';
                 } else {
-                    $code .= ' throw new \\Phalcon\\Mvc\\View\\Exception(\'Macro "' . $name . '" was called without parameter ' . $variableName . '\'); ';
+                    $code .= ' throw new \\Phalcon\\Mvc\\View\\Exception(\'Macro "'
+                        . $name . '" was called without parameter ' . $variableName . '\'); ';
                 }
 
                 $code .= ' } ) ';
@@ -1751,10 +1840,8 @@ class Compiler
                     break;
 
                 case static::PHVOLT_T_TERNARY:
-                    $exprCode = '(' . $this->expression(
-                            $expr['ternary'],
-                            $doubleQuotes
-                        ) . ' ? ' . $leftCode . ' : ' . $rightCode . ')';
+                    $exprCode = '(' . $this->expression($expr['ternary'], $doubleQuotes)
+                        . ' ? ' . $leftCode . ' : ' . $rightCode . ')';
                     break;
 
                 case static::PHVOLT_T_MINUS:
@@ -1892,7 +1979,8 @@ class Compiler
                     }
 
                     throw new \Exception(
-                        'Invalid definition for user function "' . $name . '" in ' . $expr['file'] . ' on line ' . $expr['line']
+                        'Invalid definition for user function "'
+                        . $name . '" in ' . $expr['file'] . ' on line ' . $expr['line']
                     );
                 }
             }
@@ -2024,7 +2112,7 @@ class Compiler
             /**
              * By default it tries to call a macro
              */
-            return '$this->>callMacro(' . $name . '\', [' . $arguments . '])';
+            return '$this->callMacro(\'' . $name . '\', [' . $arguments . '])';
         }
 
         return $this->expression($nameExpr, $doubleQuotes) . '(' . $arguments . ')';
@@ -2423,7 +2511,8 @@ class Compiler
              * Invalid filter definition throw an exception
              */
             throw new Exception(
-                "Invalid definition for user filter '" . $name . "' in " . $filter["file"] . " on line " . $filter["line"]
+                "Invalid definition for user filter '"
+                . $name . "' in " . $filter["file"] . " on line " . $filter["line"]
             );
         }
 
