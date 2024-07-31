@@ -740,8 +740,9 @@ class Compiler
      * @param array $statement
      * @param bool  $extendsMode
      */
-    public function compileCall(array $statement, bool $extendsMode)
+    public function compileCall(array $statement, bool $extendsMode): string
     {
+        return '';
     }
 
     /**
@@ -2433,6 +2434,7 @@ class Compiler
          * Resolve arguments
          */
         if (true === isset($filter['arguments'])) {
+            $funcArguments = $filter["arguments"];
             /**
              * "default" filter is not the first argument, improve this!
              */
