@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the Phalcon Framework.
+ *
+ * (c) Phalcon Team <team@phalcon.io>
+ *
+ * For the full copyright and license information, please view the LICENSE.txt
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Phalcon\Volt\Parser;
@@ -10,6 +19,11 @@ use Phalcon\Volt\Scanner\Scanner;
 use Phalcon\Volt\Scanner\State;
 use Phalcon\Volt\Scanner\Token;
 
+use function fopen;
+use function sprintf;
+use function strlen;
+use function substr;
+
 class Parser
 {
     private ?Token $token = null;
@@ -18,6 +32,11 @@ class Parser
     {
     }
 
+    /**
+     * @param string $templatePath
+     *
+     * @return array
+     */
     public function parseView(string $templatePath): array
     {
         if (strlen($this->code) === 0) {
@@ -174,7 +193,10 @@ class Parser
 
                 case Compiler::PHVOLT_T_OPEN_EDELIMITER:
                     if ($state->extendsMode === 1 && $state->blockLevel == 0) {
-                        $this->createErrorMessage($parserStatus, 'Child templates only may contain blocks');
+                        $this->createErrorMessage(
+                            $parserStatus,
+                            'Child templates only may contain blocks'
+                        );
                         $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
                         break;
                     }
@@ -199,24 +221,43 @@ class Parser
                     break;
 
                 case Compiler::PHVOLT_T_INTEGER:
-                    $this->phvolt_parse_with_token($parser, Compiler::PHVOLT_T_INTEGER, Opcode::PHVOLT_INTEGER);
+                    $this->phvoltParseWithToken(
+                        $parser,
+                        Compiler::PHVOLT_T_INTEGER,
+                        Opcode::PHVOLT_INTEGER
+                    );
                     break;
 
                 case Compiler::PHVOLT_T_DOUBLE:
-                    $this->phvolt_parse_with_token($parser, Compiler::PHVOLT_T_DOUBLE, Opcode::PHVOLT_DOUBLE);
+                    $this->phvoltParseWithToken(
+                        $parser,
+                        Compiler::PHVOLT_T_DOUBLE,
+                        Opcode::PHVOLT_DOUBLE
+                    );
                     break;
 
                 case Compiler::PHVOLT_T_STRING:
-                    $this->phvolt_parse_with_token($parser, Compiler::PHVOLT_T_STRING, Opcode::PHVOLT_STRING);
+                    $this->phvoltParseWithToken(
+                        $parser,
+                        Compiler::PHVOLT_T_STRING,
+                        Opcode::PHVOLT_STRING
+                    );
                     break;
 
                 case Compiler::PHVOLT_T_IDENTIFIER:
-                    $this->phvolt_parse_with_token($parser, Compiler::PHVOLT_T_IDENTIFIER, Opcode::PHVOLT_IDENTIFIER);
+                    $this->phvoltParseWithToken(
+                        $parser,
+                        Compiler::PHVOLT_T_IDENTIFIER,
+                        Opcode::PHVOLT_IDENTIFIER
+                    );
                     break;
 
                 case Compiler::PHVOLT_T_IF:
                     if ($state->extendsMode === 1 && $state->blockLevel == 0) {
-                        $this->createErrorMessage($parserStatus, 'Child templates only may contain blocks');
+                        $this->createErrorMessage(
+                            $parserStatus,
+                            'Child templates only may contain blocks'
+                        );
                         $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
                         break;
                     }
@@ -257,7 +298,10 @@ class Parser
 
                 case Compiler::PHVOLT_T_FOR:
                     if ($state->extendsMode === 1 && $state->blockLevel == 0) {
-                        $this->createErrorMessage($parserStatus, 'Child templates only may contain blocks');
+                        $this->createErrorMessage(
+                            $parserStatus,
+                            'Child templates only may contain blocks'
+                        );
                         $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
                         break;
                     }
@@ -282,11 +326,17 @@ class Parser
 
                 case Compiler::PHVOLT_T_SWITCH:
                     if ($state->extendsMode === 1 && $state->blockLevel == 0) {
-                        $this->createErrorMessage($parserStatus, 'Child templates only may contain blocks');
+                        $this->createErrorMessage(
+                            $parserStatus,
+                            'Child templates only may contain blocks'
+                        );
                         $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
                         break;
                     } elseif ($state->switchLevel > 0) {
-                        $this->createErrorMessage($parserStatus, 'A nested switch detected. There is no nested switch-case statements support');
+                        $this->createErrorMessage(
+                            $parserStatus,
+                            'A nested switch detected. There is no nested switch-case statements support'
+                        );
                         $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
                         break;
                     }
@@ -314,7 +364,11 @@ class Parser
                         break;
                     }
 
-                    $this->phvolt_parse_with_token($parser, Compiler::PHVOLT_T_IDENTIFIER, Opcode::PHVOLT_DEFAULT);
+                    $this->phvoltParseWithToken(
+                        $parser,
+                        Compiler::PHVOLT_T_IDENTIFIER,
+                        Opcode::PHVOLT_DEFAULT
+                    );
                     break;
 
                 case Compiler::PHVOLT_T_ENDSWITCH:
@@ -332,22 +386,32 @@ class Parser
                 case Compiler::PHVOLT_T_RAW_FRAGMENT:
                     if ($this->token !== null) {
                         if ($state->extendsMode === 1 && $state->blockLevel === 0) {
-                            $this->createErrorMessage($parserStatus, 'Child templates only may contain blocks');
+                            $this->createErrorMessage(
+                                $parserStatus,
+                                'Child templates only may contain blocks'
+                            );
                             $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
                             break;
                         }
 
-                        if (!$this->phvolt_is_blank_string($this->token)) {
+                        if (!$this->phvoltIsBlankString($this->token)) {
                             $state->statementPosition++;
                         }
 
-                        $this->phvolt_parse_with_token($parser, Compiler::PHVOLT_T_RAW_FRAGMENT, Opcode::PHVOLT_RAW_FRAGMENT);
+                        $this->phvoltParseWithToken(
+                            $parser,
+                            Compiler::PHVOLT_T_RAW_FRAGMENT,
+                            Opcode::PHVOLT_RAW_FRAGMENT
+                        );
                     }
                     break;
 
                 case Compiler::PHVOLT_T_SET:
                     if ($state->extendsMode === 1 && $state->blockLevel === 0) {
-                        $this->createErrorMessage($parserStatus, 'Child templates only may contain blocks');
+                        $this->createErrorMessage(
+                            $parserStatus,
+                            'Child templates only may contain blocks'
+                        );
                         $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
                         break;
                     }
@@ -385,7 +449,10 @@ class Parser
 
                 case Compiler::PHVOLT_T_BLOCK:
                     if ($state->blockLevel > 0) {
-                        $this->createErrorMessage($parserStatus, 'Embedding blocks into other blocks is not supported');
+                        $this->createErrorMessage(
+                            $parserStatus,
+                            'Embedding blocks into other blocks is not supported'
+                        );
                         $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
                         break;
                     }
@@ -401,7 +468,10 @@ class Parser
 
                 case Compiler::PHVOLT_T_MACRO:
                     if ($state->macroLevel > 0) {
-                        $this->createErrorMessage($parserStatus, 'Embedding macros into other macros is not allowed');
+                        $this->createErrorMessage(
+                            $parserStatus,
+                            'Embedding macros into other macros is not allowed'
+                        );
                         $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
                         break;
                     }
@@ -503,7 +573,10 @@ class Parser
 
                 case Compiler::PHVOLT_T_EXTENDS:
                     if ($state->statementPosition !== 1) {
-                        $this->createErrorMessage($parserStatus, 'Extends statement must be placed at the first line in the template');
+                        $this->createErrorMessage(
+                            $parserStatus,
+                            'Extends statement must be placed at the first line in the template'
+                        );
                         $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
                         break;
                     }
@@ -512,10 +585,13 @@ class Parser
                     $parser->phvolt_(Opcode::PHVOLT_EXTENDS);
                     break;
 
-                    default:
-                        $this->createErrorMessage($parserStatus, sprintf('Scanner: unknown opcode %d', $opcode));
-                        $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
-                        break;
+                default:
+                    $this->createErrorMessage(
+                        $parserStatus,
+                        sprintf('Scanner: unknown opcode %d', $opcode)
+                    );
+                    $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
+                    break;
             }
 
             if ($parserStatus->getStatus() !== Status::PHVOLT_PARSING_OK) {
@@ -532,6 +608,12 @@ class Parser
         return $parser->getOutput();
     }
 
+    /**
+     * @param Status $parserStatus
+     * @param string $message
+     *
+     * @return void
+     */
     private function createErrorMessage(Status $parserStatus, string $message): void
     {
         $length = 128 + strlen($parserStatus->getState()->getActiveFile());
@@ -545,7 +627,14 @@ class Parser
         $parserStatus->setSyntaxError(substr($str, 0, $length));
     }
 
-    private function phvolt_parse_with_token(\phvolt_Parser $parser, int $opcode, int $parserCode): void
+    /**
+     * @param \phvolt_Parser $parser
+     * @param int            $opcode
+     * @param int            $parserCode
+     *
+     * @return void
+     */
+    private function phvoltParseWithToken(\phvolt_Parser $parser, int $opcode, int $parserCode): void
     {
         $newToken = new Token();
         $newToken->setOpcode($opcode);
@@ -557,7 +646,12 @@ class Parser
         $parser->phvolt_($parserCode, $newToken);
     }
 
-    private function phvolt_is_blank_string(Token $token): bool
+    /**
+     * @param Token $token
+     *
+     * @return bool
+     */
+    private function phvoltIsBlankString(Token $token): bool
     {
         $marker = $token->getValue();
         $len = strlen($marker);

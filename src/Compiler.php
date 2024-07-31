@@ -16,6 +16,36 @@ namespace Phalcon\Volt;
 use Closure;
 use Phalcon\Volt\Parser\Parser;
 
+use function addslashes;
+use function array_key_exists;
+use function array_unshift;
+use function call_user_func;
+use function call_user_func_array;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function filemtime;
+use function implode;
+use function is_array;
+use function is_object;
+use function is_string;
+use function lcfirst;
+use function method_exists;
+use function ord;
+use function preg_replace;
+use function realpath;
+use function serialize;
+use function sprintf;
+use function str_replace;
+use function strlen;
+use function strtolower;
+use function trigger_error;
+use function ucwords;
+use function unserialize;
+use function var_export;
+
+use const E_USER_DEPRECATED;
+
 /**
  * This class reads and compiles Volt templates into PHP plain code
  *
@@ -29,198 +59,178 @@ use Phalcon\Volt\Parser\Parser;
  */
 class Compiler
 {
-    public const PHVOLT_PARSING_OK = 1;
-    public const PHVOLT_PARSING_FAILED = 0;
+    public const PHVOLT_MODE_CODE    = 1;
+    public const PHVOLT_MODE_COMMENT = 2;
 
     // TODO: add trait InjectionAwareTrait
-
-    public const PHVOLT_RAW_BUFFER_SIZE = 256;
-    
-    public const PHVOLT_SCANNER_RETCODE_EOF = -1;
-    public const PHVOLT_SCANNER_RETCODE_ERR = -2;
-    public const PHVOLT_SCANNER_RETCODE_IMPOSSIBLE = -3;
-    
     /**
      * Modes
      */
-    public const PHVOLT_MODE_RAW = 0;
-    public const PHVOLT_MODE_CODE = 1;
-    public const PHVOLT_MODE_COMMENT = 2;
-    
-    public const PHVOLT_T_IGNORE = 257;
-    
-    /**
-     * Literals & Identifiers
-     */
-    public const PHVOLT_T_INTEGER = 258;
-    public const PHVOLT_T_DOUBLE = 259;
-    public const PHVOLT_T_STRING = 260;
-    public const PHVOLT_T_NULL = 261;
-    public const PHVOLT_T_FALSE = 262;
-    public const PHVOLT_T_TRUE = 263;
-    public const PHVOLT_T_IDENTIFIER = 265;
-    
+    public const PHVOLT_MODE_RAW                   = 0;
+    public const PHVOLT_PARSING_FAILED             = 0;
+    public const PHVOLT_PARSING_OK                 = 1;
+    public const PHVOLT_RAW_BUFFER_SIZE            = 256;
+    public const PHVOLT_SCANNER_RETCODE_EOF        = -1;
+    public const PHVOLT_SCANNER_RETCODE_ERR        = -2;
+    public const PHVOLT_SCANNER_RETCODE_IMPOSSIBLE = -3;
     /**
      * Operators
      */
-    public const PHVOLT_T_ADD = '+';
-    public const PHVOLT_T_SUB = '-';
-    public const PHVOLT_T_MUL = '*';
-    public const PHVOLT_T_DIV = '/';
-    public const PHVOLT_T_MOD = '%';
-    public const PHVOLT_T_AND = 266;
-    public const PHVOLT_T_OR = 267;
-    public const PHVOLT_T_CONCAT = '~';
-    public const PHVOLT_T_PIPE = '|';
-    
-    public const PHVOLT_T_DOT = '.';
-    public const PHVOLT_T_COMMA = 269;
-
-    public const PHVOLT_T_NOT = '|';
-    public const PHVOLT_T_LESS = '<';
-    public const PHVOLT_T_LESSEQUAL = 270;
-    public const PHVOLT_T_GREATER = '>';
+    public const PHVOLT_T_ADD              = '+';
+    public const PHVOLT_T_ADD_ASSIGN       = 281;
+    public const PHVOLT_T_AND              = 266;
+    public const PHVOLT_T_ARRAY            = 360;
+    public const PHVOLT_T_ARRAYACCESS      = 361;
+    public const PHVOLT_T_ASSIGN           = '=';
+    public const PHVOLT_T_AUTOESCAPE       = 317;
+    public const PHVOLT_T_BLOCK            = 307;
+    public const PHVOLT_T_BREAK            = 320;
+    public const PHVOLT_T_CACHE            = 314;
+    public const PHVOLT_T_CALL             = 325;
+    public const PHVOLT_T_CASE             = 412;
+    public const PHVOLT_T_CBRACKET_CLOSE   = '}';
+    public const PHVOLT_T_CBRACKET_OPEN    = '{';
+    public const PHVOLT_T_CLOSE_DELIMITER  = 331;
+    public const PHVOLT_T_CLOSE_EDELIMITER = 333;
+    public const PHVOLT_T_COLON            = 277;
+    public const PHVOLT_T_COMMA            = 269;
+    public const PHVOLT_T_CONCAT           = '~';
+    public const PHVOLT_T_CONTINUE         = 319;
+    public const PHVOLT_T_DECR             = 280;
+    public const PHVOLT_T_DEFAULT          = 413;
+    public const PHVOLT_T_DEFINED          = 312;
+    public const PHVOLT_T_DIV              = '/';
+    public const PHVOLT_T_DIV_ASSIGN       = 284;
+    public const PHVOLT_T_DO               = 316;
+    public const PHVOLT_T_DOT              = '.';
+    public const PHVOLT_T_DOUBLE           = 259;
+    public const PHVOLT_T_ECHO             = 359;
+    public const PHVOLT_T_ELSE             = 301;
+    public const PHVOLT_T_ELSEFOR          = 321;
+    public const PHVOLT_T_ELSEIF           = 302;
+    public const PHVOLT_T_EMPTY            = 380;
+    public const PHVOLT_T_EMPTY_STATEMENT  = 358;
+    public const PHVOLT_T_ENCLOSED         = 356;
+    public const PHVOLT_T_ENDAUTOESCAPE    = 318;
+    public const PHVOLT_T_ENDBLOCK         = 308;
+    public const PHVOLT_T_ENDCACHE         = 315;
+    public const PHVOLT_T_ENDCALL          = 326;
+    public const PHVOLT_T_ENDFOR           = 305;
+    public const PHVOLT_T_ENDIF            = 303;
+    public const PHVOLT_T_ENDMACRO         = 323;
+    public const PHVOLT_T_ENDRAW           = 401;
+    public const PHVOLT_T_ENDSWITCH        = 414;
+    public const PHVOLT_T_EQUALS           = 272;
+    public const PHVOLT_T_EVEN             = 381;
+    public const PHVOLT_T_EXPR             = 354;
+    public const PHVOLT_T_EXTENDS          = 310;
+    public const PHVOLT_T_FALSE            = 262;
+    /**
+     * Special Tokens
+     */
+    public const PHVOLT_T_FCALL        = 350;
+    public const PHVOLT_T_FOR          = 304;
+    public const PHVOLT_T_GREATER      = '>';
     public const PHVOLT_T_GREATEREQUAL = 271;
-    public const PHVOLT_T_EQUALS = 272;
-    public const PHVOLT_T_NOTEQUALS = 273;
-    public const PHVOLT_T_IDENTICAL = 274;
-    public const PHVOLT_T_NOTIDENTICAL = 275;
-    public const PHVOLT_T_RANGE = 276;
-    public const PHVOLT_T_ASSIGN = '=';
-    public const PHVOLT_T_COLON = 277;
-    public const PHVOLT_T_QUESTION = '?';
-    public const PHVOLT_T_POW = 278;
-    public const PHVOLT_T_INCR = 279;
-    public const PHVOLT_T_DECR = 280;
-    public const PHVOLT_T_ADD_ASSIGN = 281;
-    public const PHVOLT_T_SUB_ASSIGN = 282;
-    public const PHVOLT_T_MUL_ASSIGN = 283;
-    public const PHVOLT_T_DIV_ASSIGN = 284;
-
-    public const PHVOLT_T_PARENTHESES_OPEN = '(';
-    public const PHVOLT_T_PARENTHESES_CLOSE = ')';
-    public const PHVOLT_T_SBRACKET_OPEN = '[';
-    public const PHVOLT_T_SBRACKET_CLOSE = ']';
-    public const PHVOLT_T_CBRACKET_OPEN = '{';
-    public const PHVOLT_T_CBRACKET_CLOSE = '}';
-    
+    public const PHVOLT_T_IDENTICAL    = 274;
+    public const PHVOLT_T_IDENTIFIER   = 265;
     /**
      * Reserved words
      */
-    public const PHVOLT_T_IF = 300;
-    public const PHVOLT_T_ELSE = 301;
-    public const PHVOLT_T_ELSEIF = 302;
-    public const PHVOLT_T_ENDIF = 303;
-    public const PHVOLT_T_FOR = 304;
-    public const PHVOLT_T_ENDFOR = 305;
-    public const PHVOLT_T_SET = 306;
-    public const PHVOLT_T_BLOCK = 307;
-    public const PHVOLT_T_ENDBLOCK = 308;
-    public const PHVOLT_T_IN = 309;
-    public const PHVOLT_T_EXTENDS = 310;
-    public const PHVOLT_T_IS = 311;
-    public const PHVOLT_T_DEFINED = 312;
+    public const PHVOLT_T_IF      = 300;
+    public const PHVOLT_T_IGNORE  = 257;
+    public const PHVOLT_T_IN      = 309;
     public const PHVOLT_T_INCLUDE = 313;
-    public const PHVOLT_T_CACHE = 314;
-    public const PHVOLT_T_ENDCACHE = 315;
-    public const PHVOLT_T_DO = 316;
-    public const PHVOLT_T_AUTOESCAPE = 317;
-    public const PHVOLT_T_ENDAUTOESCAPE = 318;
-    public const PHVOLT_T_CONTINUE = 319;
-    public const PHVOLT_T_BREAK = 320;
-    public const PHVOLT_T_ELSEFOR = 321;
-    public const PHVOLT_T_MACRO = 322;
-    public const PHVOLT_T_ENDMACRO = 323;
-    public const PHVOLT_T_WITH = 324;
-    public const PHVOLT_T_CALL = 325;
-    public const PHVOLT_T_ENDCALL = 326;
-    public const PHVOLT_T_RETURN = 327;
-    
+    public const PHVOLT_T_INCR    = 279;
+    /**
+     * Literals & Identifiers
+     */
+    public const PHVOLT_T_INTEGER        = 258;
+    public const PHVOLT_T_IS             = 311;
+    public const PHVOLT_T_ISEMPTY        = 386;
+    public const PHVOLT_T_ISEVEN         = 387;
+    public const PHVOLT_T_ISITERABLE     = 391;
+    public const PHVOLT_T_ISNUMERIC      = 389;
+    public const PHVOLT_T_ISODD          = 388;
+    public const PHVOLT_T_ISSCALAR       = 390;
+    public const PHVOLT_T_ISSET          = 363;
+    public const PHVOLT_T_ITERABLE       = 385;
+    public const PHVOLT_T_LESS           = '<';
+    public const PHVOLT_T_LESSEQUAL      = 270;
+    public const PHVOLT_T_MACRO          = 322;
+    public const PHVOLT_T_MINUS          = 368;
+    public const PHVOLT_T_MOD            = '%';
+    public const PHVOLT_T_MUL            = '*';
+    public const PHVOLT_T_MUL_ASSIGN     = 283;
+    public const PHVOLT_T_NOT            = '|';
+    public const PHVOLT_T_NOTEQUALS      = 273;
+    public const PHVOLT_T_NOTIDENTICAL   = 275;
+    public const PHVOLT_T_NOT_IN         = 367;
+    public const PHVOLT_T_NOT_ISEMPTY    = 392;
+    public const PHVOLT_T_NOT_ISEVEN     = 393;
+    public const PHVOLT_T_NOT_ISITERABLE = 397;
+    public const PHVOLT_T_NOT_ISNUMERIC  = 395;
+    public const PHVOLT_T_NOT_ISODD      = 394;
+    public const PHVOLT_T_NOT_ISSCALAR   = 396;
+    public const PHVOLT_T_NOT_ISSET      = 362;
+    public const PHVOLT_T_NULL           = 261;
+    public const PHVOLT_T_NUMERIC        = 383;
+    public const PHVOLT_T_ODD            = 382;
     /**
      * Delimiters
      */
-    public const PHVOLT_T_OPEN_DELIMITER = 330;
-    public const PHVOLT_T_CLOSE_DELIMITER = 331;
-    public const PHVOLT_T_OPEN_EDELIMITER = 332;
-    public const PHVOLT_T_CLOSE_EDELIMITER = 333;
-    
-    /**
-     * Special Tokens 
-     */
-    public const PHVOLT_T_FCALL = 350;
-    public const PHVOLT_T_EXPR = 354;
-    public const PHVOLT_T_QUALIFIED = 355;
-    public const PHVOLT_T_ENCLOSED = 356;
-    public const PHVOLT_T_RAW_FRAGMENT = 357;
-    public const PHVOLT_T_EMPTY_STATEMENT = 358;
-    public const PHVOLT_T_ECHO = 359;
-    public const PHVOLT_T_ARRAY = 360;
-    public const PHVOLT_T_ARRAYACCESS = 361;
-    public const PHVOLT_T_NOT_ISSET = 362;
-    public const PHVOLT_T_ISSET = 363;
-    public const PHVOLT_T_RESOLVED_EXPR = 364;
-    public const PHVOLT_T_SLICE = 365;
-    public const PHVOLT_T_TERNARY = 366;
-    public const PHVOLT_T_NOT_IN = 367;
-
-    public const PHVOLT_T_MINUS = 368;
-    public const PHVOLT_T_PLUS = 369;
-
-    public const PHVOLT_T_EMPTY = 380;
-    public const PHVOLT_T_EVEN = 381;
-    public const PHVOLT_T_ODD = 382;
-    public const PHVOLT_T_NUMERIC = 383;
-    public const PHVOLT_T_SCALAR = 384;
-    public const PHVOLT_T_ITERABLE = 385;
-
-    public const PHVOLT_T_ISEMPTY = 386;
-    public const PHVOLT_T_ISEVEN = 387;
-    public const PHVOLT_T_ISODD = 388;
-    public const PHVOLT_T_ISNUMERIC = 389;
-    public const PHVOLT_T_ISSCALAR = 390;
-    public const PHVOLT_T_ISITERABLE = 391;
-
-    public const PHVOLT_T_NOT_ISEMPTY = 392;
-    public const PHVOLT_T_NOT_ISEVEN = 393;
-    public const PHVOLT_T_NOT_ISODD = 394;
-    public const PHVOLT_T_NOT_ISNUMERIC = 395;
-    public const PHVOLT_T_NOT_ISSCALAR = 396;
-    public const PHVOLT_T_NOT_ISITERABLE = 397;
-
-    public const PHVOLT_T_RAW = 400;
-    public const PHVOLT_T_ENDRAW = 401;
-
+    public const PHVOLT_T_OPEN_DELIMITER    = 330;
+    public const PHVOLT_T_OPEN_EDELIMITER   = 332;
+    public const PHVOLT_T_OR                = 267;
+    public const PHVOLT_T_PARENTHESES_CLOSE = ')';
+    public const PHVOLT_T_PARENTHESES_OPEN  = '(';
+    public const PHVOLT_T_PIPE              = '|';
+    public const PHVOLT_T_PLUS              = 369;
+    public const PHVOLT_T_POW               = 278;
+    public const PHVOLT_T_QUALIFIED         = 355;
+    public const PHVOLT_T_QUESTION          = '?';
+    public const PHVOLT_T_RANGE             = 276;
+    public const PHVOLT_T_RAW               = 400;
+    public const PHVOLT_T_RAW_FRAGMENT      = 357;
+    public const PHVOLT_T_RESOLVED_EXPR     = 364;
+    public const PHVOLT_T_RETURN            = 327;
+    public const PHVOLT_T_SBRACKET_CLOSE    = ']';
+    public const PHVOLT_T_SBRACKET_OPEN     = '[';
+    public const PHVOLT_T_SCALAR            = 384;
+    public const PHVOLT_T_SET               = 306;
+    public const PHVOLT_T_SLICE             = 365;
+    public const PHVOLT_T_STRING            = 260;
+    public const PHVOLT_T_SUB               = '-';
+    public const PHVOLT_T_SUB_ASSIGN        = 282;
     /**
      * switch-case statement
      */
-    public const PHVOLT_T_SWITCH = 411;
-    public const PHVOLT_T_CASE = 412;
-    public const PHVOLT_T_DEFAULT = 413;
-    public const PHVOLT_T_ENDSWITCH = 414;
-    
-    
+    public const PHVOLT_T_SWITCH  = 411;
+    public const PHVOLT_T_TERNARY = 366;
+    public const PHVOLT_T_TRUE    = 263;
+    public const PHVOLT_T_WITH    = 324;
 
-    protected bool $autoescape = false;
-    protected int $blockLevel = 0;
-    protected $blocks;
-    protected $container;
-    protected $compiledTemplatePath;
-    protected $currentBlock;
-    protected $currentPath;
-    protected int $exprLevel = 0;
-    protected bool $extended = false;
-    protected $extensions;
-    protected $extendedBlocks;
-    protected $filters;
-    protected int $foreachLevel = 0;
-    protected $forElsePointers;
-    protected $functions;
-    protected int $level = 0;
-    protected $loopPointers;
-    protected $macros;
-    protected array $options = [];
-    protected $prefix;
-    protected $view; // string?
+    protected bool  $autoescape   = false;
+    protected int   $blockLevel   = 0;
+    protected       $blocks;
+    protected       $compiledTemplatePath;
+    protected       $container;
+    protected       $currentBlock;
+    protected       $currentPath;
+    protected int   $exprLevel    = 0;
+    protected bool  $extended     = false;
+    protected       $extendedBlocks;
+    protected       $extensions;
+    protected       $filters;
+    protected       $forElsePointers;
+    protected int   $foreachLevel = 0;
+    protected       $functions;
+    protected int   $level        = 0;
+    protected       $loopPointers;
+    protected       $macros;
+    protected array $options      = [];
+    protected       $prefix;
+    protected       $view; // string?
 
     public function __construct($view = null)
     {
@@ -231,6 +241,7 @@ class Compiler
      * Registers a Volt's extension
      *
      * @param object $extension
+     *
      * @return Compiler
      */
     public function addExtension(object $extension): Compiler
@@ -251,7 +262,8 @@ class Compiler
      * Register a new filter in the compiler
      *
      * @param string $name
-     * @param $definition
+     * @param        $definition
+     *
      * @return Compiler
      */
     public function addFilter(string $name, $definition): Compiler
@@ -265,7 +277,8 @@ class Compiler
      * Register a new function in the compiler
      *
      * @param string $name
-     * @param $definition
+     * @param        $definition
+     *
      * @return Compiler
      */
     public function addFunction(string $name, $definition): Compiler
@@ -279,12 +292,13 @@ class Compiler
      * Resolves attribute reading
      *
      * @param array $expr
+     *
      * @return string
      */
     public function attributeReader(array $expr): string
     {
         $exprCode = '';
-        $left = $expr['left'];
+        $left     = $expr['left'];
 
         if ($left['type'] == static::PHVOLT_T_IDENTIFIER) {
             $variable = $left['value'];
@@ -293,8 +307,8 @@ class Compiler
              * Check if the variable is the loop context
              */
             if ($variable === 'loop') {
-                $level = $this->foreachLevel;
-                $exprCode .= '$' . $this->getUniquePrefix() . $level . 'loop';
+                $level                      = $this->foreachLevel;
+                $exprCode                   .= '$' . $this->getUniquePrefix() . $level . 'loop';
                 $this->loopPointers[$level] = $level;
             } else {
                 /**
@@ -319,7 +333,7 @@ class Compiler
         }
 
         $exprCode .= '->';
-        $right = $expr['right'];
+        $right    = $expr['right'];
 
         if ($right['type'] == static::PHVOLT_T_IDENTIFIER) {
             $exprCode .= $right['value'];
@@ -341,7 +355,8 @@ class Compiler
      *```
      *
      * @param string $templatePath
-     * @param bool $extendsMode
+     * @param bool   $extendsMode
+     *
      * @return array|mixed|string|null
      * @throws \Exception
      */
@@ -351,16 +366,16 @@ class Compiler
          * Re-initialize some properties already initialized when the object is
          * cloned
          */
-        $this->extended = false;
+        $this->extended       = false;
         $this->extendedBlocks = false;
-        $this->blocks = null;
-        $this->level = 0;
-        $this->foreachLevel = 0;
-        $this->blockLevel = 0;
-        $this->exprLevel = 0;
+        $this->blocks         = null;
+        $this->level          = 0;
+        $this->foreachLevel   = 0;
+        $this->blockLevel     = 0;
+        $this->exprLevel      = 0;
 
         $compilation = null;
-        $options = $this->options;
+        $options     = $this->options;
 
         /**
          * This makes that templates will be compiled always
@@ -556,7 +571,8 @@ class Compiler
      * Compiles a "autoescape" statement returning PHP code
      *
      * @param array $statement
-     * @param bool $extendsMode
+     * @param bool  $extendsMode
+     *
      * @return string
      */
     public function compileAutoEscape(array $statement, bool $extendsMode): string
@@ -571,10 +587,10 @@ class Compiler
         /**
          * "autoescape" mode
          */
-        $oldAutoescape = $this->autoescape;
+        $oldAutoescape    = $this->autoescape;
         $this->autoescape = $statement['enable'];
 
-        $compilation = $this->statementList($statement['block_statements'], $extendsMode);
+        $compilation      = $this->statementList($statement['block_statements'], $extendsMode);
         $this->autoescape = $oldAutoescape;
 
         return $compilation;
@@ -595,9 +611,9 @@ class Compiler
         /**
          * Cache statement
          */
-        $expr = $statement['expr'];
-        $lifetime = $statement['lifetime'] ?? null;
-        $exprCode = $this->expression($expr);
+        $expr        = $statement['expr'];
+        $lifetime    = $statement['lifetime'] ?? null;
+        $exprCode    = $this->expression($expr);
         $compilation = '<?php $_cache[' . $this->expression($expr) . '] = $this->di->get(\'viewCache\'); ';
 
         if ($lifetime !== null) {
@@ -641,7 +657,7 @@ class Compiler
      * Compiles calls to macros
      *
      * @param array $statement
-     * @param bool $extendsMode
+     * @param bool  $extendsMode
      */
     public function compileCall(array $statement, bool $extendsMode)
     {
@@ -651,7 +667,8 @@ class Compiler
      * Compiles a "case"/"default" clause returning PHP code
      *
      * @param array $statement
-     * @param bool $caseClause
+     * @param bool  $caseClause
+     *
      * @return string
      */
     public function compileCase(array $statement, bool $caseClause = true): string
@@ -680,6 +697,7 @@ class Compiler
      * Compiles a "do" statement returning PHP code
      *
      * @param array $statement
+     *
      * @return string
      * @throws \Exception
      */
@@ -702,6 +720,7 @@ class Compiler
      * Compiles a {% raw %}`{{` `}}`{% endraw %} statement returning PHP code
      *
      * @param array $statement
+     *
      * @return string
      */
     public function compileEcho(array $statement): string
@@ -716,7 +735,7 @@ class Compiler
         /**
          * Evaluate common expressions
          */
-        $expr = $statement['expr'];
+        $expr     = $statement['expr'];
         $exprCode = $this->expression($expr);
 
         if ($expr == static::PHVOLT_T_FCALL) {
@@ -750,6 +769,7 @@ class Compiler
      * Compiles a "elseif" statement returning PHP code
      *
      * @param array $statement
+     *
      * @return string
      * @throws \Exception
      */
@@ -780,7 +800,8 @@ class Compiler
      *
      * @param string $path
      * @param string $compiledPath
-     * @param bool $extendsMode
+     * @param bool   $extendsMode
+     *
      * @return string|array
      */
     public function compileFile(string $path, string $compiledPath, bool $extendsMode = false)
@@ -810,7 +831,7 @@ class Compiler
         }
 
         $this->currentPath = $path;
-        $compilation = $this->compileSource($viewCode, $extendsMode);
+        $compilation       = $this->compileSource($viewCode, $extendsMode);
 
         /**
          * We store the file serialized if it's an array of blocks
@@ -833,10 +854,32 @@ class Compiler
     }
 
     /**
+     * Generates a 'forelse' PHP code
+     *
+     * @return string
+     */
+    public function compileForElse(): string
+    {
+        $level = $this->foreachLevel;
+
+        if (!isset($this->forElsePointers[$level])) {
+            return '';
+        }
+
+        $prefix = $this->forElsePointers[$level];
+        if (isset($this->loopPointers[$level])) {
+            return '<?php $' . $prefix . 'incr++; } if (!$' . $prefix . 'iterated) { ?>';
+        }
+
+        return '<?php } if (!$' . $prefix . 'iterated) { ?>';
+    }
+
+    /**
      * Compiles a "foreach" intermediate code representation into plain PHP code
      *
      * @param array $statement
-     * @param bool $extendsMode
+     * @param bool  $extendsMode
+     *
      * @return string
      */
     public function compileForeach(array $statement, bool $extendsMode = false): string
@@ -848,11 +891,11 @@ class Compiler
             throw new \Exception('Corrupted statement');
         }
 
-        $forElse = null;
+        $forElse     = null;
         $compilation = '';
         $this->foreachLevel++;
         $prefix = $this->getUniquePrefix();
-        $level = $this->foreachLevel;
+        $level  = $this->foreachLevel;
 
         /**
          * prefixLevel is used to prefix every temporal variable
@@ -862,14 +905,14 @@ class Compiler
         /**
          * Evaluate common expressions
          */
-        $expr = $statement['expr'];
+        $expr     = $statement['expr'];
         $exprCode = $this->expression($expr);
 
         /**
          * Process the block statements
          */
         $blockStatements = $statement['block_statements'];
-        $forElse = false;
+        $forElse         = false;
 
         if (gettype($blockStatements) === 'array') {
             foreach ($blockStatements as $blockStatement) {
@@ -881,8 +924,8 @@ class Compiler
                 }
 
                 if ($blockStatement['type'] == static::PHVOLT_T_ELSEFOR) {
-                    $compilation .= '<?php $' . $prefixLevel . 'iterated = false; ?>';
-                    $forElse = $prefixLevel;
+                    $compilation                   .= '<?php $' . $prefixLevel . 'iterated = false; ?>';
+                    $forElse                       = $prefixLevel;
                     $this->forElsePointers[$level] = $forElse;
 
                     break;
@@ -893,7 +936,7 @@ class Compiler
         /**
          * Process statements block
          */
-        $code = $this->statementList($blockStatements, $extendsMode);
+        $code        = $this->statementList($blockStatements, $extendsMode);
         $loopContext = $this->loopPointers;
 
         /**
@@ -983,31 +1026,11 @@ class Compiler
     }
 
     /**
-     * Generates a 'forelse' PHP code
-     *
-     * @return string
-     */
-    public function compileForElse(): string
-    {
-        $level = $this->foreachLevel;
-
-        if (!isset($this->forElsePointers[$level])) {
-            return '';
-        }
-
-        $prefix = $this->forElsePointers[$level];
-        if (isset($this->loopPointers[$level])) {
-            return '<?php $' . $prefix . 'incr++; } if (!$' . $prefix . 'iterated) { ?>';
-        }
-
-        return '<?php } if (!$' . $prefix . 'iterated) { ?>';
-    }
-
-    /**
      * Compiles a 'if' statement returning PHP code
      *
      * @param array $statement
-     * @param bool $extendsMode
+     * @param bool  $extendsMode
+     *
      * @return string
      * @throws \Exception
      */
@@ -1023,7 +1046,10 @@ class Compiler
         /**
          * Process statements in the "true" block
          */
-        $compilation = '<?php if (' . $this->expression($statement['expr']) . ') { ?>' . $this->statementList($statement['true_statements'], $extendsMode);
+        $compilation = '<?php if (' . $this->expression($statement['expr']) . ') { ?>' . $this->statementList(
+                $statement['true_statements'],
+                $extendsMode
+            );
 
         /**
          * Check for a "else"/"elseif" block
@@ -1067,7 +1093,7 @@ class Compiler
                 /**
                  * Get the static path
                  */
-                $path = $pathExpr['value'];
+                $path      = $pathExpr['value'];
                 $finalPath = $this->getFinalPath($path);
 
                 /**
@@ -1111,7 +1137,8 @@ class Compiler
      * Compiles macros
      *
      * @param array $statement
-     * @param bool $extendsMode
+     * @param bool  $extendsMode
+     *
      * @return string
      * @throws \Exception
      */
@@ -1136,8 +1163,8 @@ class Compiler
          * Register the macro
          */
         $this->macros[$name] = $name;
-        $macroName = '$this->>macros[\'' . $name . '\]';
-        $code = '<?php ';
+        $macroName           = '$this->>macros[\'' . $name . '\]';
+        $code                = '<?php ';
 
         if (!isset($statement['parameters'])) {
             $code .= $macroName . ' = function() { ?>';
@@ -1193,6 +1220,7 @@ class Compiler
      * Compiles a "return" statement returning PHP code
      *
      * @param array $statement
+     *
      * @return string
      * @throws \Exception
      */
@@ -1254,16 +1282,104 @@ class Compiler
                     break;
 
                 case static::PHVOLT_T_DIV_ASSIGN:
-                    $compilation .= ' ' . $target . ' /= '. $exprCode . ';';
+                    $compilation .= ' ' . $target . ' /= ' . $exprCode . ';';
                     break;
 
                 default:
-                    $compilation .= ' ' . $target . ' = '. $exprCode . ';';
+                    $compilation .= ' ' . $target . ' = ' . $exprCode . ';';
                     break;
             }
         }
 
         $compilation .= ' ?>';
+
+        return $compilation;
+    }
+
+    /**
+     * Compiles a Volt source code returning a PHP plain version
+     *
+     * @param string $viewCode
+     * @param bool   $extendsMode
+     *
+     * @return string
+     */
+    public function compileSource(string $viewCode, bool $extendsMode = false): string
+    {
+        /**
+         * Enable autoescape globally
+         */
+        if (array_key_exists('autoescape', $this->options)) {
+            if (gettype($this->options['autoescape']) !== 'boolean') {
+                throw new Exception("'autoescape' must be bool");
+            }
+
+            $this->autoescape = $this->options['autoescape'];
+        }
+
+        $parser       = new Parser($viewCode);
+        $intermediate = $parser->parseView($this->currentPath);
+        $compilation  = $this->statementList($intermediate, $extendsMode);
+
+        /**
+         * Check if the template is extending another
+         */
+        if (true === $this->extended) {
+            /**
+             * Multiple-Inheritance is allowed
+             */
+            $finalCompilation = true === $extendsMode ? [] : null;
+            foreach ($this->extendedBlocks as $name => $block) {
+                /**
+                 * If name is a string then is a block name
+                 */
+                if (true === is_string($name)) {
+                    if (isset($this->blocks[$name])) {
+                        /**
+                         * The block is set in the local template
+                         */
+                        $localBlock         = $this->blocks[$name];
+                        $this->currentBlock = $name;
+                        $blockCompilation   = $this->statementList($localBlock);
+                    } else {
+                        if (true === is_array($block)) {
+                            /**
+                             * The block is not set local only in the extended
+                             * template
+                             */
+                            $blockCompilation = $this->statementList($block);
+                        } else {
+                            $blockCompilation = $block;
+                        }
+                    }
+
+                    if (true === $extendsMode) {
+                        $finalCompilation[$name] = $blockCompilation;
+                    } else {
+                        $finalCompilation .= $blockCompilation;
+                    }
+                } else {
+                    /**
+                     * Here the block is an already compiled text
+                     */
+                    if (true === $extendsMode) {
+                        $finalCompilation[] = $block;
+                    } else {
+                        $finalCompilation .= $block;
+                    }
+                }
+            }
+
+            return $finalCompilation;
+        }
+
+        if (true === $extendsMode) {
+            /**
+             * In extends mode we return the template blocks instead of the
+             * compilation
+             */
+            return $this->blocks;
+        }
 
         return $compilation;
     }
@@ -1276,7 +1392,8 @@ class Compiler
      *```
      *
      * @param string $viewCode
-     * @param bool $extendsMode
+     * @param bool   $extendsMode
+     *
      * @return string
      */
     public function compileString(string $viewCode, bool $extendsMode = false): string
@@ -1310,7 +1427,7 @@ class Compiler
          */
         if (isset($statement['case_clauses'])) {
             $caseClauses = $statement['case_clauses'];
-            $lines = $this->statementList($caseClauses, $extendsMode);
+            $lines       = $this->statementList($caseClauses, $extendsMode);
 
             /**
              * Any output (including whitespace) between a switch statement and
@@ -1432,14 +1549,14 @@ class Compiler
             /**
              * From here, right part of expression is always resolved
              */
-            $exprCode = null;
+            $exprCode  = null;
             $rightCode = isset($expr['right']) ? $this->expression($expr['right'], $doubleQuotes) : '';
 
             switch ($type) {
                 case static::PHVOLT_T_NOT:
                     $exprCode = '|' . $rightCode;
                     break;
-                    
+
                 case static::PHVOLT_T_MUL:
                     $exprCode = $leftCode . ' * ' . $rightCode;
                     break;
@@ -1634,7 +1751,10 @@ class Compiler
                     break;
 
                 case static::PHVOLT_T_TERNARY:
-                    $exprCode = '(' . $this->expression($expr['ternary'], $doubleQuotes) . ' ? ' . $leftCode . ' : ' . $rightCode . ')';
+                    $exprCode = '(' . $this->expression(
+                            $expr['ternary'],
+                            $doubleQuotes
+                        ) . ' ? ' . $leftCode . ' : ' . $rightCode . ')';
                     break;
 
                 case static::PHVOLT_T_MINUS:
@@ -1664,6 +1784,7 @@ class Compiler
      *
      * @param string $name
      * @param array|null arguments
+     *
      * @return string|void
      */
     final public function fireExtensionEvent(string $name, ?array $arguments = null)
@@ -1703,11 +1824,12 @@ class Compiler
      * Resolves function intermediate code into PHP function calls
      *
      * @param array $expr
+     *
      * @return string
      */
     public function functionCall(array $expr, bool $doubleQuotes = false): string
     {
-        $code = null;
+        $code          = null;
         $funcArguments = null;
 
         $arguments = isset($expr['arguments']) ? $this->expression($expr['arguments'], $doubleQuotes) : '';
@@ -1746,7 +1868,7 @@ class Compiler
             $functions = $this->functions;
             if (gettype($functions) === 'array') {
                 if (isset($functions[$name])) {
-                    $definition = $functions[$name];
+                    $definition     = $functions[$name];
                     $definitionType = gettype($definition);
 
                     /**
@@ -1799,11 +1921,11 @@ class Compiler
                     $currentBlock = $this->currentBlock;
 
                     if (isset($extendedBlocks[$currentBlock])) {
-                        $block = $extendedBlocks[$currentBlock];
+                        $block     = $extendedBlocks[$currentBlock];
                         $exprLevel = $this->exprLevel;
 
                         if (gettype($block) === 'array') {
-                            $code = $this->statementListOrExtends($block);
+                            $code        = $this->statementListOrExtends($block);
                             $escapedCode = $exprLevel == 1 ? $code : addslashes($code);
                         } else {
                             $escapedCode = $exprLevel == 1 ? $block : addslashes($block);
@@ -1824,27 +1946,27 @@ class Compiler
             }
 
             $method = lcfirst(
-                //\Phalcon\Text::camelize($name)
+            //\Phalcon\Text::camelize($name)
                 ucwords($name)
             );
 
             $arrayHelpers = [
-                'link_to' => true,
-                'image' => true,
-                'form' => true,
-                'submit_button' => true,
-                'radio_field' => true,
-                'check_field' => true,
-                'file_field' => true,
-                "hidden_field" => true,
+                'link_to'        => true,
+                'image'          => true,
+                'form'           => true,
+                'submit_button'  => true,
+                'radio_field'    => true,
+                'check_field'    => true,
+                'file_field'     => true,
+                "hidden_field"   => true,
                 "password_field" => true,
-                "text_area" => true,
-                "text_field" => true,
-                "email_field" => true,
-                "date_field" => true,
-                "tel_field" => true,
-                "numeric_field" => true,
-                "image_input" => true,
+                "text_area"      => true,
+                "text_field"     => true,
+                "email_field"    => true,
+                "date_field"     => true,
+                "tel_field"      => true,
+                "numeric_field"  => true,
+                "image_input"    => true,
             ];
 
             /**
@@ -1952,6 +2074,7 @@ class Compiler
      * Returns a compiler's option
      *
      * @param string $option
+     *
      * @return string
      */
     public function getOption(string $option): ?string
@@ -2000,7 +2123,7 @@ class Compiler
             $this->prefix = call_user_func_array(
                 $this->prefix,
                 [
-                    $this
+                    $this,
                 ]
             );
         }
@@ -2022,6 +2145,7 @@ class Compiler
      *```
      *
      * @param string $viewCode
+     *
      * @return array
      */
     public function parse(string $viewCode): array
@@ -2120,7 +2244,7 @@ class Compiler
      * Sets a single compiler option
      *
      * @param string $option
-     * @param $value
+     * @param        $value
      */
     public function setOption(string $option, $value): void
     {
@@ -2129,6 +2253,7 @@ class Compiler
 
     /**
      * Sets the compiler options
+     *
      * @param array $options
      */
     public function setOptions(array $options): void
@@ -2138,7 +2263,9 @@ class Compiler
 
     /**
      * Set a unique prefix to be used as prefix for compiled variables
+     *
      * @param string $prefix
+     *
      * @return Compiler
      */
     public function setUniquePrefix(string $prefix): Compiler
@@ -2149,95 +2276,10 @@ class Compiler
     }
 
     /**
-     * Compiles a Volt source code returning a PHP plain version
-     * @param string $viewCode
-     * @param bool $extendsMode
-     * @return string
-     */
-    public function compileSource(string $viewCode, bool $extendsMode = false): string
-    {
-        /**
-         * Enable autoescape globally
-         */
-        if (array_key_exists('autoescape', $this->options)) {
-            if (gettype($this->options['autoescape']) !== 'boolean') {
-                throw new Exception("'autoescape' must be bool");
-            }
-
-            $this->autoescape = $this->options['autoescape'];
-        }
-
-        $parser = new Parser($viewCode);
-        $intermediate = $parser->parseView($this->currentPath);
-        $compilation = $this->statementList($intermediate, $extendsMode);
-
-        /**
-         * Check if the template is extending another
-         */
-        if (true === $this->extended) {
-            /**
-             * Multiple-Inheritance is allowed
-             */
-            $finalCompilation = true === $extendsMode ? [] : null;
-            foreach ($this->extendedBlocks as $name => $block) {
-                /**
-                 * If name is a string then is a block name
-                 */
-                if (true === is_string($name)) {
-                    if (isset($this->blocks[$name])) {
-                        /**
-                         * The block is set in the local template
-                         */
-                        $localBlock = $this->blocks[$name];
-                        $this->currentBlock = $name;
-                        $blockCompilation = $this->statementList($localBlock);
-                    } else {
-                        if (true === is_array($block)) {
-                            /**
-                             * The block is not set local only in the extended
-                             * template
-                             */
-                            $blockCompilation = $this->statementList($block);
-                        } else {
-                            $blockCompilation = $block;
-                        }
-                    }
-
-                    if (true === $extendsMode) {
-                        $finalCompilation[$name] = $blockCompilation;
-                    } else {
-                        $finalCompilation .= $blockCompilation;
-                    }
-                } else {
-                    /**
-                     * Here the block is an already compiled text
-                     */
-                    if (true === $extendsMode) {
-                        $finalCompilation[] = $block;
-                    } else {
-                        $finalCompilation .= $block;
-                    }
-                }
-            }
-
-            return $finalCompilation;
-        }
-
-        if (true === $extendsMode) {
-            /**
-             * In extends mode we return the template blocks instead of the
-             * compilation
-             */
-            return $this->blocks;
-        }
-
-        return $compilation;
-    }
-
-    /**
      * Gets the final path with VIEW
      *
      * @param string $path
+     *
      * @return string
      */
     protected function getFinalPath(string $path): string
@@ -2267,8 +2309,9 @@ class Compiler
     /**
      * Resolves filter intermediate code into PHP function calls
      *
-     * @param array $filter
+     * @param array  $filter
      * @param string $left
+     *
      * @return string
      */
     final protected function resolveFilter(array $filter, string $left): string
@@ -2292,11 +2335,11 @@ class Compiler
             }
 
             $functionName = $filter['name'];
-            $name = $functionName['value'];
+            $name         = $functionName['value'];
         }
 
         $funcArguments = null;
-        $arguments = null;
+        $arguments     = null;
 
         /**
          * Resolve arguments
@@ -2316,10 +2359,10 @@ class Compiler
                     $funcArguments,
                     [
                         "expr" => [
-                            "type" =>  364,
+                            "type"  => 364,
                             "value" => $left,
-                            "file" =>  $file,
-                            "line" =>  $line
+                            "file"  => $file,
+                            "line"  => $line,
                         ],
                         "file" => $file,
                         "line" => $line,
@@ -2582,7 +2625,8 @@ class Compiler
      * Traverses a statement list compiling each of its nodes
      *
      * @param array $statements
-     * @param bool $extendsMode
+     * @param bool  $extendsMode
+     *
      * @return string
      */
     final protected function statementList(array $statements, bool $extendsMode = false): string
@@ -2597,7 +2641,7 @@ class Compiler
         /**
          * Increase the statement recursion level in extends mode
          */
-        $extended = $this->extended;
+        $extended  = $this->extended;
         $blockMode = $extended || $extendsMode;
 
         if (true === $blockMode) {
@@ -2606,7 +2650,7 @@ class Compiler
 
         $this->level++;
         $compilation = null;
-        $extensions = $this->extensions;
+        $extensions  = $this->extensions;
 
         foreach ($statements as $statement) {
             /**
@@ -2702,9 +2746,9 @@ class Compiler
                     /**
                      * Block statement
                      */
-                    $blockName = $statement['name'];
+                    $blockName       = $statement['name'];
                     $blockStatements = $statement["block_statements"];
-                    $blocks = $this->blocks;
+                    $blocks          = $this->blocks;
 
                     if (true === $blockMode) {
                         if (false === is_array($blocks)) {
@@ -2715,7 +2759,7 @@ class Compiler
                          * Create a unamed block
                          */
                         if ($compilation !== null) {
-                            $blocks[] = $compilation;
+                            $blocks[]    = $compilation;
                             $compilation = null;
                         }
 
@@ -2724,7 +2768,7 @@ class Compiler
                          * blocks variable
                          */
                         $blocks[$blockName] = $blockStatements;
-                        $this->blocks = $blocks;
+                        $this->blocks       = $blocks;
                     } elseif (true === is_array($blockStatements)) {
                         $compilation .= $this->statementList($blockStatements, $extendsMode);
                     }
@@ -2735,14 +2779,14 @@ class Compiler
                     /**
                      * Extends statement
                      */
-                    $path = $statement["path"];
+                    $path      = $statement["path"];
                     $finalPath = $this->getFinalPath($path['value']);
-                    $extended = true;
+                    $extended  = true;
 
                     /**
                      * Perform a sub-compilation of the extended file
                      */
-                    $subCompiler = clone $this;
+                    $subCompiler     = clone $this;
                     $tempCompilation = $subCompiler->compile($finalPath, $extended);
 
                     /**
@@ -2753,9 +2797,9 @@ class Compiler
                         $tempCompilation = file_get_contents($subCompiler->getCompiledTemplatePath());
                     }
 
-                    $this->extended = true;
+                    $this->extended       = true;
                     $this->extendedBlocks = $tempCompilation;
-                    $blockMode = $extended;
+                    $blockMode            = $extended;
 
                     break;
 
@@ -2773,7 +2817,7 @@ class Compiler
                     break;
 
                 case self::PHVOLT_T_AUTOESCAPE:
-                        $compilation .= $this->compileAutoEscape(
+                    $compilation .= $this->compileAutoEscape(
                         $statement,
                         $extendsMode
                     );
@@ -2858,6 +2902,7 @@ class Compiler
      * Compiles a block of statements
      *
      * @param array statements
+     *
      * @return string|array
      */
     final protected function statementListOrExtends($statements)
@@ -2898,6 +2943,20 @@ class Compiler
         return $statements;
     }
 
+    /**
+     * Compare modification timestamps to check if the $filename1
+     * needs to be recompiled
+     *
+     * @param string $filename1
+     * @param string $filename2
+     *
+     * @return bool
+     */
+    private function compareMtime(string $filename1, string $filename2): bool
+    {
+        return filemtime($filename1) >= filemtime($filename2);
+    }
+
     private function isTagFactory(array $expression): bool
     {
         if (isset($expression['name']['left'])) {
@@ -2925,6 +2984,7 @@ class Compiler
      *
      * @param string|null $path
      * @param string|null $virtualSeparator
+     *
      * @return string
      */
     private function prepareVirtualPath(?string $path = null, ?string $virtualSeparator = null): string
@@ -2939,7 +2999,7 @@ class Compiler
             return $virtualPath;
         }
 
-        $path = strtolower($path);
+        $path   = strtolower($path);
         $length = strlen($path);
         for ($i = 0; $i < $length; $i++) {
             $char = $path[$i];
@@ -2964,22 +3024,10 @@ class Compiler
     }
 
     /**
-     * Compare modification timestamps to check if the $filename1
-     * needs to be recompiled
-     *
-     * @param string $filename1
-     * @param string $filename2
-     * @return bool
-     */
-    private function compareMtime(string $filename1, string $filename2): bool
-    {
-        return filemtime($filename1) >= filemtime($filename2);
-    }
-
-    /**
      * Implementation of zephir_unique_path_key()
      *
      * @param string|null $path
+     *
      * @return string|null
      */
     private function uniquePathKey(?string $path = null): ?string
@@ -2996,12 +3044,13 @@ class Compiler
      *
      * @param $arKey
      * @param $nKeyLength
+     *
      * @return int
      */
     private function zendInlineHashFunc($arKey, $nKeyLength): int
     {
         $hash = 5381;
-        $i = 0;
+        $i    = 0;
 
         /* variant with the hash unrolled eight times */
         for (; $nKeyLength >= 8; $nKeyLength -= 8) {
@@ -3016,14 +3065,23 @@ class Compiler
         }
 
         switch ($nKeyLength) {
-            case 7: $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
-            case 6: $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
-            case 5: $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
-            case 4: $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
-            case 3: $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
-            case 2: $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
-            case 1: $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); break;
-            case 0: break;
+            case 7:
+                $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
+            case 6:
+                $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
+            case 5:
+                $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
+            case 4:
+                $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
+            case 3:
+                $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
+            case 2:
+                $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
+            case 1:
+                $hash = (($hash << 5) + $hash) + ord($arKey[$i++]);
+                break;
+            case 0:
+                break;
         }
 
         return $hash;
