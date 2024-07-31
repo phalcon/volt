@@ -11,16 +11,12 @@
 
 declare(strict_types=1);
 
-namespace Phalcon\Tests\Integration\Mvc\View\Engine\Volt\Compiler;
+namespace Phalcon\Tests\Unit;
 
-use Codeception\Example;
-use IntegrationTester;
-use Phalcon\Mvc\View\Engine\Volt\Compiler;
+use Phalcon\Volt\Compiler;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Class AddFunctionCest
- */
-class AddFunctionCest
+final class AddFunctionTest extends TestCase
 {
     /**
      * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: addFunction()
@@ -30,23 +26,18 @@ class AddFunctionCest
      *
      * @dataProvider getVoltAddFunction
      */
-    public function mvcViewEngineVoltCompilerAddFunction(IntegrationTester $I, Example $example)
-    {
-        $I->wantToTest("Mvc\View\Engine\Volt\Compiler - addFunction()");
+    public function testMvcViewEngineVoltCompilerAddFunction(
+        string $name,
+        string $funcName,
+        string $voltName,
+        string $expected
+    ): void {
+        $compiler = new Compiler();
 
-        $name     = $example[0];
-        $funcName = $example[1];
-        $voltName = $example[2];
-        $expected = $example[3];
+        $compiler->addFunction($name, $funcName);
 
-        $volt = new Compiler();
-
-        $volt->addFunction($name, $funcName);
-
-        $I->assertEquals(
-            $expected,
-            $volt->compileString($voltName)
-        );
+        $actual = $compiler->compileString($voltName);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -57,31 +48,26 @@ class AddFunctionCest
      *
      * @dataProvider getVoltAddFunctionClosure
      */
-    public function mvcViewEngineVoltCompilerAddFunctionClosure(IntegrationTester $I, Example $example)
-    {
-        $I->wantToTest("Mvc\View\Engine\Volt\Compiler - addFunction() - closure");
+    public function testMvcViewEngineVoltCompilerAddFunctionClosure(
+        string $name,
+        string $funcName,
+        string $voltName,
+        string $expected
+    ): void {
+        $compiler = new Compiler();
 
-        $name     = $example[0];
-        $funcName = $example[1];
-        $voltName = $example[2];
-        $expected = $example[3];
-
-        $volt = new Compiler();
-
-        $volt->addFunction(
+        $compiler->addFunction(
             $name,
             function ($arguments) use ($funcName) {
                 return $funcName . '(' . $arguments . ')';
             }
         );
 
-        $I->assertEquals(
-            $expected,
-            $volt->compileString($voltName)
-        );
+        $actual = $compiler->compileString($voltName);
+        $this->assertSame($expected, $actual);
     }
 
-    private function getVoltAddFunction(): array
+    public static function getVoltAddFunction(): array
     {
         return [
             [
@@ -100,7 +86,7 @@ class AddFunctionCest
         ];
     }
 
-    private function getVoltAddFunctionClosure(): array
+    public static function getVoltAddFunctionClosure(): array
     {
         return [
             [
