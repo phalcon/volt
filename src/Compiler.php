@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Phalcon\Volt;
 
 use Closure;
+use Exception as BaseException;
 use Phalcon\Di\DiInterface;
 use Phalcon\Mvc\ViewBaseInterface;
 use Phalcon\Volt\Parser\Parser;
@@ -310,6 +311,9 @@ class Compiler
      */
     protected string $prefix = "";
 
+    /**
+     * @param ViewBaseInterface|null $view
+     */
     public function __construct(
         protected ?ViewBaseInterface $view = null
     ) {
@@ -372,6 +376,7 @@ class Compiler
      * @param array $expr
      *
      * @return string
+     * @throws BaseException
      */
     public function attributeReader(array $expr): string
     {
@@ -436,7 +441,7 @@ class Compiler
      * @param bool   $extendsMode
      *
      * @return array|mixed|string|null
-     * @throws \Exception
+     * @throws BaseException
      */
     public function compile(string $templatePath, bool $extendsMode = false)
     {
@@ -473,7 +478,7 @@ class Compiler
         }
 
         if (gettype($compileAlways) !== 'boolean') {
-            throw new \Exception("'always' must be a bool value");
+            throw new BaseException("'always' must be a bool value");
         }
 
         /**
@@ -481,7 +486,7 @@ class Compiler
          */
         $prefix = $options['prefix'] ?? '';
         if (gettype($prefix) !== 'string') {
-            throw new \Exception("'prefix' must be a string");
+            throw new BaseException("'prefix' must be a string");
         }
 
         /**
@@ -520,7 +525,7 @@ class Compiler
         }
 
         if (gettype($compiledSeparator) !== 'string') {
-            throw new \Exception("'separator' must be a string");
+            throw new BaseException("'separator' must be a string");
         }
 
         /**
@@ -541,7 +546,7 @@ class Compiler
         }
 
         if (gettype($compiledExtension) !== 'string') {
-            throw new \Exception("'extension' must be a string");
+            throw new BaseException("'extension' must be a string");
         }
 
         /**
@@ -589,10 +594,10 @@ class Compiler
              * The closure must return a valid path
              */
             if (gettype($compiledTemplatePath) !== 'string') {
-                throw new \Exception("'path' closure didn't return a valid string");
+                throw new BaseException("'path' closure didn't return a valid string");
             }
         } else {
-            throw new \Exception("'path' must be a string or a closure");
+            throw new BaseException("'path' must be a string or a closure");
         }
 
         /**
@@ -627,7 +632,7 @@ class Compiler
                      */
                     $blocksCode = file_get_contents($compiledTemplatePath);
                     if (false === $blocksCode) {
-                        throw new \Exception(
+                        throw new BaseException(
                             "Extends compilation file " . $compiledTemplatePath . " could not be opened"
                         );
                     }
@@ -652,6 +657,7 @@ class Compiler
      * @param bool  $extendsMode
      *
      * @return string
+     * @throws Exception
      */
     public function compileAutoEscape(array $statement, bool $extendsMode): string
     {
@@ -659,7 +665,7 @@ class Compiler
          * A valid option is required
          */
         if (!isset($statement['enable'])) {
-            throw new \Exception('Corrupted statement');
+            throw new BaseException('Corrupted statement');
         }
 
         /**
@@ -674,6 +680,13 @@ class Compiler
         return $compilation;
     }
 
+    /**
+     * @param array $statement
+     * @param bool  $extendsMode
+     *
+     * @return string
+     * @throws Exception
+     */
     public function compileCache(array $statement, bool $extendsMode = false): string
     {
         /**
@@ -683,7 +696,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupt statement: ' . var_export($statement, true));
+            throw new BaseException('Corrupt statement: ' . var_export($statement, true));
         }
 
         /**
@@ -739,6 +752,8 @@ class Compiler
      *
      * @param array $statement
      * @param bool  $extendsMode
+     *
+     * @return string
      */
     public function compileCall(array $statement, bool $extendsMode): string
     {
@@ -752,6 +767,7 @@ class Compiler
      * @param bool  $caseClause
      *
      * @return string
+     * @throws BaseException
      */
     public function compileCase(array $statement, bool $caseClause = true): string
     {
@@ -766,7 +782,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupt statement: ' . var_export($statement, true));
+            throw new BaseException('Corrupt statement: ' . var_export($statement, true));
         }
 
         /**
@@ -781,7 +797,7 @@ class Compiler
      * @param array $statement
      *
      * @return string
-     * @throws \Exception
+     * @throws BaseException
      */
     public function compileDo(array $statement): string
     {
@@ -789,7 +805,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupt statement');
+            throw new BaseException('Corrupt statement');
         }
 
         /**
@@ -811,7 +827,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupt statement: ' . var_export($statement, true));
+            throw new BaseException('Corrupt statement: ' . var_export($statement, true));
         }
 
         /**
@@ -853,7 +869,7 @@ class Compiler
      * @param array $statement
      *
      * @return string
-     * @throws \Exception
+     * @throws BaseException
      */
     public function compileElseIf(array $statement): string
     {
@@ -861,7 +877,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupt statement: ' . var_export($statement, true));
+            throw new BaseException('Corrupt statement: ' . var_export($statement, true));
         }
 
         /**
@@ -885,11 +901,12 @@ class Compiler
      * @param bool   $extendsMode
      *
      * @return string|array
+     * @throws Exception
      */
     public function compileFile(string $path, string $compiledPath, bool $extendsMode = false)
     {
         if ($path === $compiledPath) {
-            throw new \Exception(
+            throw new BaseException(
                 'Template path and compilation template path cannot be the same'
             );
         }
@@ -898,7 +915,7 @@ class Compiler
          * Check if the template does exist
          */
         if (!file_exists($path)) {
-            throw new \Exception('Template file ' . $path . ' does not exist');
+            throw new BaseException('Template file ' . $path . ' does not exist');
         }
 
         /**
@@ -907,7 +924,7 @@ class Compiler
          */
         $viewCode = file_get_contents($path);
         if ($viewCode === false) {
-            throw new \Exception(
+            throw new BaseException(
                 'Template file ' . $path . ' could not be opened'
             );
         }
@@ -929,7 +946,7 @@ class Compiler
          * directly, this respect the open_basedir directive
          */
         if (false === file_put_contents($compiledPath, $finalCompilation)) {
-            throw new \Exception('Volt directory can\'t be written');
+            throw new BaseException('Volt directory can\'t be written');
         }
 
         return $compilation;
@@ -963,6 +980,7 @@ class Compiler
      * @param bool  $extendsMode
      *
      * @return string
+     * @throws Exception
      */
     public function compileForeach(array $statement, bool $extendsMode = false): string
     {
@@ -970,7 +988,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupted statement');
+            throw new BaseException('Corrupted statement');
         }
 
         $forElse     = null;
@@ -1119,7 +1137,7 @@ class Compiler
      * @param bool  $extendsMode
      *
      * @return string
-     * @throws \Exception
+     * @throws BaseException
      */
     public function compileIf(array $statement, bool $extendsMode = false): string
     {
@@ -1127,7 +1145,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupt statement: ' . var_export($statement, true));
+            throw new BaseException('Corrupt statement: ' . var_export($statement, true));
         }
 
         /**
@@ -1157,6 +1175,11 @@ class Compiler
 
     /**
      * Compiles a 'include' statement returning PHP code
+     *
+     * @param array $statement
+     *
+     * @return string
+     * @throws BaseException
      */
     public function compileInclude(array $statement): string
     {
@@ -1165,7 +1188,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['path'])) {
-            throw new \Exception('Corrupted statement');
+            throw new BaseException('Corrupted statement');
         }
 
         /**
@@ -1229,7 +1252,7 @@ class Compiler
      * @param bool  $extendsMode
      *
      * @return string
-     * @throws \Exception
+     * @throws BaseException
      */
     public function compileMacro(array $statement, bool $extendsMode): string
     {
@@ -1237,7 +1260,7 @@ class Compiler
          * A valid name is required
          */
         if (!isset($statement['name'])) {
-            throw new \Exception('Corrupted statement');
+            throw new BaseException('Corrupted statement');
         }
 
         /**
@@ -1245,7 +1268,7 @@ class Compiler
          */
         $name = $statement['name'];
         if (isset($this->macros[$name])) {
-            throw new \Exception('Macro "' . $name . '" is already defined');
+            throw new BaseException('Macro "' . $name . '" is already defined');
         }
 
         /**
@@ -1312,7 +1335,7 @@ class Compiler
      * @param array $statement
      *
      * @return string
-     * @throws \Exception
+     * @throws BaseException
      */
     public function compileReturn(array $statement): string
     {
@@ -1320,7 +1343,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupted statement');
+            throw new BaseException('Corrupted statement');
         }
 
         /**
@@ -1331,6 +1354,11 @@ class Compiler
 
     /**
      * Compiles a "set" statement returning PHP code
+     *
+     * @param array $statement
+     *
+     * @return string
+     * @throws BaseException
      */
     public function compileSet(array $statement): string
     {
@@ -1338,7 +1366,7 @@ class Compiler
          * A valid assignment list is required
          */
         if (!isset($statement['assignments'])) {
-            throw new \Exception('Corrupted statement');
+            throw new BaseException('Corrupted statement');
         }
 
         $compilation = '<?php';
@@ -1393,6 +1421,7 @@ class Compiler
      * @param bool   $extendsMode
      *
      * @return string
+     * @throws Exception
      */
     public function compileSource(string $viewCode, bool $extendsMode = false): string
     {
@@ -1485,6 +1514,7 @@ class Compiler
      * @param bool   $extendsMode
      *
      * @return string
+     * @throws Exception
      */
     public function compileString(string $viewCode, bool $extendsMode = false): string
     {
@@ -1495,6 +1525,12 @@ class Compiler
 
     /**
      * Compiles a 'switch' statement returning PHP code
+     *
+     * @param array $statement
+     * @param bool  $extendsMode
+     *
+     * @return string
+     * @throws Exception
      */
     public function compileSwitch(array $statement, bool $extendsMode = false): string
     {
@@ -1502,7 +1538,7 @@ class Compiler
          * A valid expression is required
          */
         if (!isset($statement['expr'])) {
-            throw new \Exception('Corrupt statement: ' . var_export($statement, true));
+            throw new BaseException('Corrupt statement: ' . var_export($statement, true));
         }
 
         $expr = $statement['expr'];
@@ -1554,6 +1590,12 @@ class Compiler
 
     /**
      * Resolves an expression node in an AST volt tree
+     *
+     * @param array $expr
+     * @param bool  $doubleQuotes
+     *
+     * @return string
+     * @throws Exception
      */
     final public function expression(array $expr, bool $doubleQuotes = false): string
     {
@@ -1854,7 +1896,7 @@ class Compiler
                     break;
 
                 default:
-                    throw new \Exception(
+                    throw new BaseException(
                         'Unknown expression ' . $type . ' in ' . $expr['file'] . ' on line' . $expr['line']
                     );
             }
@@ -1870,8 +1912,8 @@ class Compiler
     /**
      * Fires an event to registered extensions
      *
-     * @param string $name
-     * @param array|null arguments
+     * @param string     $name
+     * @param array|null $arguments
      *
      * @return string|void
      */
@@ -1912,8 +1954,10 @@ class Compiler
      * Resolves function intermediate code into PHP function calls
      *
      * @param array $expr
+     * @param bool  $doubleQuotes
      *
      * @return string
+     * @throws Exception
      */
     public function functionCall(array $expr, bool $doubleQuotes = false): string
     {
@@ -1979,7 +2023,7 @@ class Compiler
                         }
                     }
 
-                    throw new \Exception(
+                    throw new BaseException(
                         'Invalid definition for user function "'
                         . $name . '" in ' . $expr['file'] . ' on line ' . $expr['line']
                     );
@@ -2121,6 +2165,8 @@ class Compiler
 
     /**
      * Returns the path to the last compiled template
+     *
+     * @return string
      */
     public function getCompiledTemplatePath(): string
     {
@@ -2129,6 +2175,8 @@ class Compiler
 
     /**
      * Returns the internal dependency injector
+     *
+     * @return DiInterface
      */
     public function getDI(): DiInterface
     {
@@ -2137,6 +2185,8 @@ class Compiler
 
     /**
      * Returns the list of extensions registered in Volt
+     *
+     * @return array
      */
     public function getExtensions(): array
     {
@@ -2145,6 +2195,8 @@ class Compiler
 
     /**
      * Register the user registered filters
+     *
+     * @return array
      */
     public function getFilters(): array
     {
@@ -2153,6 +2205,8 @@ class Compiler
 
     /**
      * Register the user registered functions
+     *
+     * @return array
      */
     public function getFunctions(): array
     {
@@ -2177,6 +2231,8 @@ class Compiler
 
     /**
      * Returns the compiler options
+     *
+     * @return array
      */
     public function getOptions(): array
     {
@@ -2185,6 +2241,8 @@ class Compiler
 
     /**
      * Returns the path that is currently being compiled
+     *
+     * @return string
      */
     public function getTemplatePath(): string
     {
@@ -2194,6 +2252,9 @@ class Compiler
     /**
      * Return a unique prefix to be used as prefix for compiled variables and
      * contexts
+     *
+     * @return string
+     * @throws BaseException
      */
     public function getUniquePrefix(): string
     {
@@ -2218,7 +2279,7 @@ class Compiler
         }
 
         if (gettype($this->prefix) !== 'string') {
-            throw new \Exception('The unique compilation prefix is invalid');
+            throw new BaseException('The unique compilation prefix is invalid');
         }
 
         return $this->prefix;
@@ -2243,6 +2304,13 @@ class Compiler
         return phvolt_parse_view($viewCode, 'eval code');
     }
 
+    /**
+     * @param array  $test
+     * @param string $left
+     *
+     * @return string
+     * @throws Exception
+     */
     public function resolveTest(array $test, string $left): string
     {
         $type = $test['type'];
@@ -2333,9 +2401,11 @@ class Compiler
      * Sets a single compiler option
      *
      * @param string $option
-     * @param        $value
+     * @param mixed  $value
+     *
+     * @return void
      */
-    public function setOption(string $option, $value): void
+    public function setOption(string $option, mixed $value): void
     {
         $this->options[$option] = $value;
     }
@@ -2344,6 +2414,8 @@ class Compiler
      * Sets the compiler options
      *
      * @param array $options
+     *
+     * @return void
      */
     public function setOptions(array $options): void
     {
@@ -2402,6 +2474,7 @@ class Compiler
      * @param string $left
      *
      * @return string
+     * @throws Exception
      */
     final protected function resolveFilter(array $filter, string $left): string
     {
@@ -2719,6 +2792,7 @@ class Compiler
      * @param bool  $extendsMode
      *
      * @return string
+     * @throws Exception
      */
     final protected function statementList(array $statements, bool $extendsMode = false): string
     {
@@ -2992,9 +3066,10 @@ class Compiler
     /**
      * Compiles a block of statements
      *
-     * @param array statements
+     * @param array $statements
      *
-     * @return string|array
+     * @return mixed|string
+     * @throws Exception
      */
     final protected function statementListOrExtends($statements)
     {
@@ -3048,6 +3123,11 @@ class Compiler
         return filemtime($filename1) >= filemtime($filename2);
     }
 
+    /**
+     * @param array $expression
+     *
+     * @return bool
+     */
     private function isTagFactory(array $expression): bool
     {
         if (isset($expression['name']['left'])) {
@@ -3133,12 +3213,12 @@ class Compiler
     /**
      * @see https://github.com/php/php-src/blob/81623d3a60599d05c83987dec111bf56809f901d/Zend/zend_hash.h#L263
      *
-     * @param $arKey
-     * @param $nKeyLength
+     * @param array $arKey
+     * @param int   $nKeyLength
      *
      * @return int
      */
-    private function zendInlineHashFunc($arKey, $nKeyLength): int
+    private function zendInlineHashFunc(array $arKey, int $nKeyLength): int
     {
         $hash = 5381;
         $i    = 0;
