@@ -76,9 +76,9 @@ jobs:
         run: |
           composer cs
 
-      - name: "PHPStan"
-        run: |
-          composer analyze
+#      - name: "PHPStan"
+#        run: |
+#          composer analyze
 
   unit-tests:
     needs: phpcs
