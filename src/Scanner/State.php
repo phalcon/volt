@@ -18,52 +18,31 @@ use Phalcon\Volt\Compiler;
 class State
 {
     public mixed $activeToken = null;
-
-    protected int $mode = Compiler::PHVOLT_MODE_RAW;
-
-    protected ?string $start = null;
-
-    protected int $cursor = 0;
-
-    protected ?string $end = null;
-
-    public mixed $marker = null;
-
-    public int $startLength;
-
-    protected int $activeLine = 1;
-
-    protected string $activeFile = 'eval code';
-
-    public int $statementPosition = 0;
-
-    public int $extendsMode = 0;
-
     public int $blockLevel = 0;
-
-    public int $macroLevel = 0;
-
-    public string $rawBuffer;
-
-    public int $rawBufferCursor = 0;
-
-    public int $rawBufferSize = Compiler::PHVOLT_RAW_BUFFER_SIZE;
-
-    public int $oldIfLevel = 0;
-
-    public int $ifLevel = 0;
-
+    public int $extendsMode = 0;
     public int $forLevel = 0;
-
-    public int $switchLevel = 0;
-
-    public bool $whitespaceControl = false;
-
     public int $forcedRawState = 0;
+    public int $ifLevel = 0;
+    public int $macroLevel = 0;
+    public mixed $marker = null;
+    public int $oldIfLevel = 0;
+    public string $rawBuffer;
+    public int $rawBufferCursor = 0;
+    public int $rawBufferSize = Compiler::PHVOLT_RAW_BUFFER_SIZE;
+    public int $startLength;
+    public int $statementPosition = 0;
+    public int $switchLevel = 0;
+    public bool $whitespaceControl = false;
+    protected string $activeFile = 'eval code';
+    protected int $activeLine = 1;
+    protected int $cursor = 0;
+    protected ?string $end = null;
+    protected int $mode = Compiler::PHVOLT_MODE_RAW;
+    protected ?string $start = null;
 
     public function __construct(string $buffer)
     {
-        $this->rawBuffer = $buffer;
+        $this->rawBuffer   = $buffer;
         $this->startLength = mb_strlen($buffer);
         if ($this->startLength > 0) {
             $this->setStart($buffer[0]);
@@ -71,21 +50,21 @@ class State
         }
     }
 
-    public function getRawBuffer(): string
+    public function extendsMode(int $extendsMode): self
     {
-        return $this->rawBuffer;
-    }
-
-    public function getCursor(): int
-    {
-        return $this->cursor;
-    }
-
-    public function setActiveToken(mixed $activeToken): self
-    {
-        $this->activeToken = $activeToken;
+        $this->extendsMode = $extendsMode;
 
         return $this;
+    }
+
+    public function getActiveFile(): string
+    {
+        return $this->activeFile;
+    }
+
+    public function getActiveLine(): int
+    {
+        return $this->activeLine;
     }
 
     public function getActiveToken(): mixed
@@ -93,60 +72,14 @@ class State
         return $this->activeToken;
     }
 
-    public function setMode(int $mode): self
+    public function getCursor(): int
     {
-        $this->mode = $mode;
-
-        return $this;
+        return $this->cursor;
     }
 
-    public function getMode(): int
+    public function getIfLevel(): int
     {
-        return $this->mode;
-    }
-
-    public function setStart(?string $start): self
-    {
-        $this->start = $start;
-
-        return $this;
-    }
-
-    public function getStart(): ?string
-    {
-        return $this->start;
-    }
-
-    public function getPrevious(int $decrement = 1): ?string
-    {
-        return $this->rawBuffer[$this->cursor - $decrement] ?? null;
-    }
-
-    public function getNext(int $increment = 1): ?string
-    {
-        return $this->rawBuffer[$this->cursor + $increment] ?? null;
-    }
-
-    public function incrementStart(int $value = 1): self
-    {
-        $this->cursor += $value;
-        $this->setStart($this->rawBuffer[$this->cursor] ?? null);
-
-        return $this;
-    }
-
-    public function setEnd(?string $end): self
-    {
-        $this->end = $end;
-
-        return $this;
-    }
-
-    public function setMarker(mixed $marker): self
-    {
-        $this->marker = $marker;
-
-        return $this;
+        return $this->ifLevel;
     }
 
     public function getMarker(): mixed
@@ -154,11 +87,34 @@ class State
         return $this->marker;
     }
 
-    public function setStartLength(int $startLength): self
+    public function getMode(): int
     {
-        $this->startLength = $startLength;
+        return $this->mode;
+    }
 
-        return $this;
+    public function getNext(int $increment = 1): ?string
+    {
+        return $this->rawBuffer[$this->cursor + $increment] ?? null;
+    }
+
+    public function getPrevious(int $decrement = 1): ?string
+    {
+        return $this->rawBuffer[$this->cursor - $decrement] ?? null;
+    }
+
+    public function getRawBuffer(): string
+    {
+        return $this->rawBuffer;
+    }
+
+    public function getRawBufferCursor(): int
+    {
+        return $this->rawBufferCursor;
+    }
+
+    public function getStart(): ?string
+    {
+        return $this->start;
     }
 
     public function getStartLength(): int
@@ -166,16 +122,29 @@ class State
         return $this->startLength;
     }
 
-    public function setActiveLine(int $activeLine): self
+    public function getWhitespaceControl(): bool
     {
-        $this->activeLine = $activeLine;
-
-        return $this;
+        return $this->whitespaceControl;
     }
 
     public function incrementActiveLine(): self
     {
         $this->activeLine++;
+
+        return $this;
+    }
+
+    public function incrementRawBufferCursor(): self
+    {
+        $this->rawBufferCursor++;
+
+        return $this;
+    }
+
+    public function incrementStart(int $value = 1): self
+    {
+        $this->cursor += $value;
+        $this->setStart($this->rawBuffer[$this->cursor] ?? null);
 
         return $this;
     }
@@ -187,16 +156,16 @@ class State
         return $this;
     }
 
-    public function setStatementPosition(int $statementPosition): self
+    public function setActiveLine(int $activeLine): self
     {
-        $this->statementPosition = $statementPosition;
+        $this->activeLine = $activeLine;
 
         return $this;
     }
 
-    public function extendsMode(int $extendsMode): self
+    public function setActiveToken(mixed $activeToken): self
     {
-        $this->extendsMode = $extendsMode;
+        $this->activeToken = $activeToken;
 
         return $this;
     }
@@ -208,9 +177,58 @@ class State
         return $this;
     }
 
+    public function setEnd(?string $end): self
+    {
+        $this->end = $end;
+
+        return $this;
+    }
+
+    public function setForLevel(int $forLevel): self
+    {
+        $this->forLevel = $forLevel;
+
+        return $this;
+    }
+
+    public function setForcedRawState(int $forcedRawState): self
+    {
+        $this->forcedRawState = $forcedRawState;
+
+        return $this;
+    }
+
+    public function setIfLevel(int $ifLevel): self
+    {
+        $this->ifLevel = $ifLevel;
+
+        return $this;
+    }
+
     public function setMacroLevel(int $macroLevel): self
     {
         $this->macroLevel = $macroLevel;
+
+        return $this;
+    }
+
+    public function setMarker(mixed $marker): self
+    {
+        $this->marker = $marker;
+
+        return $this;
+    }
+
+    public function setMode(int $mode): self
+    {
+        $this->mode = $mode;
+
+        return $this;
+    }
+
+    public function setOldIfLevel(int $oldIfLevel): self
+    {
+        $this->oldIfLevel = $oldIfLevel;
 
         return $this;
     }
@@ -229,18 +247,6 @@ class State
         return $this;
     }
 
-    public function incrementRawBufferCursor(): self
-    {
-        $this->rawBufferCursor++;
-
-        return $this;
-    }
-
-    public function getRawBufferCursor(): int
-    {
-        return $this->rawBufferCursor;
-    }
-
     public function setRawBufferSize(int $rawBufferSize): self
     {
         $this->rawBufferSize = $rawBufferSize;
@@ -248,23 +254,23 @@ class State
         return $this;
     }
 
-    public function setOldIfLevel(int $oldIfLevel): self
+    public function setStart(?string $start): self
     {
-        $this->oldIfLevel = $oldIfLevel;
+        $this->start = $start;
 
         return $this;
     }
 
-    public function setIfLevel(int $ifLevel): self
+    public function setStartLength(int $startLength): self
     {
-        $this->ifLevel = $ifLevel;
+        $this->startLength = $startLength;
 
         return $this;
     }
 
-    public function setForLevel(int $forLevel): self
+    public function setStatementPosition(int $statementPosition): self
     {
-        $this->forLevel = $forLevel;
+        $this->statementPosition = $statementPosition;
 
         return $this;
     }
@@ -281,32 +287,5 @@ class State
         $this->whitespaceControl = $whitespaceControl;
 
         return $this;
-    }
-
-    public function getWhitespaceControl(): bool
-    {
-        return $this->whitespaceControl;
-    }
-
-    public function setForcedRawState(int $forcedRawState): self
-    {
-        $this->forcedRawState = $forcedRawState;
-
-        return $this;
-    }
-
-    public function getActiveFile(): string
-    {
-        return $this->activeFile;
-    }
-
-    public function getActiveLine(): int
-    {
-        return $this->activeLine;
-    }
-
-    public function getIfLevel(): int
-    {
-        return $this->ifLevel;
     }
 }

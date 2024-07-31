@@ -2,3 +2,4 @@ composer.phar
 /vendor/
 /lemon-php/
 log.txt
+tests/support/output/
