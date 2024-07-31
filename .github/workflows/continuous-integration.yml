@@ -132,7 +132,7 @@ jobs:
       - name: "Run Unit Tests"
         if: always()
         run: |
-          vendor/bin/phpunit --coverage-clover ./tests/support/coverage.xml
+          composer tests-coverage
 
       - name: "Upload coverage file artifact"
         uses: "actions/upload-artifact@v4"

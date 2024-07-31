@@ -65,6 +65,7 @@
         "analyze": "vendor/bin/phpstan analyse -c phpstan.neon",
         "cs": "vendor/bin/phpcs --standard=phpcs.xml",
         "cs-fix": "vendor/bin/phpcbf --standard=phpcs.xml",
-        "test": "vendor/bin/phpunit"
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-clover ./tests/support/coverage.xml"
     }
 }
