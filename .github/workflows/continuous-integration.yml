@@ -132,7 +132,7 @@ jobs:
       - name: "Run Unit Tests"
         if: always()
         run: |
-          composer tests-coverage
+          composer test-coverage
 
       - name: "Upload coverage file artifact"
         uses: "actions/upload-artifact@v4"
