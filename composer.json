@@ -23,8 +23,7 @@
     ],
     "require": {
         "php": ">=8.0",
-        "ext-mbstring": "*",
-        "pds/skeleton": "^1.0"
+        "ext-mbstring": "*"
     },
     "require-dev": {
         "phalcon/ide-stubs": "^5.8",

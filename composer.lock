@@ -4,44 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fce45b1949a6b0d78fe0e63306350c8e",
-    "packages": [
-        {
-            "name": "pds/skeleton",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-pds/skeleton.git",
-                "reference": "95e476e5d629eadacbd721c5a9553e537514a231"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-pds/skeleton/zipball/95e476e5d629eadacbd721c5a9553e537514a231",
-                "reference": "95e476e5d629eadacbd721c5a9553e537514a231",
-                "shasum": ""
-            },
-            "bin": [
-                "bin/pds-skeleton"
-            ],
-            "type": "standard",
-            "autoload": {
-                "psr-4": {
-                    "Pds\\Skeleton\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "CC-BY-SA-4.0"
-            ],
-            "description": "Standard for PHP package skeletons.",
-            "homepage": "https://github.com/php-pds/skeleton",
-            "support": {
-                "issues": "https://github.com/php-pds/skeleton/issues",
-                "source": "https://github.com/php-pds/skeleton/tree/1.x"
-            },
-            "time": "2017-01-25T23:30:41+00:00"
-        }
-    ],
+    "content-hash": "7f13dd46dd0f27926c57055fa4347555",
+    "packages": [],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
