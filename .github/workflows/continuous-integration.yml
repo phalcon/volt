@@ -33,7 +33,7 @@ env:
   TOOLS_DIR: 'C:\tools'
 
   # PHP extensions required by Composer
-  EXTENSIONS: mbstring, phalcon
+  EXTENSIONS: mbstring
 
 permissions: { }
 jobs:
