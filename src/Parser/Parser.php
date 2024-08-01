@@ -18,8 +18,8 @@ use Phalcon\Volt\Scanner\Opcode;
 use Phalcon\Volt\Scanner\Scanner;
 use Phalcon\Volt\Scanner\State;
 use Phalcon\Volt\Scanner\Token;
-
 use phvolt_Parser;
+
 use function fopen;
 use function sprintf;
 use function strlen;
