@@ -19,6 +19,7 @@ use Phalcon\Volt\Scanner\Scanner;
 use Phalcon\Volt\Scanner\State;
 use Phalcon\Volt\Scanner\Token;
 
+use phvolt_Parser;
 use function fopen;
 use function sprintf;
 use function strlen;
@@ -49,7 +50,7 @@ class Parser
         $parserStatus = new Status($state);
         $scanner = new Scanner($parserStatus->getState());
 
-        $parser = new \phvolt_Parser($parserStatus);
+        $parser = new phvolt_Parser($parserStatus);
         $parser->phvolt_Trace($debug);
 
         while (0 <= $scannerStatus = $scanner->scanForToken()) {
@@ -627,14 +628,7 @@ class Parser
         $parserStatus->setSyntaxError(substr($str, 0, $length));
     }
 
-    /**
-     * @param \phvolt_Parser $parser
-     * @param int            $opcode
-     * @param int            $parserCode
-     *
-     * @return void
-     */
-    private function phvoltParseWithToken(\phvolt_Parser $parser, int $opcode, int $parserCode): void
+    private function phvoltParseWithToken(phvolt_Parser $parser, int $opcode, int $parserCode): void
     {
         $newToken = new Token();
         $newToken->setOpcode($opcode);
