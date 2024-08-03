@@ -21,13 +21,8 @@ class Status
     public const PHVOLT_PARSING_FAILED = 0;
     public const PHVOLT_PARSING_OK     = 1;
 
-    /**
-     * @var string|null
-     */
     protected ?string $syntaxError = null;
-    /**
-     * @var Token|null
-     */
+
     protected ?Token $token = null;
 
     public function __construct(
@@ -36,43 +31,26 @@ class Status
     ) {
     }
 
-    /**
-     * @return State
-     */
     public function getState(): State
     {
         return $this->scannerState;
     }
 
-    /**
-     * @return int
-     */
     public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSyntaxError(): ?string
     {
         return $this->syntaxError;
     }
 
-    /**
-     * @return Token|null
-     */
     public function getToken(): ?Token
     {
         return $this->token;
     }
 
-    /**
-     * @param int $status
-     *
-     * @return $this
-     */
     public function setStatus(int $status): self
     {
         $this->status = $status;
@@ -80,11 +58,6 @@ class Status
         return $this;
     }
 
-    /**
-     * @param string $syntaxError
-     *
-     * @return $this
-     */
     public function setSyntaxError(string $syntaxError): self
     {
         $this->syntaxError = $syntaxError;
@@ -92,11 +65,6 @@ class Status
         return $this;
     }
 
-    /**
-     * @param Token $token
-     *
-     * @return $this
-     */
     public function setToken(Token $token): self
     {
         $this->token = $token;
