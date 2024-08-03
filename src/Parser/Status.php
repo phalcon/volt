@@ -20,10 +20,7 @@ class Status
 {
     public const PHVOLT_PARSING_FAILED = 0;
     public const PHVOLT_PARSING_OK     = 1;
-    /**
-     * @var null
-     */
-    protected $ret = null;
+
     /**
      * @var string|null
      */
