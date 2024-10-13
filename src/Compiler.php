@@ -763,10 +763,6 @@ class Compiler
     /**
      * Compiles a "case"/"default" clause returning PHP code
      *
-     * @param array $statement
-     * @param bool  $caseClause
-     *
-     * @return string
      * @throws BaseException
      */
     public function compileCase(array $statement, bool $caseClause = true): string
@@ -794,9 +790,6 @@ class Compiler
     /**
      * Compiles a "do" statement returning PHP code
      *
-     * @param array $statement
-     *
-     * @return string
      * @throws BaseException
      */
     public function compileDo(array $statement): string
@@ -816,10 +809,6 @@ class Compiler
 
     /**
      * Compiles a {% raw %}`{{` `}}`{% endraw %} statement returning PHP code
-     *
-     * @param array $statement
-     *
-     * @return string
      */
     public function compileEcho(array $statement): string
     {
@@ -976,10 +965,6 @@ class Compiler
     /**
      * Compiles a "foreach" intermediate code representation into plain PHP code
      *
-     * @param array $statement
-     * @param bool  $extendsMode
-     *
-     * @return string
      * @throws Exception
      */
     public function compileForeach(array $statement, bool $extendsMode = false): string
@@ -1133,10 +1118,6 @@ class Compiler
     /**
      * Compiles a 'if' statement returning PHP code
      *
-     * @param array $statement
-     * @param bool  $extendsMode
-     *
-     * @return string
      * @throws BaseException
      */
     public function compileIf(array $statement, bool $extendsMode = false): string
@@ -1158,7 +1139,7 @@ class Compiler
             );
 
         /**
-         * Check for a "else"/"elseif" block
+         * Check for an "else"/"elseif" block
          */
         if (!empty($statement['false_statements'])) {
             /**
@@ -1174,11 +1155,8 @@ class Compiler
     }
 
     /**
-     * Compiles a 'include' statement returning PHP code
+     * Compiles an 'include' statement returning PHP code
      *
-     * @param array $statement
-     *
-     * @return string
      * @throws BaseException
      */
     public function compileInclude(array $statement): string
@@ -1248,10 +1226,6 @@ class Compiler
     /**
      * Compiles macros
      *
-     * @param array $statement
-     * @param bool  $extendsMode
-     *
-     * @return string
      * @throws BaseException
      */
     public function compileMacro(array $statement, bool $extendsMode): string
@@ -1332,9 +1306,6 @@ class Compiler
     /**
      * Compiles a "return" statement returning PHP code
      *
-     * @param array $statement
-     *
-     * @return string
      * @throws BaseException
      */
     public function compileReturn(array $statement): string
@@ -1355,9 +1326,6 @@ class Compiler
     /**
      * Compiles a "set" statement returning PHP code
      *
-     * @param array $statement
-     *
-     * @return string
      * @throws BaseException
      */
     public function compileSet(array $statement): string
@@ -1417,10 +1385,6 @@ class Compiler
     /**
      * Compiles a Volt source code returning a PHP plain version
      *
-     * @param string $viewCode
-     * @param bool   $extendsMode
-     *
-     * @return string
      * @throws Exception
      */
     public function compileSource(string $viewCode, bool $extendsMode = false): string
@@ -1510,10 +1474,6 @@ class Compiler
      * echo $compiler->compileString({% raw %}'{{ "hello world" }}'{% endraw %});
      *```
      *
-     * @param string $viewCode
-     * @param bool   $extendsMode
-     *
-     * @return string
      * @throws Exception
      */
     public function compileString(string $viewCode, bool $extendsMode = false): string
@@ -1526,10 +1486,6 @@ class Compiler
     /**
      * Compiles a 'switch' statement returning PHP code
      *
-     * @param array $statement
-     * @param bool  $extendsMode
-     *
-     * @return string
      * @throws Exception
      */
     public function compileSwitch(array $statement, bool $extendsMode = false): string
@@ -1591,10 +1547,6 @@ class Compiler
     /**
      * Resolves an expression node in an AST volt tree
      *
-     * @param array $expr
-     * @param bool  $doubleQuotes
-     *
-     * @return string
      * @throws Exception
      */
     final public function expression(array $expr, bool $doubleQuotes = false): string
@@ -1953,10 +1905,6 @@ class Compiler
     /**
      * Resolves function intermediate code into PHP function calls
      *
-     * @param array $expr
-     * @param bool  $doubleQuotes
-     *
-     * @return string
      * @throws Exception
      */
     public function functionCall(array $expr, bool $doubleQuotes = false): string
@@ -2165,8 +2113,6 @@ class Compiler
 
     /**
      * Returns the path to the last compiled template
-     *
-     * @return string
      */
     public function getCompiledTemplatePath(): string
     {
@@ -2175,8 +2121,6 @@ class Compiler
 
     /**
      * Returns the internal dependency injector
-     *
-     * @return DiInterface
      */
     public function getDI(): DiInterface
     {
@@ -2185,8 +2129,6 @@ class Compiler
 
     /**
      * Returns the list of extensions registered in Volt
-     *
-     * @return array
      */
     public function getExtensions(): array
     {
@@ -2195,8 +2137,6 @@ class Compiler
 
     /**
      * Register the user registered filters
-     *
-     * @return array
      */
     public function getFilters(): array
     {
@@ -2205,8 +2145,6 @@ class Compiler
 
     /**
      * Register the user registered functions
-     *
-     * @return array
      */
     public function getFunctions(): array
     {
@@ -2215,10 +2153,6 @@ class Compiler
 
     /**
      * Returns a compiler's option
-     *
-     * @param string $option
-     *
-     * @return string
      */
     public function getOption(string $option): ?string
     {
@@ -2231,8 +2165,6 @@ class Compiler
 
     /**
      * Returns the compiler options
-     *
-     * @return array
      */
     public function getOptions(): array
     {
@@ -2241,8 +2173,6 @@ class Compiler
 
     /**
      * Returns the path that is currently being compiled
-     *
-     * @return string
      */
     public function getTemplatePath(): string
     {
@@ -2253,7 +2183,6 @@ class Compiler
      * Return a unique prefix to be used as prefix for compiled variables and
      * contexts
      *
-     * @return string
      * @throws BaseException
      */
     public function getUniquePrefix(): string
@@ -2293,10 +2222,6 @@ class Compiler
      *     $compiler->parse("{% raw %}{{ 3 + 2 }}{% endraw %}")
      * );
      *```
-     *
-     * @param string $viewCode
-     *
-     * @return array
      */
     public function parse(string $viewCode): array
     {
@@ -2305,10 +2230,6 @@ class Compiler
     }
 
     /**
-     * @param array  $test
-     * @param string $left
-     *
-     * @return string
      * @throws Exception
      */
     public function resolveTest(array $test, string $left): string
@@ -2399,11 +2320,6 @@ class Compiler
 
     /**
      * Sets a single compiler option
-     *
-     * @param string $option
-     * @param mixed  $value
-     *
-     * @return void
      */
     public function setOption(string $option, mixed $value): void
     {
@@ -2412,10 +2328,6 @@ class Compiler
 
     /**
      * Sets the compiler options
-     *
-     * @param array $options
-     *
-     * @return void
      */
     public function setOptions(array $options): void
     {
@@ -2424,10 +2336,6 @@ class Compiler
 
     /**
      * Set a unique prefix to be used as prefix for compiled variables
-     *
-     * @param string $prefix
-     *
-     * @return Compiler
      */
     public function setUniquePrefix(string $prefix): Compiler
     {
@@ -2438,10 +2346,6 @@ class Compiler
 
     /**
      * Gets the final path with VIEW
-     *
-     * @param string $path
-     *
-     * @return string
      */
     protected function getFinalPath(string $path): string
     {
@@ -2470,10 +2374,6 @@ class Compiler
     /**
      * Resolves filter intermediate code into PHP function calls
      *
-     * @param array  $filter
-     * @param string $left
-     *
-     * @return string
      * @throws Exception
      */
     final protected function resolveFilter(array $filter, string $left): string
@@ -2788,10 +2688,6 @@ class Compiler
     /**
      * Traverses a statement list compiling each of its nodes
      *
-     * @param array $statements
-     * @param bool  $extendsMode
-     *
-     * @return string
      * @throws Exception
      */
     final protected function statementList(array $statements, bool $extendsMode = false): string
@@ -3112,22 +3008,12 @@ class Compiler
     /**
      * Compare modification timestamps to check if the $filename1
      * needs to be recompiled
-     *
-     * @param string $filename1
-     * @param string $filename2
-     *
-     * @return bool
      */
     private function compareMtime(string $filename1, string $filename2): bool
     {
         return filemtime($filename1) >= filemtime($filename2);
     }
 
-    /**
-     * @param array $expression
-     *
-     * @return bool
-     */
     private function isTagFactory(array $expression): bool
     {
         if (isset($expression['name']['left'])) {
