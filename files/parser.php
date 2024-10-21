@@ -2276,10 +2276,8 @@ static const struct {
      *
      * @param int $yyruleno Number of the rule by which to reduce
      */
-    private function yy_reduce($yyruleno)
+    private function yy_reduce(int $yyruleno): void
     {
-        $yygotominor = [];        /* The LHS of the rule reduced */
-
         /* The top of the parser's stack */
         $yymsp = $this->yystack[$this->yyidx];
         if ($this->yyTraceFILE && isset(self::$yyRuleName[$yyruleno])) {
@@ -2322,20 +2320,20 @@ static const struct {
             case 24:
             case 25:
             case 144:
-                $yygotominor = $yymsp->minor;
+                $this->output = $yymsp->minor;
                 break;
             case 2:
-                phvolt_ret_zval_list($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
+                phvolt_ret_zval_list($this->output, $this->yystack[$this->yyidx + -1]->minor, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 3:
             case 43:
             case 55:
             case 141:
             case 148:
-                phvolt_ret_zval_list($yygotominor, NULL, $this->yystack[$this->yyidx + 0]->minor);
+                phvolt_ret_zval_list($this->output, NULL, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 26:
-                phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, NULL, $this->status->getState());
+                phvolt_ret_if_statement($this->output, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, NULL, $this->status->getState());
                 $this->yy_destructor(1, $this->yystack[$this->yyidx + -7]->minor);
                 $this->yy_destructor(31, $this->yystack[$this->yyidx + -6]->minor);
                 $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
@@ -2344,7 +2342,7 @@ static const struct {
                 $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 27:
-                phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -4]->minor, NULL, NULL, $this->status->getState());
+                phvolt_ret_if_statement($this->output, $this->yystack[$this->yyidx + -4]->minor, NULL, NULL, $this->status->getState());
 
                 $this->yy_destructor(1, $this->yystack[$this->yyidx + -6]->minor);
                 $this->yy_destructor(31, $this->yystack[$this->yyidx + -5]->minor);
@@ -2354,7 +2352,7 @@ static const struct {
                 $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 28:
-                phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -9]->minor, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+                phvolt_ret_if_statement($this->output, $this->yystack[$this->yyidx + -9]->minor, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
 
                 $this->yy_destructor(1, $this->yystack[$this->yyidx + -11]->minor);
                 $this->yy_destructor(31, $this->yystack[$this->yyidx + -10]->minor);
@@ -2367,7 +2365,7 @@ static const struct {
                 $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 29:
-                phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -8]->minor, $this->yystack[$this->yyidx + -6]->minor, NULL, $this->status->getState());
+                phvolt_ret_if_statement($this->output, $this->yystack[$this->yyidx + -8]->minor, $this->yystack[$this->yyidx + -6]->minor, NULL, $this->status->getState());
 
                 $this->yy_destructor(1, $this->yystack[$this->yyidx + -10]->minor);
                 $this->yy_destructor(31, $this->yystack[$this->yyidx + -9]->minor);
@@ -2380,7 +2378,7 @@ static const struct {
                 $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 30:
-                phvolt_ret_if_statement($yygotominor, $this->yystack[$this->yyidx + -7]->minor, NULL, NULL, $this->status->getState());
+                phvolt_ret_if_statement($this->output, $this->yystack[$this->yyidx + -7]->minor, NULL, NULL, $this->status->getState());
 
                 $this->yy_destructor(1, $this->yystack[$this->yyidx + -9]->minor);
                 $this->yy_destructor(31, $this->yystack[$this->yyidx + -8]->minor);
@@ -2393,21 +2391,21 @@ static const struct {
                 $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 31:
-                phvolt_ret_elseif_statement($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
+                phvolt_ret_elseif_statement($this->output, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
 
                 $this->yy_destructor(1, $this->yystack[$this->yyidx + -3]->minor);
                 $this->yy_destructor(35, $this->yystack[$this->yyidx + -2]->minor);
                 $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 32:
-                phvolt_ret_elsefor_statement($yygotominor, $this->status->getState());
+                phvolt_ret_elsefor_statement($this->output, $this->status->getState());
 
                 $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
                 $this->yy_destructor(36, $this->yystack[$this->yyidx + -1]->minor);
                 $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 33:
-                phvolt_ret_for_statement($yygotominor, $this->yystack[$this->yyidx + -7]->minor, NULL, $this->yystack[$this->yyidx + -5]->minor, NULL, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+                phvolt_ret_for_statement($this->output, $this->yystack[$this->yyidx + -7]->minor, NULL, $this->yystack[$this->yyidx + -5]->minor, NULL, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
 
                 $this->yy_destructor(1, $this->yystack[$this->yyidx + -9]->minor);
                 $this->yy_destructor(37, $this->yystack[$this->yyidx + -8]->minor);
@@ -2418,7 +2416,7 @@ static const struct {
                 $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 34:
-                phvolt_ret_for_statement($yygotominor, $this->yystack[$this->yyidx + -9]->minor, NULL, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+                phvolt_ret_for_statement($this->output, $this->yystack[$this->yyidx + -9]->minor, NULL, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
 
                 $this->yy_destructor(1, $this->yystack[$this->yyidx + -11]->minor);
                 $this->yy_destructor(37, $this->yystack[$this->yyidx + -10]->minor);
@@ -2430,7 +2428,7 @@ static const struct {
                 $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 35:
-                phvolt_ret_for_statement($yygotominor, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -9]->minor, $this->yystack[$this->yyidx + -5]->minor, NULL, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+                phvolt_ret_for_statement($this->output, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -9]->minor, $this->yystack[$this->yyidx + -5]->minor, NULL, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
 
                 $this->yy_destructor(1, $this->yystack[$this->yyidx + -11]->minor);
                 $this->yy_destructor(37, $this->yystack[$this->yyidx + -10]->minor);
@@ -2442,7 +2440,7 @@ static const struct {
                 $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 36:
-                phvolt_ret_for_statement($yygotominor, $this->yystack[$this->yyidx + -9]->minor, $this->yystack[$this->yyidx + -11]->minor, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+                phvolt_ret_for_statement($this->output, $this->yystack[$this->yyidx + -9]->minor, $this->yystack[$this->yyidx + -11]->minor, $this->yystack[$this->yyidx + -7]->minor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
 
                 $this->yy_destructor(1, $this->yystack[$this->yyidx + -13]->minor);
                 $this->yy_destructor(37, $this->yystack[$this->yyidx + -12]->minor);
@@ -2455,7 +2453,7 @@ static const struct {
                 $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 37:
-                phvolt_ret_switch_statement($yygotominor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+                phvolt_ret_switch_statement($this->output, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
 
                 $this->yy_destructor(1, $this->yystack[$this->yyidx + -7]->minor);
                 $this->yy_destructor(40, $this->yystack[$this->yyidx + -6]->minor);
@@ -2513,7 +2511,7 @@ static const struct {
             case 147:
 #line 350 "parser.php.lemon"
                 {
-                    phvolt_ret_zval_list($yygotominor, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
+                    phvolt_ret_zval_list($this->output, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor);
 
                     $this->yy_destructor(2, $this->yystack[$this->yyidx + -1]->minor);
                 }
@@ -2563,7 +2561,7 @@ static const struct {
             case 73:
             case 139:
             case 151:
-                phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_IDENTIFIER, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+                phvolt_ret_literal_zval($this->output, Compiler::PHVOLT_T_IDENTIFIER, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
 
                 break;
             case 50:
@@ -2636,7 +2634,7 @@ static const struct {
             case 152:
 #line 414 "parser.php.lemon"
                 {
-                    phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_INTEGER, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+                    phvolt_ret_literal_zval($this->output, Compiler::PHVOLT_T_INTEGER, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
 
                 }
 #line 1952 "parser.php.php"
@@ -2645,20 +2643,20 @@ static const struct {
             case 153:
 #line 418 "parser.php.lemon"
                 {
-                    phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_STRING, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+                    phvolt_ret_literal_zval($this->output, Compiler::PHVOLT_T_STRING, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
 
                 }
 #line 1960 "parser.php.php"
                 break;
             case 60:
             case 154:
-            phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_DOUBLE, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+            phvolt_ret_literal_zval($this->output, Compiler::PHVOLT_T_DOUBLE, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                 break;
             case 61:
             case 155:
 #line 426 "parser.php.lemon"
                 {
-                    phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_NULL, NULL, $this->status->getState());
+                    phvolt_ret_literal_zval($this->output, Compiler::PHVOLT_T_NULL, NULL, $this->status->getState());
 
                     $this->yy_destructor(57, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -2677,7 +2675,7 @@ static const struct {
             case 157:
 #line 434 "parser.php.lemon"
                 {
-                    phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_TRUE, NULL, $this->status->getState());
+                    phvolt_ret_literal_zval($this->output, Compiler::PHVOLT_T_TRUE, NULL, $this->status->getState());
 
                     $this->yy_destructor(59, $this->yystack[$this->yyidx + 0]->minor);
                 }
@@ -2686,7 +2684,7 @@ static const struct {
             case 64:
 #line 438 "parser.php.lemon"
                 {
-                    phvolt_ret_macro_call_statement($yygotominor, $this->yystack[$this->yyidx + -8]->minor, $this->yystack[$this->yyidx + -6]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+                    phvolt_ret_macro_call_statement($this->output, $this->yystack[$this->yyidx + -8]->minor, $this->yystack[$this->yyidx + -6]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
 
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -10]->minor);
                     $this->yy_destructor(60, $this->yystack[$this->yyidx + -9]->minor);
@@ -2702,7 +2700,7 @@ static const struct {
             case 65:
 #line 442 "parser.php.lemon"
                 {
-                    phvolt_ret_macro_call_statement($yygotominor, $this->yystack[$this->yyidx + -6]->minor, NULL, NULL, $this->status->getState());
+                    phvolt_ret_macro_call_statement($this->output, $this->yystack[$this->yyidx + -6]->minor, NULL, NULL, $this->status->getState());
 
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -8]->minor);
                     $this->yy_destructor(60, $this->yystack[$this->yyidx + -7]->minor);
@@ -2725,7 +2723,7 @@ static const struct {
 #line 2034 "parser.php.php"
                 break;
             case 67:
-                phvolt_ret_echo_statement($yygotominor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
+                phvolt_ret_echo_statement($this->output, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
                 $this->yy_destructor(62, $this->yystack[$this->yyidx + -2]->minor);
                 $this->yy_destructor(63, $this->yystack[$this->yyidx + 0]->minor);
                 break;
@@ -2894,7 +2892,7 @@ static const struct {
 #line 2207 "parser.php.php"
                 break;
             case 84:
-                phvolt_ret_literal_zval($yygotominor, Compiler::PHVOLT_T_RAW_FRAGMENT, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+                phvolt_ret_literal_zval($this->output, Compiler::PHVOLT_T_RAW_FRAGMENT, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                 break;
             case 85:
 #line 522 "parser.php.lemon"
@@ -2997,7 +2995,7 @@ static const struct {
             case 97:
 #line 570 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($yygotominor, Compiler::PHVOLT_T_PIPE, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
+                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_PIPE, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(25, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2320 "parser.php.php"
@@ -3337,7 +3335,7 @@ static const struct {
             case 150:
 #line 750 "parser.php.lemon"
                 {
-                    phvolt_ret_named_item($yygotominor, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+                    phvolt_ret_named_item($this->output, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
 
                     $this->yy_destructor(4, $this->yystack[$this->yyidx + -1]->minor);
                 }
@@ -3345,16 +3343,16 @@ static const struct {
                 break;
             case 143:
             case 149:
-                phvolt_ret_named_item($yygotominor, NULL, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+                phvolt_ret_named_item($this->output, NULL, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                 break;
             case 145:
-                phvolt_ret_func_call($yygotominor, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
+                phvolt_ret_func_call($this->output, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
 
                 $this->yy_destructor(29, $this->yystack[$this->yyidx + -2]->minor);
                 $this->yy_destructor(52, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 146:
-                phvolt_ret_func_call($yygotominor, $this->yystack[$this->yyidx + -2]->minor, NULL, $this->status->getState());
+                phvolt_ret_func_call($this->output, $this->yystack[$this->yyidx + -2]->minor, NULL, $this->status->getState());
 
                 $this->yy_destructor(29, $this->yystack[$this->yyidx + -1]->minor);
                 $this->yy_destructor(52, $this->yystack[$this->yyidx + 0]->minor);
@@ -3373,7 +3371,7 @@ static const struct {
         $yyact = $this->yy_find_reduce_action($state_for_reduce, $yygoto);
 
         if ($yyact < self::YYNSTATE) {
-            $this->yy_shift($yyact, $yygoto, $yygotominor);
+            $this->yy_shift($yyact, $yygoto, $this->output);
         } else if ($yyact == self::YYNSTATE + self::YYNRULE + 1) {
             $this->yy_accept();
         }
