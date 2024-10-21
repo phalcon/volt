@@ -1638,7 +1638,7 @@ class Compiler
 
             switch ($type) {
                 case static::PHVOLT_T_NOT:
-                    $exprCode = '|' . $rightCode;
+                    $exprCode = '!' . $rightCode;
                     break;
 
                 case static::PHVOLT_T_MUL:
