@@ -3689,9 +3689,9 @@ function phvolt_ret_literal_zval(&$ret, $type, ?Token $T = null, ?State $state =
 {
     $ret = [
         "type" => $type,
+        'value' => $T?->getValue(),
         "file" => $state->getActiveFile(),
         "line" => $state->getActiveLine(),
-        'value' => $T?->getValue(),
     ];
 }
 

@@ -47,10 +47,15 @@ class Scanner
                         $this->state->setMode(Compiler::PHVOLT_MODE_CODE);
 
                         if ($this->state->getRawBufferCursor() > 0) {
+                            $value = substr(
+                                $this->state->getRawBuffer(),
+                                $this->state->getCursor() - $this->state->getRawBufferCursor(),
+                                $this->state->getRawBufferCursor(),
+                            );
                             $this
                                 ->token
                                 ->setOpcode(Compiler::PHVOLT_T_RAW_FRAGMENT)
-                                ->setValue(0)
+                                ->setValue($value)
                             ;
 
                             if ($this->state->getWhitespaceControl()) {

@@ -385,26 +385,24 @@ class Parser
                     break;
 
                 case Compiler::PHVOLT_T_RAW_FRAGMENT:
-                    if ($this->token !== null) {
-                        if ($state->extendsMode === 1 && $state->blockLevel === 0) {
-                            $this->createErrorMessage(
-                                $parserStatus,
-                                'Child templates only may contain blocks'
-                            );
-                            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
-                            break;
-                        }
-
-                        if (!$this->phvoltIsBlankString($this->token)) {
-                            $state->statementPosition++;
-                        }
-
-                        $this->phvoltParseWithToken(
-                            $parser,
-                            Compiler::PHVOLT_T_RAW_FRAGMENT,
-                            Opcode::PHVOLT_RAW_FRAGMENT
+                    if ($state->extendsMode === 1 && $state->blockLevel === 0) {
+                        $this->createErrorMessage(
+                            $parserStatus,
+                            'Child templates only may contain blocks'
                         );
+                        $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
+                        break;
                     }
+
+                    if (!$this->phvoltIsBlankString($this->token)) {
+                        $state->statementPosition++;
+                    }
+
+                    $this->phvoltParseWithToken(
+                        $parser,
+                        Compiler::PHVOLT_T_RAW_FRAGMENT,
+                        Opcode::PHVOLT_RAW_FRAGMENT
+                    );
                     break;
 
                 case Compiler::PHVOLT_T_SET:
