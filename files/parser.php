@@ -3627,13 +3627,13 @@ function phvolt_ret_zval_list(&$ret, $list_left = null, $right_list = null): voi
     $ret[] = $right_list;
 }
 
-function phvolt_ret_if_statement(&$ret, $expr, $true_statements = null, $false_statements = null, $state = null): void
+function phvolt_ret_if_statement(&$ret, $expr, $true_statements = null, $false_statements = null, ?State $state = null): void
 {
     $ret = [
         "type" => Compiler::PHVOLT_T_IF,
         "expr" => $expr,
-        "file" => $state->active_file,
-        "line" => $state->active_line
+        "file" => $state->getActiveFile(),
+        "line" => $state->getActiveLine(),
     ];
 
     if ($true_statements !== null) {
@@ -3645,33 +3645,33 @@ function phvolt_ret_if_statement(&$ret, $expr, $true_statements = null, $false_s
     }
 }
 
-function phvolt_ret_elseif_statement(&$ret, $expr, $state): void
+function phvolt_ret_elseif_statement(&$ret, $expr, State $state): void
 {
     $ret = [
         "type" => Compiler::PHVOLT_T_ELSEIF,
         "expr" => $expr,
-        "file" => $state->active_file,
-        "line" => $state->active_line
+        "file" => $state->getActiveFile(),
+        "line" => $state->getActiveLine(),
     ];
 }
 
-function phvolt_ret_elsefor_statement(&$ret, $state): void
+function phvolt_ret_elsefor_statement(&$ret, State $state): void
 {
     $ret = [
         "type" => Compiler::PHVOLT_T_ELSEFOR,
-        "file" => $state->active_file,
-        "line" => $state->active_line
+        "file" => $state->getActiveFile(),
+        "line" => $state->getActiveLine(),
     ];
 }
 
-function phvolt_ret_for_statement(&$ret, $variable, $key = null, array $expr = [], $if_expr = null, $block_statements = null, $state = null): void {
+function phvolt_ret_for_statement(&$ret, $variable, $key = null, array $expr = [], $if_expr = null, $block_statements = null, ?State $state = null): void {
     $ret = [
         "type" => Compiler::PHVOLT_T_FOR,
         "variable" => $variable->token,
         "expr" => $expr,
         "block_statements" => $block_statements,
-        "file" => $state->active_file,
-        "line" => $state->active_line
+        "file" => $state->getActiveFile(),
+        "line" => $state->getActiveLine(),
     ];
 
     // Free the variable token memory
@@ -3696,11 +3696,8 @@ function phvolt_ret_literal_zval(&$ret, $type, ?Token $T = null, ?State $state =
         "type" => $type,
         "file" => $state->getActiveFile(),
         "line" => $state->getActiveLine(),
+        'value' => $T?->getValue(),
     ];
-
-    if ($T->getValue()) {
-        $ret["value"] = $T->getValue();
-    }
 }
 
 function phvolt_ret_named_item(&$ret, $name, $expr, State $state): void
@@ -3735,12 +3732,12 @@ function phvolt_ret_func_call(&$ret, $expr, $arguments, State $state): void
     }
 }
 
-function phvolt_ret_macro_call_statement(&$ret, $expr, $arguments, $caller, $state): void {
+function phvolt_ret_macro_call_statement(&$ret, $expr, $arguments, $caller, State $state): void{
     $ret = [
         "type" => Compiler::PHVOLT_T_CALL,
         "name" => $expr,
-        "file" => $state->active_file,
-        "line" => $state->active_line
+        "file" => $state->getActiveFile(),
+        "line" => $state->getActiveLine(),
     ];
 
     if ($arguments !== null) {
