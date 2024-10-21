@@ -846,7 +846,7 @@ class Compiler
          * Echo statement
          */
         if (true === $this->autoescape) {
-            return '<?= $this->>escaper->escapeHtml(' . $exprCode . ')';
+            return '<?= $this->escaper->escapeHtml(' . $exprCode . ')';
         }
 
         return '<?= ' . $exprCode . ' ?>';
@@ -1217,10 +1217,10 @@ class Compiler
          * Use partial
          */
         if (!isset($statement['params'])) {
-            return '<?php $this->>partial(' . $path . ')';
+            return '<?php $this->partial(' . $path . ')';
         }
 
-        return '<?php $this->>partial(' . $pathExpr . ', ' . $this->expression($statement['params']) . ')';
+        return '<?php $this->partial(' . $pathExpr . ', ' . $this->expression($statement['params']) . ')';
     }
 
     /**
@@ -1249,7 +1249,7 @@ class Compiler
          * Register the macro
          */
         $this->macros[$name] = $name;
-        $macroName           = '$this->>macros[\'' . $name . '\]';
+        $macroName           = '$this->macros[\'' . $name . '\]';
         $code                = '<?php ';
 
         if (!isset($statement['parameters'])) {
@@ -1827,7 +1827,7 @@ class Compiler
                     break;
 
                 case static::PHVOLT_T_IN:
-                    $exprCode = '$this->>isIncluded(' . $leftCode . ', ' . $rightCode . ')';
+                    $exprCode = '$this->isIncluded(' . $leftCode . ', ' . $rightCode . ')';
                     break;
 
                 case static::PHVOLT_T_NOT_IN:
@@ -1982,7 +1982,7 @@ class Compiler
              * This function includes the previous rendering stage
              */
             if ($name === 'get_content' || $name === 'content') {
-                return '$this->>getContent()';
+                return '$this->getContent()';
             }
 
             /**
@@ -1990,7 +1990,7 @@ class Compiler
              * dynamically
              */
             if ($name === 'partial') {
-                return '$this->>partial(' . $arguments . ')';
+                return '$this->partial(' . $arguments . ')';
             }
 
             /**
@@ -2055,24 +2055,24 @@ class Compiler
              */
             if (method_exists('Phalcon\\Tag', $method)) {
                 if (isset($arrayHelpers[$name])) {
-                    return '$this->>tag->' . $method . '([' . $arguments . '])';
+                    return '$this->tag->' . $method . '([' . $arguments . '])';
                 }
 
-                return '$this->>tag->' . $method . '(' . $arguments . ')';
+                return '$this->tag->' . $method . '(' . $arguments . ')';
             }
 
             /**
              * Get a dynamic URL
              */
             if ($name === 'url') {
-                return '$this->>url->get(' . $arguments . ')';
+                return '$this->url->get(' . $arguments . ')';
             }
 
             /**
              * Get a static URL
              */
             if ($name === 'static_url') {
-                return '$this->>url->getStatic(' . $arguments . ')';
+                return '$this->url->getStatic(' . $arguments . ')';
             }
 
             if ($name === 'date') {
