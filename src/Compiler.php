@@ -165,7 +165,7 @@ class Compiler
     public const PHVOLT_T_MOD            = '%';
     public const PHVOLT_T_MUL            = '*';
     public const PHVOLT_T_MUL_ASSIGN     = 283;
-    public const PHVOLT_T_NOT            = '|';
+    public const PHVOLT_T_NOT            = '!';
     public const PHVOLT_T_NOTEQUALS      = 273;
     public const PHVOLT_T_NOTIDENTICAL   = 275;
     public const PHVOLT_T_NOT_IN         = 367;
