@@ -35,7 +35,7 @@ class Token
         return $this->opcode;
     }
 
-    public function getValue(): ?string
+    public function getValue(): mixed
     {
         return $this->value;
     }
