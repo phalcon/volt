@@ -647,7 +647,7 @@ class Parser
      */
     private function phvoltIsBlankString(Token $token): bool
     {
-        $marker = $token->getValue();
+        $marker = (string)$token->getValue();
         $len = strlen($marker);
 
         for ($i = 0; $i < $len; $i++) {
