@@ -3732,7 +3732,8 @@ function phvolt_ret_func_call(&$ret, $expr, $arguments, State $state): void
     }
 }
 
-function phvolt_ret_macro_call_statement(&$ret, $expr, $arguments, $caller, State $state): void{
+function phvolt_ret_macro_call_statement(&$ret, $expr, $arguments, $caller, State $state): void
+{
     $ret = [
         "type" => Compiler::PHVOLT_T_CALL,
         "name" => $expr,
