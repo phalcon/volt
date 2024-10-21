@@ -815,11 +815,9 @@ class Scanner
                     return 0;
                 }
                 vv71:
-                $this->state->incrementStart();
-                {
+                    $this->state->incrementStart();
                     $this->token->setOpcode(Compiler::PHVOLT_T_PIPE);
                     return 0;
-                }
                 vv73:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {

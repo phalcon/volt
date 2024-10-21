@@ -2278,7 +2278,7 @@ static const struct {
      */
     private function yy_reduce($yyruleno)
     {
-        $yygotominor = null;        /* The LHS of the rule reduced */
+        $yygotominor = [];        /* The LHS of the rule reduced */
 
         /* The top of the parser's stack */
         $yymsp = $this->yystack[$this->yyidx];
@@ -2997,7 +2997,7 @@ static const struct {
             case 97:
 #line 570 "parser.php.lemon"
                 {
-                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_PIPE, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
+                    phvolt_ret_expr($yygotominor, Compiler::PHVOLT_T_PIPE, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, NULL, $this->status->getState());
                     $this->yy_destructor(25, $this->yystack[$this->yyidx + -1]->minor);
                 }
 #line 2320 "parser.php.php"
@@ -3758,5 +3758,27 @@ function phvolt_ret_echo_statement(&$ret, $expr, State $state): void
     $ret["type"] = Compiler::PHVOLT_T_ECHO;
     $ret["expr"] = $expr;
     $ret["file"] = $state->getActiveFile();
+    $ret["line"] = $state->getActiveLine();
+}
+
+function phvolt_ret_expr(array &$ret, int|string $type, ?array $left, ?array $right, ?array $ternary, State $state): void
+{
+    $ret = [
+        'type' => $type,
+    ];
+
+    if ($ternary !== null) {
+        $ret['ternary'] = $ternary;
+    }
+
+    if ($left !== null) {
+        $ret['left'] = $left;
+    }
+
+    if ($right !== null) {
+        $ret['right'] = $right;
+    }
+
+    $ret['file'] = $state->getActiveFile();
     $ret["line"] = $state->getActiveLine();
 }

@@ -187,7 +187,7 @@ class Compiler
     public const PHVOLT_T_OR                = 267;
     public const PHVOLT_T_PARENTHESES_CLOSE = ')';
     public const PHVOLT_T_PARENTHESES_OPEN  = '(';
-    public const PHVOLT_T_PIPE              = '|';
+    public const PHVOLT_T_PIPE              = 124; //'|';
     public const PHVOLT_T_PLUS              = 369;
     public const PHVOLT_T_POW               = 278;
     public const PHVOLT_T_QUALIFIED         = 355;
@@ -1624,8 +1624,8 @@ class Compiler
             /**
              * We don't resolve the right expression for filters
              */
-            if ($type == 124) {
-                $exprCode = $this->resolveFilter($exprCode['right'], $leftCode);
+            if ($type == self::PHVOLT_T_PIPE) {
+                $exprCode = $this->resolveFilter($expr['right'], $leftCode);
 
                 break;
             }
@@ -1849,7 +1849,7 @@ class Compiler
 
                 default:
                     throw new BaseException(
-                        'Unknown expression ' . $type . ' in ' . $expr['file'] . ' on line' . $expr['line']
+                        'Unknown expression ' . $type . ' in ' . $expr['file'] . ' on line ' . $expr['line']
                     );
             }
 
