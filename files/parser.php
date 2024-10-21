@@ -3393,10 +3393,7 @@ static const struct {
     /**
      * The following code executes when a syntax error first occurs.
      */
-    private function yy_syntax_error(
-        $yymajor,                   /* The major type of the error token */
-        $yyminor            /* The minor type of the error token */
-    )
+    private function yy_syntax_error(): void
     {
         $error_str = '';
         $token_name = null;
@@ -3548,7 +3545,7 @@ static const struct {
       **
       */
                     if ($this->yyerrcnt < 0) {
-                        $this->yy_syntax_error($yymajor, $yyminor);
+                        $this->yy_syntax_error();
                     }
                     $yymx = $this->yystack[$this->yyidx]->major;
                     if ($yymx == self::YYERRORSYMBOL || $yyerrorhit) {
@@ -3589,7 +3586,7 @@ static const struct {
       ** three input tokens have been successfully shifted.
       */
                     if ($this->yyerrcnt <= 0) {
-                        $this->yy_syntax_error($yymajor, $yyminor);
+                        $this->yy_syntax_error();
                     }
                     $this->yyerrcnt = 3;
                     $this->yy_destructor($yymajor, $yyminor);
