@@ -4,3 +4,4 @@ composer.phar
 log.txt
 tests/support/output/
 tests/support/coverage/
+*.volt.php
