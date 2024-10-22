@@ -105,7 +105,7 @@ class Compiler
     public const PHVOLT_T_DIV              = '/';
     public const PHVOLT_T_DIV_ASSIGN       = 284;
     public const PHVOLT_T_DO               = 316;
-    public const PHVOLT_T_DOT              = '.';
+    public const PHVOLT_T_DOT              = 46; //'.';
     public const PHVOLT_T_DOUBLE           = 259;
     public const PHVOLT_T_ECHO             = 359;
     public const PHVOLT_T_ELSE             = 301;

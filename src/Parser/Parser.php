@@ -362,14 +362,14 @@ class Parser
                     if ($state->switchLevel !== 0) {
                         $parser->phvolt_(Opcode::PHVOLT_DEFAULT);
                         unset($this->token);
-                        break;
+                    } else {
+                        $this->phvoltParseWithToken(
+                            $parser,
+                            Compiler::PHVOLT_T_IDENTIFIER,
+                            Opcode::PHVOLT_IDENTIFIER,
+                        );
                     }
 
-                    $this->phvoltParseWithToken(
-                        $parser,
-                        Compiler::PHVOLT_T_IDENTIFIER,
-                        Opcode::PHVOLT_DEFAULT
-                    );
                     break;
 
                 case Compiler::PHVOLT_T_ENDSWITCH:
