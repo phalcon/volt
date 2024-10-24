@@ -2294,8 +2294,6 @@ static const struct {
   **     break;
   */
             case 0:
-                $this->output = $yymsp->minor;
-                break;
             case 1:
             case 4:
             case 5:
