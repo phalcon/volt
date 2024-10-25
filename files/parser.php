@@ -2766,17 +2766,13 @@ static const struct {
 #line 2056 "parser.php.php"
                 break;
             case 69:
-#line 458 "parser.php.lemon"
-                {
-                    phvolt_ret_block_statement($this->output, $this->yystack[$this->yyidx + -4]->minor, null, $this->status->getState());
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -6]->minor);
-                    $this->yy_destructor(64, $this->yystack[$this->yyidx + -5]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -3]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(65, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-            }
-#line 2069 "parser.php.php"
+                phvolt_ret_block_statement($this->output, $this->yystack[$this->yyidx + -4]->minor, null, $this->status->getState());
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -6]->minor);
+                $this->yy_destructor(64, $this->yystack[$this->yyidx + -5]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -3]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(65, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 70:
 #line 462 "parser.php.lemon"
@@ -3914,6 +3910,22 @@ function phvolt_ret_empty_statement(array &$ret, State $state): void
 {
     $ret = [];
     $ret['type'] = Compiler::PHVOLT_T_EMPTY_STATEMENT;
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
+}
+
+function phvolt_ret_block_statement(array &$ret, Token $name, ?array $block_statements, State $state): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_BLOCK;
+
+    $ret['name'] = $name->getValue();
+    unset($name);
+
+    if ($block_statements !== null) {
+        $ret['block_statements'] = $block_statements;
+    }
+
     $ret['file'] = $state->getActiveFile();
     $ret['line'] = $state->getActiveLine();
 }
