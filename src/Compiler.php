@@ -1386,7 +1386,7 @@ class Compiler
      *
      * @throws Exception
      */
-    public function compileSource(string $viewCode, bool $extendsMode = false): string
+    public function compileSource(string $viewCode, bool $extendsMode = false): string|array
     {
         /**
          * Enable autoescape globally
@@ -2807,7 +2807,7 @@ class Compiler
                      * Block statement
                      */
                     $blockName       = $statement['name'];
-                    $blockStatements = $statement["block_statements"];
+                    $blockStatements = $statement["block_statements"] ?? [];
                     $blocks          = $this->blocks;
 
                     if (true === $blockMode) {
@@ -2816,7 +2816,7 @@ class Compiler
                         }
 
                         /**
-                         * Create a unamed block
+                         * Create an unnamed block.
                          */
                         if ($compilation !== null) {
                             $blocks[]    = $compilation;
@@ -2955,7 +2955,7 @@ class Compiler
 
         $this->level--;
 
-        return $compilation;
+        return $compilation === null ? '' : $compilation;
     }
 
     /**
