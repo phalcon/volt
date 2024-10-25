@@ -273,7 +273,6 @@ class Scanner
                 vv13:
                 $vvaccept = 0;
                 $vvch     = $this->state->incrementStart()->getStart();
-                $this->state->setMarker($vvch);
                 if ($vvch === null) {
                     goto vv5;
                 }
@@ -292,7 +291,6 @@ class Scanner
                 vv16:
                 $vvaccept = 0;
                 $vvch     = $this->state->incrementStart()->getStart();
-                $this->state->setMarker($vvch);
                 if ($vvch === null) {
                     goto vv5;
                 }
@@ -344,7 +342,6 @@ class Scanner
                 vv27:
                 $vvaccept = 1;
                 $vvch     = $this->state->incrementStart()->getStart();
-                $this->state->setMarker($vvch);
                 switch ($vvch) {
                     case '%':
                         goto vv96;
@@ -389,7 +386,6 @@ class Scanner
                 vv33:
                 $vvaccept = 2;
                 $vvch     = $this->state->incrementStart()->getStart();
-                $this->state->setMarker($vvch);
                 switch ($vvch) {
                     case '.':
                         goto vv106;
@@ -474,12 +470,14 @@ class Scanner
                     default:
                         goto vv54;
                 }
+
                 vv47:
                 $this->token->setOpcode(Compiler::PHVOLT_T_IDENTIFIER);
                 $this->token->setValue(
                     substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
                 );
                 return 0;
+
                 vv48:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
@@ -863,7 +861,7 @@ class Scanner
                 $vvch = $this->state->incrementStart()->getStart();
                 vv80:
                 switch ($vvch) {
-                    case 0x00:
+                    case null:
                         goto vv81;
                     case '"':
                         goto vv82;
@@ -872,8 +870,8 @@ class Scanner
                     default:
                         goto vv79;
                 }
+
                 vv81:
-                $this->state->setStart($this->state->getMarker());
                 switch ($vvaccept) {
                     case 0:
                         goto vv5;
@@ -884,6 +882,7 @@ class Scanner
                     default:
                         goto vv136;
                 }
+
                 vv82:
                 $this->state->incrementStart();
                 $start++;
@@ -1172,12 +1171,12 @@ class Scanner
                     default:
                         goto vv123;
                 }
+
                 vv123:
-                {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_DO);
-                    return 0;
-                }
+                $this->state->statementPosition++;
+                $this->token->setOpcode(Compiler::PHVOLT_T_DO);
+                return 0;
+
                 vv124:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
@@ -1398,7 +1397,6 @@ class Scanner
                 vv135:
                 $vvaccept = 3;
                 $vvch     = $this->state->incrementStart()->getStart();
-                $this->state->setMarker($vvch);
                 switch ($vvch) {
                     case ' ':
                         goto vv188;
@@ -1470,8 +1468,8 @@ class Scanner
                     default:
                         goto vv136;
                 }
+
                 vv136:
-                {
                 if ($this->state->activeToken === Compiler::PHVOLT_T_DOT) {
                     $this->token->setOpcode(Compiler::PHVOLT_T_IDENTIFIER);
                     $this->token->setValue(
@@ -1483,7 +1481,7 @@ class Scanner
                 }
 
                 return 0;
-                }
+
                 vv137:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
@@ -1674,7 +1672,6 @@ class Scanner
                 vv151:
                 $vvaccept = 3;
                 $vvch     = $this->state->incrementStart()->getStart();
-                $this->state->setMarker($vvch);
                 switch ($vvch) {
                     case ' ':
                         goto vv206;

@@ -24,7 +24,7 @@ class State
     public int $forcedRawState = 0;
     public int $ifLevel = 0;
     public int $macroLevel = 0;
-    public mixed $marker = null;
+    public int $marker = 0;
     public int $oldIfLevel = 0;
     public string $rawBuffer;
     public string $rawFragment = '';
@@ -80,11 +80,6 @@ class State
     public function getIfLevel(): int
     {
         return $this->ifLevel;
-    }
-
-    public function getMarker(): mixed
-    {
-        return $this->marker;
     }
 
     public function getMode(): int
@@ -208,13 +203,6 @@ class State
     public function setMacroLevel(int $macroLevel): self
     {
         $this->macroLevel = $macroLevel;
-
-        return $this;
-    }
-
-    public function setMarker(mixed $marker): self
-    {
-        $this->marker = $marker;
 
         return $this;
     }
