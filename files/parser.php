@@ -3929,3 +3929,18 @@ function phvolt_ret_block_statement(array &$ret, Token $name, ?array $block_stat
     $ret['file'] = $state->getActiveFile();
     $ret['line'] = $state->getActiveLine();
 }
+
+function phvolt_ret_cache_statement(array &$ret, mixed $expr, mixed $lifetime = null, mixed $block_statements, State $state): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_CACHE;
+    $ret['expr'] = $expr;
+
+    if ($lifetime !== null) {
+        $ret['lifetime'] = $lifetime;
+    }
+    $ret['block_statements'] = $block_statements;
+
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
+}
