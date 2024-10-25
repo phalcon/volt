@@ -3547,7 +3547,7 @@ static const struct {
                 }
                 if (self::YYERRORSYMBOL) {
                     /* A syntax error has occurred.
-      ** The response to an error depends upon whether or not the
+      ** The response to an error depends upon whether the
       ** grammar defines an error token "ERROR".
       **
       ** This is what we do if the grammar does define ERROR:
