@@ -3846,14 +3846,15 @@ function phvolt_ret_set_statement(array &$ret, array $assignments): void
     $ret['assignments'] = $assignments;
 }
 
-function phvolt_ret_set_assignment(array &$ret, array $assignable_expr, int $operator, array $expr, State $state): void
+function phvolt_ret_set_assignment(array &$ret, array $assignable_expr, mixed $operator, array $expr, State $state): void
 {
-    $ret = [];
-    $ret['variable'] = $assignable_expr;
-    $ret['op'] = $operator;
-    $ret['expr'] = $expr;
-    $ret['file'] = $state->getActiveFile();
-    $ret['line'] = $state->getActiveLine();
+    $ret = [
+        'variable' => $assignable_expr,
+        'op' => $operator,
+        'expr' => $expr,
+        'file' => $state->getActiveFile(),
+        'line' => $state->getActiveLine(),
+    ];
 }
 
 function phvolt_ret_continue_statement(array &$ret, State $state): void
