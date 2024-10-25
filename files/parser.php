@@ -3905,3 +3905,23 @@ function phvolt_ret_continue_statement(array &$ret, State $state): void
     $ret['file'] = $state->getActiveFile();
     $ret['line'] = $state->getActiveLine();
 }
+
+function phvolt_ret_macro_statement(array &$ret, Token $macro_name, ?array $parameters, array $block_statements, State $state): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_MACRO;
+
+    $ret['name'] = $macro_name->getValue();
+    unset($macro_name);
+
+    if ($parameters !== null) {
+        $ret['parameters'] = $parameters;
+    }
+
+    if (!empty($block_statements)) {
+        $ret['block_statements'] = $block_statements;
+    }
+
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
+}
