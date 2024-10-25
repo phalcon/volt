@@ -3146,46 +3146,26 @@ static const struct {
 #line 2444 "parser.php.php"
                 break;
             case 112:
-#line 630 "parser.php.lemon"
-                {
-                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOT_ISITERABLE, $this->yystack[$this->yyidx + -2]->minor, null, null, $this->status->getState());
-                    $this->yy_destructor(11, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(86, $this->yystack[$this->yyidx + 0]->minor);
-            }
-#line 2453 "parser.php.php"
+                phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOT_ISITERABLE, $this->yystack[$this->yyidx + -2]->minor, null, null, $this->status->getState());
+                $this->yy_destructor(11, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(86, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 113:
-#line 634 "parser.php.lemon"
-                {
-                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ISITERABLE, $this->yystack[$this->yyidx + -2]->minor, null, null, $this->status->getState());
-                    $this->yy_destructor(9, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(86, $this->yystack[$this->yyidx + 0]->minor);
-            }
-#line 2462 "parser.php.php"
+                phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ISITERABLE, $this->yystack[$this->yyidx + -2]->minor, null, null, $this->status->getState());
+                $this->yy_destructor(9, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(86, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 114:
-#line 638 "parser.php.lemon"
-                {
-                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_IS, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, null, $this->status->getState());
-                    $this->yy_destructor(9, $this->yystack[$this->yyidx + -1]->minor);
-            }
-#line 2470 "parser.php.php"
+                phvolt_ret_expr($this->output, Compiler::PHVOLT_T_IS, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, null, $this->status->getState());
+                $this->yy_destructor(9, $this->yystack[$this->yyidx + -1]->minor);
                 break;
             case 115:
-#line 642 "parser.php.lemon"
-                {
-                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOTEQUALS, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, null, $this->status->getState());
-                    $this->yy_destructor(11, $this->yystack[$this->yyidx + -1]->minor);
-            }
-#line 2478 "parser.php.php"
+                phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOTEQUALS, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, null, $this->status->getState());
+                $this->yy_destructor(11, $this->yystack[$this->yyidx + -1]->minor);
                 break;
             case 116:
-#line 646 "parser.php.lemon"
-                {
-                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_IDENTICAL, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, null, $this->status->getState());
-                    $this->yy_destructor(16, $this->yystack[$this->yyidx + -1]->minor);
-            }
-#line 2486 "parser.php.php"
+                phvolt_ret_expr($this->output, Compiler::PHVOLT_T_IDENTICAL, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, null, $this->status->getState());
+                $this->yy_destructor(16, $this->yystack[$this->yyidx + -1]->minor);
                 break;
             case 117:
 #line 650 "parser.php.lemon"
@@ -3926,6 +3906,14 @@ function phvolt_ret_break_statement(array &$ret, State $state): void
 {
     $ret = [];
     $ret['type'] = Compiler::PHVOLT_T_BREAK;
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
+}
+
+function phvolt_ret_empty_statement(array &$ret, State $state): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_EMPTY_STATEMENT;
     $ret['file'] = $state->getActiveFile();
     $ret['line'] = $state->getActiveLine();
 }
