@@ -27,8 +27,8 @@ class State
     public mixed $marker = null;
     public int $oldIfLevel = 0;
     public string $rawBuffer;
+    public string $rawFragment = '';
     public int $rawBufferCursor = 0;
-    public int $rawBufferSize = Compiler::PHVOLT_RAW_BUFFER_SIZE;
     public int $startLength;
     public int $statementPosition = 0;
     public int $switchLevel = 0;
@@ -236,20 +236,6 @@ class State
     public function setRawBuffer(string $rawBuffer): self
     {
         $this->rawBuffer = $rawBuffer;
-
-        return $this;
-    }
-
-    public function setRawBufferCursor(int $rawBufferCursor): self
-    {
-        $this->rawBufferCursor = $rawBufferCursor;
-
-        return $this;
-    }
-
-    public function setRawBufferSize(int $rawBufferSize): self
-    {
-        $this->rawBufferSize = $rawBufferSize;
 
         return $this;
     }

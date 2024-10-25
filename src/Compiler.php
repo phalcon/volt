@@ -72,7 +72,6 @@ class Compiler
     public const PHVOLT_MODE_RAW                   = 0;
     public const PHVOLT_PARSING_FAILED             = 0;
     public const PHVOLT_PARSING_OK                 = 1;
-    public const PHVOLT_RAW_BUFFER_SIZE            = 256;
     public const PHVOLT_SCANNER_RETCODE_EOF        = -1;
     public const PHVOLT_SCANNER_RETCODE_ERR        = -2;
     public const PHVOLT_SCANNER_RETCODE_IMPOSSIBLE = -3;

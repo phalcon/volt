@@ -38,45 +38,33 @@ class Scanner
         $status = self::PHVOLT_SCANNER_RETCODE_IMPOSSIBLE;
         while (self::PHVOLT_SCANNER_RETCODE_IMPOSSIBLE === $status) {
             $cursor = $this->state->getStart();
-            if ($cursor === null) {
-                return self::PHVOLT_SCANNER_RETCODE_EOF;
-            }
 
             $mode = $this->state->getMode();
             if ($mode === Compiler::PHVOLT_MODE_RAW || $mode === Compiler::PHVOLT_MODE_COMMENT) {
                 $next       = $this->state->getNext();
                 $doubleNext = $this->state->getNext(2);
 
-                if ($cursor === "\n") {
-                    $this->state->incrementActiveLine();
-                }
-
-                if ($cursor === '{' && ($next === '%' || $next === '{' || $next === '#')) {
+                if ($cursor === null || ($cursor === '{' && ($next === '%' || $next === '{' || $next === '#'))) {
                     if ($next !== '#') {
                         $this->state->setMode(Compiler::PHVOLT_MODE_CODE);
 
-                        if ($this->state->getRawBufferCursor() > 0) {
-                            $value = substr(
-                                $this->state->getRawBuffer(),
-                                $this->state->getCursor() - $this->state->getRawBufferCursor(),
-                                $this->state->getRawBufferCursor(),
-                            );
-                            $this
-                                ->token
-                                ->setOpcode(Compiler::PHVOLT_T_RAW_FRAGMENT)
-                                ->setValue($value)
-                            ;
-
+                        if (!empty($this->state->rawFragment)) {
                             if ($this->state->getWhitespaceControl()) {
-                                //ltrim(); // TODO
+                                $this->state->rawFragment = ltrim($this->state->rawFragment);
                                 $this->state->setWhitespaceControl(false);
                             }
 
                             if ($doubleNext === '-') {
-                                // rtrim($token); // TODO
+                                $this->state->rawFragment = rtrim($this->state->rawFragment);
                             }
 
-                            $this->state->setRawBufferCursor(0);
+                            $this
+                                ->token
+                                ->setOpcode(Compiler::PHVOLT_T_RAW_FRAGMENT)
+                                ->setValue($this->state->rawFragment)
+                            ;
+
+                            $this->state->rawFragment = '';
                         } else {
                             $this->token->setOpcode(Compiler::PHVOLT_T_IGNORE);
                         }
@@ -94,18 +82,20 @@ class Scanner
                     }
 
                     return 0;
-                } else {
-                    $this->state->incrementRawBufferCursor();
                 }
+
+                if ($cursor === "\n") {
+                    $this->state->incrementActiveLine();
+                }
+
+                $this->state->rawFragment .= $cursor;
                 $this->state->incrementStart();
             } else {
                 $vvch = $cursor;
-                if ($vvch === null) {
-                    return self::PHVOLT_SCANNER_RETCODE_EOF;
-                }
-
                 $start = $this->state->getCursor();
                 switch ($vvch) {
+                    case null:
+                        goto vv2;
                     case "\t":
                     case "\r":
                     case ' ':
@@ -243,6 +233,11 @@ class Scanner
                     default:
                         $this->state->incrementStart();
                 }
+
+                vv2:
+                $status = self::PHVOLT_SCANNER_RETCODE_EOF;
+                break;
+
                 vv5:
                 $status = self::PHVOLT_SCANNER_RETCODE_ERR;
                 break;
