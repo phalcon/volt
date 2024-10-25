@@ -3957,3 +3957,31 @@ function phvolt_ret_extends_statement(array &$ret, mixed $path, State $state): v
     $ret['file'] = $state->getActiveFile();
     $ret['line'] = $state->getActiveLine();
 }
+
+function phvolt_ret_do_statement(array &$ret, mixed $expr, State $state): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_DO;
+    $ret['expr'] = $expr;
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
+}
+
+function phvolt_ret_return_statement(array &$ret, mixed $expr, State $state): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_RETURN;
+    $ret['expr'] = $expr;
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
+}
+
+function phvolt_ret_autoescape_statement(array &$ret, int $enable, mixed $block_statements, State $state): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_AUTOESCAPE;
+    $ret['enable'] = $enable;
+    $ret['block_statements'] = $block_statements;
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
+}
