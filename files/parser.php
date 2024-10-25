@@ -3884,3 +3884,10 @@ function phvolt_ret_case_clause(array &$ret, ?array $expr, State $state): void
         $ret['line'] = $state->active_line;
     }
 }
+
+function phvolt_ret_set_statement(array &$ret, array $assignments): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_SET;
+    $ret['assignments'] = $assignments;
+}
