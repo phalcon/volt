@@ -3864,3 +3864,23 @@ function phvolt_ret_switch_statement(array &$ret, array $expr, ?array $case_clau
     $ret['file'] = $state->getActiveFile();
     $ret['line'] = $state->getActiveLine();
 }
+
+function phvolt_ret_case_clause(array &$ret, ?array $expr, State $state): void
+{
+    $ret = [];
+
+    if ($expr !== null) {
+        $ret['type'] = Compiler::PHVOLT_T_CASE;
+        $ret['expr'] = $expr;
+    } else {
+        $ret['type'] = Compiler::PHVOLT_T_DEFAULT;
+    }
+
+    if (isset($state->active_file)) {
+        $ret['file'] = $state->active_file;
+    }
+
+    if (isset($state->active_line)) {
+        $ret['line'] = $state->active_line;
+    }
+}
