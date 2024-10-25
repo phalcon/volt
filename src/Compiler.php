@@ -3097,13 +3097,8 @@ class Compiler
 
     /**
      * @see https://github.com/php/php-src/blob/81623d3a60599d05c83987dec111bf56809f901d/Zend/zend_hash.h#L263
-     *
-     * @param array $arKey
-     * @param int   $nKeyLength
-     *
-     * @return int
      */
-    private function zendInlineHashFunc(array $arKey, int $nKeyLength): int
+    private function zendInlineHashFunc(string $arKey, int $nKeyLength): int
     {
         $hash = 5381;
         $i    = 0;
@@ -3134,7 +3129,7 @@ class Compiler
             case 2:
                 $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
             case 1:
-                $hash = (($hash << 5) + $hash) + ord($arKey[$i++]);
+                $hash = (($hash << 5) + $hash) + ord($arKey[$i] ?? '');
                 break;
             case 0:
                 break;
