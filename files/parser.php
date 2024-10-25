@@ -3685,20 +3685,16 @@ function phvolt_ret_literal_zval(&$ret, $type, ?Token $T = null, ?State $state =
     ];
 }
 
-function phvolt_ret_named_item(&$ret, $name, $expr, State $state): void
+function phvolt_ret_named_item(&$ret, ?Token $token = null, array $expr = [], ?State $state = null): void
 {
     $ret["expr"] = $expr;
 
     // Add the name if provided
-    if ($name !== null) {
-        $ret["name"] = substr($name->token, 0, $name->token_len);
-
-        // Free memory for the name token
-        unset($name->token);
-        unset($name);
+    if ($token !== null) {
+        $ret["name"] = $token->getValue();
+        unset($token);
     }
 
-    // Add file and line information from the state
     $ret["file"] = $state->getActiveFile();
     $ret["line"] = $state->getActiveLine();
 }
