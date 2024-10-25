@@ -38,6 +38,7 @@
 */
 
 use Phalcon\Volt\Compiler;
+use Phalcon\Volt\Parser\Status;
 use Phalcon\Volt\Scanner\State;
 use Phalcon\Volt\Scanner\Token;
 
@@ -58,11 +59,11 @@ class phvolt_yyStackEntry
 
 class phvolt_Parser
 {
-    public \Phalcon\Volt\Parser\Status $status;
+    public Status $status;
 
     protected array $output = [];
 
-    public function __construct(\Phalcon\Volt\Parser\Status $status)
+    public function __construct(Status $status)
     {
         $this->status = $status;
     }
