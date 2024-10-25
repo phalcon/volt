@@ -2907,14 +2907,10 @@ static const struct {
 #line 2197 "parser.php.php"
                 break;
             case 83:
-#line 514 "parser.php.lemon"
-                {
-                    phvolt_ret_continue_statement($this->output, $this->status->getState());
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(78, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-            }
-#line 2207 "parser.php.php"
+                phvolt_ret_continue_statement($this->output, $this->status->getState());
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(78, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 84:
                 phvolt_ret_literal_zval($this->output, Compiler::PHVOLT_T_RAW_FRAGMENT, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
@@ -3922,6 +3918,14 @@ function phvolt_ret_macro_statement(array &$ret, Token $macro_name, ?array $para
         $ret['block_statements'] = $block_statements;
     }
 
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
+}
+
+function phvolt_ret_break_statement(array &$ret, State $state): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_BREAK;
     $ret['file'] = $state->getActiveFile();
     $ret['line'] = $state->getActiveLine();
 }
