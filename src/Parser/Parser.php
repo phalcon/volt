@@ -47,6 +47,7 @@ class Parser
         $debug = fopen('log.txt', 'w+');
 
         $state = new State($this->code);
+        $state->setActiveFile($templatePath);
         $parserStatus = new Status($state);
         $scanner = new Scanner($parserStatus->getState());
 
