@@ -2802,27 +2802,23 @@ static const struct {
 #line 2095 "parser.php.php"
                 break;
             case 74:
-#line 478 "parser.php.lemon"
-                {
-                    phvolt_ret_raw_statement($this->output, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -6]->minor);
-                    $this->yy_destructor(68, $this->yystack[$this->yyidx + -5]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(69, $this->yystack[$this->yyidx + -1]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-            }
-#line 2108 "parser.php.php"
+                phvolt_ret_raw_statement($this->output, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -6]->minor);
+                $this->yy_destructor(68, $this->yystack[$this->yyidx + -5]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(69, $this->yystack[$this->yyidx + -1]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 75:
-#line 482 "parser.php.lemon"
-                {
-                    phvolt_ret_extends_statement($this->output, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -3]->minor);
-                    $this->yy_destructor(70, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-            }
-#line 2118 "parser.php.php"
+                phvolt_ret_extends_statement(
+                    $this->output,
+                    $this->yystack[$this->yyidx - 1]->minor,
+                    $this->status->getState(),
+                );
+                $this->yy_destructor(1, $this->yystack[$this->yyidx - 3]->minor);
+                $this->yy_destructor(70, $this->yystack[$this->yyidx - 2]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx]->minor);
                 break;
             case 76:
 #line 486 "parser.php.lemon"
@@ -3234,12 +3230,8 @@ static const struct {
 #line 2559 "parser.php.php"
                 break;
             case 127:
-#line 690 "parser.php.lemon"
-                {
-                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_DECR, $this->yystack[$this->yyidx + -1]->minor, null, null, $this->status->getState());
-                    $this->yy_destructor(28, $this->yystack[$this->yyidx + 0]->minor);
-            }
-#line 2567 "parser.php.php"
+                phvolt_ret_expr($this->output, Compiler::PHVOLT_T_DECR, $this->yystack[$this->yyidx + -1]->minor, null, null, $this->status->getState());
+                $this->yy_destructor(28, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 128:
 #line 694 "parser.php.lemon"
@@ -3315,12 +3307,10 @@ static const struct {
             }
                 break;
             case 137:
-                {
-                    phvolt_ret_slice($this->output, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
-                    $this->yy_destructor(24, $this->yystack[$this->yyidx + -4]->minor);
-                    $this->yy_destructor(4, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(50, $this->yystack[$this->yyidx + 0]->minor);
-            }
+                phvolt_ret_slice($this->output, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
+                $this->yy_destructor(24, $this->yystack[$this->yyidx + -4]->minor);
+                $this->yy_destructor(4, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(50, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 142:
             case 150:
@@ -3338,7 +3328,12 @@ static const struct {
                 $this->yy_destructor(52, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 146:
-                phvolt_ret_func_call($this->output, $this->yystack[$this->yyidx + -2]->minor, null, $this->status->getState());
+                phvolt_ret_func_call(
+                    $this->output,
+                    $this->yystack[$this->yyidx + -2]->minor,
+                    null,
+                    $this->status->getState(),
+                );
 
                 $this->yy_destructor(29, $this->yystack[$this->yyidx + -1]->minor);
                 $this->yy_destructor(52, $this->yystack[$this->yyidx + 0]->minor);
@@ -3371,11 +3366,10 @@ static const struct {
         if ($this->yyTraceFILE) {
             fprintf($this->yyTraceFILE, "%sFail!\n", $this->yyTracePrompt);
         }
+
         while ($this->yyidx >= 0) {
             $this->yy_pop_parser_stack();
         }
-        /* Here code is inserted which will be executed whenever the
-  ** parser fails */
     }
 
     /**
@@ -3952,11 +3946,12 @@ function phvolt_ret_raw_statement(array &$ret, mixed $statement, State $state): 
 
 function phvolt_ret_extends_statement(array &$ret, mixed $path, State $state): void
 {
-    $ret = [];
-    $ret['type'] = Compiler::PHVOLT_T_EXTENDS;
-    $ret['path'] = $path;
-    $ret['file'] = $state->getActiveFile();
-    $ret['line'] = $state->getActiveLine();
+    $ret = [
+        'type' => Compiler::PHVOLT_T_EXTENDS,
+        'path' => $path,
+        'file' => $state->getActiveFile(),
+        'line' => $state->getActiveLine(),
+    ];
 }
 
 function phvolt_ret_do_statement(array &$ret, mixed $expr, State $state): void
