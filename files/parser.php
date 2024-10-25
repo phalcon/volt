@@ -3773,3 +3773,22 @@ function phvolt_ret_expr(array &$ret, int|string $type, ?array $left, ?array $ri
     $ret['file'] = $state->getActiveFile();
     $ret["line"] = $state->getActiveLine();
 }
+
+function phvolt_ret_include_statement(array &$ret, array $path, ?array $params, $state): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_INCLUDE;
+    $ret['path'] = $path;
+
+    if ($params !== null) {
+        $ret['params'] = $params;
+    }
+
+    if (isset($state->active_file)) {
+        $ret['file'] = $state->active_file;
+    }
+
+    if (isset($state->active_line)) {
+        $ret['line'] = $state->active_line;
+    }
+}
