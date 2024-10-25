@@ -3940,7 +3940,15 @@ function phvolt_ret_cache_statement(array &$ret, mixed $expr, mixed $lifetime = 
         $ret['lifetime'] = $lifetime;
     }
     $ret['block_statements'] = $block_statements;
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
+}
 
+function phvolt_ret_raw_statement(array &$ret, mixed $statement, State $state): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_RAW;
+    $ret['content'] = $statement;
     $ret['file'] = $state->getActiveFile();
     $ret['line'] = $state->getActiveLine();
 }
