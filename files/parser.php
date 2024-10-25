@@ -3784,11 +3784,23 @@ function phvolt_ret_include_statement(array &$ret, array $path, ?array $params, 
         $ret['params'] = $params;
     }
 
-    if (isset($state->active_file)) {
-        $ret['file'] = $state->active_file;
+    $ret['file'] = $state->getActiveFile();
+    $ret["line"] = $state->getActiveLine();
+}
+
+function phvolt_ret_macro_parameter(array &$ret, Token $variable, ?array $default_value, State $state): void
+{
+    $ret = [];
+    $ret['variable'] = $variable->getValue();
+
+    // Free the variable token memory
+    unset($variable->token);
+    unset($variable);
+
+    if ($default_value !== null) {
+        $ret['default'] = $default_value;
     }
 
-    if (isset($state->active_line)) {
-        $ret['line'] = $state->active_line;
-    }
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
 }
