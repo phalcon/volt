@@ -389,7 +389,8 @@ class Parser
 
                 case Compiler::PHVOLT_T_RAW_FRAGMENT:
                     if ($this->token->getLength() > 0) {
-                        if ($state->extendsMode === 1 && $state->blockLevel === 0) {
+                        $value = trim($this->token->getValue());
+                        if ($value !== '' && $state->extendsMode === 1 && $state->blockLevel === 0) {
                             $this->createErrorMessage(
                                 $parserStatus,
                                 'Child templates only may contain blocks'
