@@ -2834,15 +2834,11 @@ static const struct {
 #line 2128 "parser.php.php"
                 break;
             case 77:
-#line 490 "parser.php.lemon"
-                {
-                    phvolt_ret_include_statement($this->output, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
-                    $this->yy_destructor(1, $this->yystack[$this->yyidx + -5]->minor);
-                    $this->yy_destructor(71, $this->yystack[$this->yyidx + -4]->minor);
-                    $this->yy_destructor(72, $this->yystack[$this->yyidx + -2]->minor);
-                    $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
-            }
-#line 2139 "parser.php.php"
+                phvolt_ret_include_statement($this->output, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
+                $this->yy_destructor(1, $this->yystack[$this->yyidx + -5]->minor);
+                $this->yy_destructor(71, $this->yystack[$this->yyidx + -4]->minor);
+                $this->yy_destructor(72, $this->yystack[$this->yyidx + -2]->minor);
+                $this->yy_destructor(32, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 78:
 #line 494 "parser.php.lemon"
@@ -3949,6 +3945,15 @@ function phvolt_ret_raw_statement(array &$ret, mixed $statement, State $state): 
     $ret = [];
     $ret['type'] = Compiler::PHVOLT_T_RAW;
     $ret['content'] = $statement;
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
+}
+
+function phvolt_ret_extends_statement(array &$ret, mixed $path, State $state): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_EXTENDS;
+    $ret['path'] = $path;
     $ret['file'] = $state->getActiveFile();
     $ret['line'] = $state->getActiveLine();
 }
