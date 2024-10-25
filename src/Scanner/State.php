@@ -32,7 +32,7 @@ class State
     public int $startLength;
     public int $statementPosition = 0;
     public int $switchLevel = 0;
-    public bool $whitespaceControl = false;
+    private bool $whitespaceControl = false;
     protected string $activeFile = 'eval code';
     protected int $activeLine = 1;
     protected int $cursor = 0;

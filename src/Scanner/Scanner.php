@@ -1756,7 +1756,7 @@ class Scanner
                 }
 
                 vv153:
-                $this->state->whitespaceControl = false;
+                $this->state->setWhitespaceControl(false);
                 $this->token->setOpcode(Compiler::PHVOLT_T_OPEN_DELIMITER);
                 return 0;
 
@@ -1769,12 +1769,10 @@ class Scanner
                         goto vv155;
                 }
                 vv155:
-                {
-                    $this->state->whitespaceControl = false;
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_OPEN_EDELIMITER);
-                    return 0;
-                }
+                $this->state->setWhitespaceControl(false);
+                $this->state->statementPosition++;
+                $this->token->setOpcode(Compiler::PHVOLT_T_OPEN_EDELIMITER);
+                return 0;
                 vv156:
                 $this->state->incrementStart();
                 $this->state->setMode(Compiler::PHVOLT_MODE_RAW);
@@ -1787,13 +1785,13 @@ class Scanner
                 vv160:
                 $this->state->incrementStart();
                 $this->state->setMode(Compiler::PHVOLT_MODE_RAW);
-                $this->state->whitespaceControl = true;
+                $this->state->setWhitespaceControl(true);
                 $this->token->setOpcode(Compiler::PHVOLT_T_CLOSE_DELIMITER);
                 return 0;
                 vv162:
                 $this->state->incrementStart();
                 $this->state->setMode(Compiler::PHVOLT_MODE_RAW);
-                $this->state->whitespaceControl = true;
+                $this->state->setWhitespaceControl(true);
                 $this->token->setOpcode(Compiler::PHVOLT_T_CLOSE_EDELIMITER);
                 return 0;
                 vv164:
@@ -2555,12 +2553,12 @@ class Scanner
                 }
                 vv207:
                 $this->state->incrementStart();
-                $this->state->whitespaceControl = false;
+                $this->state->setWhitespaceControl(false);
                 $this->token->setOpcode(Compiler::PHVOLT_T_OPEN_DELIMITER);
                 return 0;
 
                 vv209:
-                $this->state->whitespaceControl = false;
+                $this->state->setWhitespaceControl(false);
                 $this->state->statementPosition++;
                 $this->token->setOpcode(Compiler::PHVOLT_T_OPEN_EDELIMITER);
                 return 0;
