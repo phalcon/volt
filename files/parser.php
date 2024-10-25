@@ -3896,3 +3896,12 @@ function phvolt_ret_set_assignment(array &$ret, array $assignable_expr, int $ope
     $ret['file'] = $state->getActiveFile();
     $ret['line'] = $state->getActiveLine();
 }
+
+function phvolt_ret_continue_statement(array &$ret, State $state): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_CONTINUE;
+
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
+}
