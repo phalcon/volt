@@ -3850,3 +3850,17 @@ function phvolt_ret_slice(array &$ret, array $left, ?array $start, ?array $end, 
     $ret['file'] = $state->getActiveFile();
     $ret['line'] = $state->getActiveLine();
 }
+
+function phvolt_ret_switch_statement(array &$ret, array $expr, ?array $case_clauses, State $state): void
+{
+    $ret = [];
+    $ret['type'] = Compiler::PHVOLT_T_SWITCH;
+    $ret['expr'] = $expr;
+
+    if ($case_clauses !== null) {
+        $ret['case_clauses'] = $case_clauses;
+    }
+
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
+}
