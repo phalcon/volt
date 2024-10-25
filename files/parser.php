@@ -3661,25 +3661,29 @@ function phvolt_ret_elsefor_statement(&$ret, State $state): void
     ];
 }
 
-function phvolt_ret_for_statement(&$ret, $variable, $key = null, array $expr = [], $if_expr = null, $block_statements = null, ?State $state = null): void
+function phvolt_ret_for_statement(
+    &$ret,
+    Token $variable,
+    ?Token $key = null,
+    array $expr = [],
+    $if_expr = null,
+    $block_statements = null,
+    ?State $state = null,
+): void
 {
     $ret = [
         "type" => Compiler::PHVOLT_T_FOR,
-        "variable" => $variable->token,
+        "variable" => $variable->getValue(),
         "expr" => $expr,
         "block_statements" => $block_statements,
         "file" => $state->getActiveFile(),
         "line" => $state->getActiveLine(),
     ];
 
-    // Free the variable token memory
-    unset($variable->token);
     unset($variable);
 
     if ($key) {
-        $ret["key"] = $key->token;
-        // Free the key token memory
-        unset($key->token);
+        $ret["key"] = $key->getValue();
         unset($key);
     }
 
