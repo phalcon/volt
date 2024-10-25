@@ -3624,22 +3624,28 @@ function phvolt_ret_zval_list(&$ret, $list_left = null, $right_list = null): voi
     $ret[] = $right_list;
 }
 
-function phvolt_ret_if_statement(&$ret, $expr, $true_statements = null, $false_statements = null, ?State $state = null): void
-{
+function phvolt_ret_if_statement(
+    &$ret,
+    $expr,
+    $true_statements = null,
+    $false_statements = null,
+    ?State $state = null,
+): void {
     $ret = [
-        "type" => Compiler::PHVOLT_T_IF,
-        "expr" => $expr,
-        "file" => $state->getActiveFile(),
-        "line" => $state->getActiveLine(),
+        'type' => Compiler::PHVOLT_T_IF,
+        'expr' => $expr,
     ];
 
     if ($true_statements !== null) {
-        $ret["true_statements"] = $true_statements;
+        $ret['true_statements'] = $true_statements;
     }
 
     if ($false_statements !== null) {
-        $ret["false_statements"] = $false_statements;
+        $ret['false_statements'] = $false_statements;
     }
+
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
 }
 
 function phvolt_ret_elseif_statement(&$ret, $expr, State $state): void
@@ -3696,17 +3702,20 @@ function phvolt_ret_literal_zval(&$ret, $type, ?Token $token = null, ?State $sta
 {
     $ret = [
         'type' => $type,
-        'value' => $token?->getValue(),
-        'file' => $state->getActiveFile(),
-        'line' => $state->getActiveLine(),
     ];
+    if ($token !== null && $token->getValue() !== null) {
+        $ret['value'] = $token->getValue();
+    }
+
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
 }
 
 function phvolt_ret_named_item(?Token $token = null, array $expr = [], ?State $state = null): array
 {
     $ret['expr'] = $expr;
 
-    if ($token !== null && $token->getLength() > 0) {
+    if ($token !== null && $token->getValue() !== null) {
         $ret['name'] = $token->getValue();
         unset($token);
     }
