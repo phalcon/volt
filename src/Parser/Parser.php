@@ -388,7 +388,7 @@ class Parser
                     break;
 
                 case Compiler::PHVOLT_T_RAW_FRAGMENT:
-                    if ($state->rawFragment !== '') {
+                    if ($this->token->getLength() > 0) {
                         if ($state->extendsMode === 1 && $state->blockLevel === 0) {
                             $this->createErrorMessage(
                                 $parserStatus,
