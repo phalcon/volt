@@ -3876,13 +3876,8 @@ function phvolt_ret_case_clause(array &$ret, ?array $expr, State $state): void
         $ret['type'] = Compiler::PHVOLT_T_DEFAULT;
     }
 
-    if (isset($state->active_file)) {
-        $ret['file'] = $state->active_file;
-    }
-
-    if (isset($state->active_line)) {
-        $ret['line'] = $state->active_line;
-    }
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
 }
 
 function phvolt_ret_set_statement(array &$ret, array $assignments): void
@@ -3890,4 +3885,14 @@ function phvolt_ret_set_statement(array &$ret, array $assignments): void
     $ret = [];
     $ret['type'] = Compiler::PHVOLT_T_SET;
     $ret['assignments'] = $assignments;
+}
+
+function phvolt_ret_set_assignment(array &$ret, array $assignable_expr, int $operator, array $expr, State $state): void
+{
+    $ret = [];
+    $ret['variable'] = $assignable_expr;
+    $ret['op'] = $operator;
+    $ret['expr'] = $expr;
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
 }
