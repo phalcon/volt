@@ -3314,18 +3314,31 @@ static const struct {
                 break;
             case 142:
             case 150:
-                phvolt_ret_named_item($this->output, $this->yystack[$this->yyidx + -2]->minor, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+                $this->output = phvolt_ret_named_item(
+                    $this->yystack[$this->yyidx - 2]->minor,
+                    $this->yystack[$this->yyidx]->minor,
+                    $this->status->getState(),
+                );
                 $this->yy_destructor(4, $this->yystack[$this->yyidx + -1]->minor);
                 break;
             case 143:
             case 149:
-                phvolt_ret_named_item($this->output, null, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
+                $this->output = phvolt_ret_named_item(
+                    null,
+                    $this->yystack[$this->yyidx + 0]->minor,
+                    $this->status->getState(),
+                );
                 break;
             case 145:
-                phvolt_ret_func_call($this->output, $this->yystack[$this->yyidx + -3]->minor, $this->yystack[$this->yyidx + -1]->minor, $this->status->getState());
+                phvolt_ret_func_call(
+                    $this->output,
+                    $this->yystack[$this->yyidx - 3]->minor,
+                    $this->yystack[$this->yyidx - 1]->minor,
+                    $this->status->getState(),
+                );
 
-                $this->yy_destructor(29, $this->yystack[$this->yyidx + -2]->minor);
-                $this->yy_destructor(52, $this->yystack[$this->yyidx + 0]->minor);
+                $this->yy_destructor(29, $this->yystack[$this->yyidx - 2]->minor);
+                $this->yy_destructor(52, $this->yystack[$this->yyidx]->minor);
                 break;
             case 146:
                 phvolt_ret_func_call(
@@ -3335,8 +3348,8 @@ static const struct {
                     $this->status->getState(),
                 );
 
-                $this->yy_destructor(29, $this->yystack[$this->yyidx + -1]->minor);
-                $this->yy_destructor(52, $this->yystack[$this->yyidx + 0]->minor);
+                $this->yy_destructor(29, $this->yystack[$this->yyidx - 1]->minor);
+                $this->yy_destructor(52, $this->yystack[$this->yyidx]->minor);
                 break;
         }
 
@@ -3675,42 +3688,44 @@ function phvolt_ret_for_statement(&$ret, $variable, $key = null, array $expr = [
     }
 }
 
-function phvolt_ret_literal_zval(&$ret, $type, ?Token $T = null, ?State $state = null): void
+function phvolt_ret_literal_zval(&$ret, $type, ?Token $token = null, ?State $state = null): void
 {
     $ret = [
-        "type" => $type,
-        'value' => $T?->getValue(),
-        "file" => $state->getActiveFile(),
-        "line" => $state->getActiveLine(),
+        'type' => $type,
+        'value' => $token?->getValue(),
+        'file' => $state->getActiveFile(),
+        'line' => $state->getActiveLine(),
     ];
 }
 
-function phvolt_ret_named_item(&$ret, ?Token $token = null, array $expr = [], ?State $state = null): void
+function phvolt_ret_named_item(?Token $token = null, array $expr = [], ?State $state = null): array
 {
-    $ret["expr"] = $expr;
+    $ret['expr'] = $expr;
 
-    // Add the name if provided
-    if ($token !== null) {
-        $ret["name"] = $token->getValue();
+    if ($token !== null && $token->getLength() > 0) {
+        $ret['name'] = $token->getValue();
         unset($token);
     }
 
-    $ret["file"] = $state->getActiveFile();
-    $ret["line"] = $state->getActiveLine();
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
+
+    return $ret;
 }
 
-function phvolt_ret_func_call(&$ret, $expr, $arguments, State $state): void
+function phvolt_ret_func_call(&$ret, $expr, ?array $arguments, State $state): void
 {
     $ret = [
-        "type" => Compiler::PHVOLT_T_FCALL,
-        "name" => $expr,
-        "file" => $state->getActiveFile(),
-        "line" => $state->getActiveLine(),
+        'type' => Compiler::PHVOLT_T_FCALL,
+        'name' => $expr,
     ];
 
     if ($arguments !== null) {
-        $ret["arguments"] = $arguments;
+        $ret['arguments'] = $arguments;
     }
+
+    $ret['file'] = $state->getActiveFile();
+    $ret['line'] = $state->getActiveLine();
 }
 
 function phvolt_ret_macro_call_statement(&$ret, $expr, $arguments, $caller, State $state): void
