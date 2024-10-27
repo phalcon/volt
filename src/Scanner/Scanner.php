@@ -43,6 +43,10 @@ class Scanner
                 $next       = $this->state->getNext();
                 $doubleNext = $this->state->getNext(2);
 
+                if ($cursor === "\n") {
+                    $this->state->incrementActiveLine();
+                }
+
                 if ($cursor === null || ($cursor === '{' && ($next === '%' || $next === '{' || $next === '#'))) {
                     if ($next !== '#') {
                         $this->state->setMode(Compiler::PHVOLT_MODE_CODE);
@@ -71,6 +75,7 @@ class Scanner
                         while ($next = $this->state->incrementStart()->getStart()) {
                             $doubleNext = $this->state->getNext();
                             if ($next === '#' && $doubleNext === '}') {
+                                $this->state->incrementStart(2);
                                 $this->token->setOpcode(Compiler::PHVOLT_T_IGNORE);
                                 return 0;
                             } elseif ($next === "\n") {
@@ -82,10 +87,6 @@ class Scanner
                     }
 
                     return 0;
-                }
-
-                if ($cursor === "\n") {
-                    $this->state->incrementActiveLine();
                 }
 
                 $this->state->rawFragment .= $cursor;
