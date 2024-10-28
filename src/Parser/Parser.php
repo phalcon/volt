@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Phalcon\Volt\Parser;
 
 use Phalcon\Volt\Compiler;
+use Phalcon\Volt\Exception;
 use Phalcon\Volt\Scanner\Opcode;
 use Phalcon\Volt\Scanner\Scanner;
 use Phalcon\Volt\Scanner\State;
@@ -37,6 +38,7 @@ class Parser
      * @param string $templatePath
      *
      * @return array
+     * @throws Exception
      */
     public function parseView(string $templatePath): array
     {
@@ -47,6 +49,7 @@ class Parser
         $debug = fopen('log.txt', 'w+');
 
         $state = new State($this->code);
+        $state->setActiveFile($templatePath);
         $parserStatus = new Status($state);
         $scanner = new Scanner($parserStatus->getState());
 
@@ -385,24 +388,27 @@ class Parser
                     break;
 
                 case Compiler::PHVOLT_T_RAW_FRAGMENT:
-                    if ($state->extendsMode === 1 && $state->blockLevel === 0) {
-                        $this->createErrorMessage(
-                            $parserStatus,
-                            'Child templates only may contain blocks'
+                    if ($this->token->getLength() > 0) {
+                        $value = trim($this->token->getValue());
+                        if ($value !== '' && $state->extendsMode === 1 && $state->blockLevel === 0) {
+                            $this->createErrorMessage(
+                                $parserStatus,
+                                'Child templates only may contain blocks'
+                            );
+                            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
+                            break;
+                        }
+
+                        if (!$this->phvoltIsBlankString($this->token)) {
+                            $state->statementPosition++;
+                        }
+
+                        $this->phvoltParseWithToken(
+                            $parser,
+                            Compiler::PHVOLT_T_RAW_FRAGMENT,
+                            Opcode::PHVOLT_RAW_FRAGMENT
                         );
-                        $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
-                        break;
                     }
-
-                    if (!$this->phvoltIsBlankString($this->token)) {
-                        $state->statementPosition++;
-                    }
-
-                    $this->phvoltParseWithToken(
-                        $parser,
-                        Compiler::PHVOLT_T_RAW_FRAGMENT,
-                        Opcode::PHVOLT_RAW_FRAGMENT
-                    );
                     break;
 
                 case Compiler::PHVOLT_T_SET:
@@ -594,7 +600,7 @@ class Parser
             }
 
             if ($parserStatus->getStatus() !== Status::PHVOLT_PARSING_OK) {
-                break;
+                throw new Exception($parserStatus->getSyntaxError());
             }
 
             $state->setEnd($state->getStart());

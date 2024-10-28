@@ -72,7 +72,6 @@ class Compiler
     public const PHVOLT_MODE_RAW                   = 0;
     public const PHVOLT_PARSING_FAILED             = 0;
     public const PHVOLT_PARSING_OK                 = 1;
-    public const PHVOLT_RAW_BUFFER_SIZE            = 256;
     public const PHVOLT_SCANNER_RETCODE_EOF        = -1;
     public const PHVOLT_SCANNER_RETCODE_ERR        = -2;
     public const PHVOLT_SCANNER_RETCODE_IMPOSSIBLE = -3;
@@ -1387,7 +1386,7 @@ class Compiler
      *
      * @throws Exception
      */
-    public function compileSource(string $viewCode, bool $extendsMode = false): string
+    public function compileSource(string $viewCode, bool $extendsMode = false): string|array
     {
         /**
          * Enable autoescape globally
@@ -2808,7 +2807,7 @@ class Compiler
                      * Block statement
                      */
                     $blockName       = $statement['name'];
-                    $blockStatements = $statement["block_statements"];
+                    $blockStatements = $statement["block_statements"] ?? [];
                     $blocks          = $this->blocks;
 
                     if (true === $blockMode) {
@@ -2817,7 +2816,7 @@ class Compiler
                         }
 
                         /**
-                         * Create a unamed block
+                         * Create an unnamed block.
                          */
                         if ($compilation !== null) {
                             $blocks[]    = $compilation;
@@ -2956,7 +2955,7 @@ class Compiler
 
         $this->level--;
 
-        return $compilation;
+        return $compilation === null ? '' : $compilation;
     }
 
     /**
@@ -3098,13 +3097,8 @@ class Compiler
 
     /**
      * @see https://github.com/php/php-src/blob/81623d3a60599d05c83987dec111bf56809f901d/Zend/zend_hash.h#L263
-     *
-     * @param array $arKey
-     * @param int   $nKeyLength
-     *
-     * @return int
      */
-    private function zendInlineHashFunc(array $arKey, int $nKeyLength): int
+    private function zendInlineHashFunc(string $arKey, int $nKeyLength): int
     {
         $hash = 5381;
         $i    = 0;
@@ -3135,7 +3129,7 @@ class Compiler
             case 2:
                 $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
             case 1:
-                $hash = (($hash << 5) + $hash) + ord($arKey[$i++]);
+                $hash = (($hash << 5) + $hash) + ord($arKey[$i] ?? '');
                 break;
             case 0:
                 break;

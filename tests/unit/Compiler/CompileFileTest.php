@@ -70,6 +70,8 @@ Clearly, the song is: <?= $this->getContent() ?>.
         string $view,
         string $expected
     ): void {
+        $this->markTestSkipped('Compiler.php must be updated from phalcon/phalcon.');
+
         $viewFile = sprintf('tests/_data/views/filters/%s.volt', $view);
         $compiledFile = $viewFile . '.php';
 

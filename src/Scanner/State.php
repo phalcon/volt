@@ -24,15 +24,15 @@ class State
     public int $forcedRawState = 0;
     public int $ifLevel = 0;
     public int $macroLevel = 0;
-    public mixed $marker = null;
+    public int $marker = 0;
     public int $oldIfLevel = 0;
     public string $rawBuffer;
+    public string $rawFragment = '';
     public int $rawBufferCursor = 0;
-    public int $rawBufferSize = Compiler::PHVOLT_RAW_BUFFER_SIZE;
     public int $startLength;
     public int $statementPosition = 0;
     public int $switchLevel = 0;
-    public bool $whitespaceControl = false;
+    private bool $whitespaceControl = false;
     protected string $activeFile = 'eval code';
     protected int $activeLine = 1;
     protected int $cursor = 0;
@@ -80,11 +80,6 @@ class State
     public function getIfLevel(): int
     {
         return $this->ifLevel;
-    }
-
-    public function getMarker(): mixed
-    {
-        return $this->marker;
     }
 
     public function getMode(): int
@@ -212,13 +207,6 @@ class State
         return $this;
     }
 
-    public function setMarker(mixed $marker): self
-    {
-        $this->marker = $marker;
-
-        return $this;
-    }
-
     public function setMode(int $mode): self
     {
         $this->mode = $mode;
@@ -236,20 +224,6 @@ class State
     public function setRawBuffer(string $rawBuffer): self
     {
         $this->rawBuffer = $rawBuffer;
-
-        return $this;
-    }
-
-    public function setRawBufferCursor(int $rawBufferCursor): self
-    {
-        $this->rawBufferCursor = $rawBufferCursor;
-
-        return $this;
-    }
-
-    public function setRawBufferSize(int $rawBufferSize): self
-    {
-        $this->rawBufferSize = $rawBufferSize;
 
         return $this;
     }
