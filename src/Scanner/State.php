@@ -24,7 +24,7 @@ class State
     public int $forcedRawState = 0;
     public int $ifLevel = 0;
     public int $macroLevel = 0;
-    public int $marker = 0;
+    public ?int $marker = null;
     public int $oldIfLevel = 0;
     public string $rawBuffer;
     public string $rawFragment = '';
@@ -75,6 +75,11 @@ class State
     public function getCursor(): int
     {
         return $this->cursor;
+    }
+
+    public function getMarker(): ?int
+    {
+        return $this->marker;
     }
 
     public function getIfLevel(): int
@@ -140,6 +145,27 @@ class State
     {
         $this->cursor += $value;
         $this->setStart($this->rawBuffer[$this->cursor] ?? null);
+
+        return $this;
+    }
+
+    public function setCursor(int $cursor): self
+    {
+        $this->cursor = $cursor;
+
+        return $this;
+    }
+
+    public function setMarkerCursor(int $cursor): self
+    {
+        $this->cursor = $cursor;
+
+        return $this;
+    }
+
+    public function setMarker(int $marker): self
+    {
+        $this->marker = $marker;
 
         return $this;
     }
