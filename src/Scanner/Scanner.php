@@ -335,17 +335,16 @@ class Scanner
                     default:
                         goto vv24;
                 }
+
                 vv24:
-                {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ADD);
-                    return 0;
-                }
+                $this->token->setOpcode(Compiler::PHVOLT_T_ADD);
+                return 0;
+
                 vv25:
                 $this->state->incrementStart();
-                {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_COMMA);
-                    return 0;
-                }
+                $this->token->setOpcode(Compiler::PHVOLT_T_COMMA);
+                return 0;
+
                 vv27:
                 $vvaccept = 1;
                 $vvch     = $this->state->incrementStart()->getStart();
@@ -362,6 +361,7 @@ class Scanner
                     default:
                         goto vv28;
                 }
+
                 vv28:
                 $this->token->setOpcode(Compiler::PHVOLT_T_SUB);
                 return 0;
@@ -964,12 +964,11 @@ class Scanner
                     default:
                         goto vv81;
                 }
+
                 vv97:
                 $this->state->incrementStart();
-                {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_DECR);
-                    return 0;
-                }
+                $this->token->setOpcode(Compiler::PHVOLT_T_DECR);
+                return 0;
 
                 vv99:
                 $this->state->incrementStart();
@@ -1779,11 +1778,13 @@ class Scanner
                     default:
                         goto vv155;
                 }
+
                 vv155:
                 $this->state->setWhitespaceControl(false);
                 $this->state->statementPosition++;
                 $this->token->setOpcode(Compiler::PHVOLT_T_OPEN_EDELIMITER);
                 return 0;
+
                 vv156:
                 $this->state->incrementStart();
                 $this->state->setMode(Compiler::PHVOLT_MODE_RAW);
@@ -1793,12 +1794,14 @@ class Scanner
                 $this->state->incrementStart();
                 $this->token->setOpcode(Compiler::PHVOLT_T_NOTIDENTICAL);
                 return 0;
+
                 vv160:
                 $this->state->incrementStart();
                 $this->state->setMode(Compiler::PHVOLT_MODE_RAW);
                 $this->state->setWhitespaceControl(true);
                 $this->token->setOpcode(Compiler::PHVOLT_T_CLOSE_DELIMITER);
                 return 0;
+
                 vv162:
                 $this->state->incrementStart();
                 $this->state->setMode(Compiler::PHVOLT_MODE_RAW);
@@ -2553,6 +2556,7 @@ class Scanner
                     default:
                         goto vv54;
                 }
+
                 vv206:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
@@ -2562,6 +2566,7 @@ class Scanner
                     default:
                         goto vv252;
                 }
+
                 vv207:
                 $this->state->incrementStart();
                 $this->state->setWhitespaceControl(false);
@@ -2569,6 +2574,7 @@ class Scanner
                 return 0;
 
                 vv209:
+                $this->state->incrementStart();
                 $this->state->setWhitespaceControl(false);
                 $this->state->statementPosition++;
                 $this->token->setOpcode(Compiler::PHVOLT_T_OPEN_EDELIMITER);

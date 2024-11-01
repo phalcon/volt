@@ -2877,12 +2877,8 @@ static const struct {
                 phvolt_ret_literal_zval($this->output, Compiler::PHVOLT_T_RAW_FRAGMENT, $this->yystack[$this->yyidx + 0]->minor, $this->status->getState());
                 break;
             case 85:
-#line 522 "parser.php.lemon"
-                {
-                    phvolt_ret_expr($this->output, Compiler::PHVOLT_T_MINUS, null, $this->yystack[$this->yyidx + 0]->minor, null, $this->status->getState());
-                    $this->yy_destructor(22, $this->yystack[$this->yyidx + -1]->minor);
-            }
-#line 2222 "parser.php.php"
+                phvolt_ret_expr($this->output, Compiler::PHVOLT_T_MINUS, null, $this->yystack[$this->yyidx]->minor, null, $this->status->getState());
+                $this->yy_destructor(22, $this->yystack[$this->yyidx -1]->minor);
                 break;
             case 86:
 #line 526 "parser.php.lemon"
