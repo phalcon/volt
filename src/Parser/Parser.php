@@ -48,17 +48,20 @@ class Parser
 
         $debug = fopen('log.txt', 'w+');
 
-        $state = new State($this->code);
-        $state->setActiveFile($templatePath);
-        $parserStatus = new Status($state);
+        $codeLength = strlen($this->code);
+        $parserState = new State($this->code);
+        $parserState->setActiveFile($templatePath);
+        $parserStatus = new Status($parserState);
         $scanner = new Scanner($parserStatus->getState());
 
         $parser = new phvolt_Parser($parserStatus);
         $parser->phvolt_Trace($debug);
 
         while (0 <= $scannerStatus = $scanner->scanForToken()) {
+            $state = $parserStatus->getState();
             $this->token = $scanner->getToken();
             $parserStatus->setToken($this->token);
+            $state->setStartLength($codeLength - $state->getStartLength());
 
             $opcode = $this->token->getOpcode();
             $state->setActiveToken($opcode);
@@ -600,14 +603,24 @@ class Parser
             }
 
             if ($parserStatus->getStatus() !== Status::PHVOLT_PARSING_OK) {
-                throw new Exception($parserStatus->getSyntaxError());
+                break;
             }
 
             $state->setEnd($state->getStart());
         }
 
+        if ($parserStatus->getStatus() !== Status::PHVOLT_PARSING_OK) {
+            throw new Exception($parserStatus->getSyntaxError());
+        }
+
+        $parserStatus->getState()->setStartLength(0);
+
         if ($scannerStatus === Scanner::PHVOLT_SCANNER_RETCODE_EOF) {
             $parser->phvolt_(0);
+        }
+
+        if ($parserStatus->getStatus() !== Status::PHVOLT_PARSING_OK) {
+            throw new Exception($parserStatus->getSyntaxError());
         }
 
         return $parser->getOutput();

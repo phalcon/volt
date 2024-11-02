@@ -59,13 +59,10 @@ class phvolt_yyStackEntry
 
 class phvolt_Parser
 {
-    public Status $status;
-
     protected array $output = [];
 
-    public function __construct(Status $status)
+    public function __construct(private Status $status)
     {
-        $this->status = $status;
     }
 
     public function getOutput(): array

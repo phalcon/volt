@@ -2221,11 +2221,11 @@ class Compiler
      *     $compiler->parse("{% raw %}{{ 3 + 2 }}{% endraw %}")
      * );
      *```
+     * @throws Exception
      */
     public function parse(string $viewCode): array
     {
-        // TODO: rewrite from C
-        return phvolt_parse_view($viewCode, 'eval code');
+        return (new Parser($viewCode))->parseView("eval code");
     }
 
     /**
