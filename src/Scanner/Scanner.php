@@ -559,8 +559,10 @@ class Scanner
                     default:
                         goto vv54;
                 }
+
                 vv53:
                 $vvch = $this->state->incrementStart()->getStart();
+
                 vv54:
                 switch ($vvch) {
                     case '0':
@@ -2344,12 +2346,12 @@ class Scanner
                     default:
                         goto vv196;
                 }
+
                 vv196:
-                {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ODD);
-                    return 0;
-                }
+                $this->state->statementPosition++;
+                $this->token->setOpcode(Compiler::PHVOLT_T_ODD);
+                return 0;
+
                 vv197:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
