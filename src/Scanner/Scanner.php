@@ -35,6 +35,7 @@ class Scanner
 
     public function scanForToken(): int
     {
+        $start = $this->state->getCursor();
         $status = self::PHVOLT_SCANNER_RETCODE_IMPOSSIBLE;
         while (self::PHVOLT_SCANNER_RETCODE_IMPOSSIBLE === $status) {
             $cursor = $this->state->getStart();
@@ -93,7 +94,6 @@ class Scanner
                 $this->state->incrementStart();
             } else {
                 $vvch = $cursor;
-                $start = $this->state->getCursor();
                 switch ($vvch) {
                     case null:
                         goto vv2;
@@ -886,7 +886,7 @@ class Scanner
                 }
 
                 vv81:
-                $this->state->setCursor($this->state->marker);
+                $this->state->useMarker = true;
                 switch ($vvaccept) {
                     case 0:
                         goto vv5;
@@ -3028,12 +3028,12 @@ class Scanner
                     default:
                         goto vv234;
                 }
+
                 vv234:
-                {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_EVEN);
-                    return 0;
-                }
+                $this->state->statementPosition++;
+                $this->token->setOpcode(Compiler::PHVOLT_T_EVEN);
+                return 0;
+
                 vv235:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {

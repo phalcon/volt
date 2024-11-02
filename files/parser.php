@@ -2998,9 +2998,16 @@ static const struct {
                 $this->yy_destructor(83, $this->yystack[$this->yyidx + 0]->minor);
                 break;
             case 107:
-                phvolt_ret_expr($this->output, Compiler::PHVOLT_T_ISODD, $this->yystack[$this->yyidx + -2]->minor, null, null, $this->status->getState());
-                $this->yy_destructor(9, $this->yystack[$this->yyidx + -1]->minor);
-                $this->yy_destructor(83, $this->yystack[$this->yyidx + 0]->minor);
+                phvolt_ret_expr(
+                    $this->output,
+                    Compiler::PHVOLT_T_ISODD,
+                    $this->yystack[$this->yyidx - 2]->minor,
+                    null,
+                    null,
+                    $this->status->getState(),
+                );
+                $this->yy_destructor(9, $this->yystack[$this->yyidx - 1]->minor);
+                $this->yy_destructor(83, $this->yystack[$this->yyidx]->minor);
                 break;
             case 108:
                 phvolt_ret_expr($this->output, Compiler::PHVOLT_T_NOT_ISNUMERIC, $this->yystack[$this->yyidx + -2]->minor, null, null, $this->status->getState());
