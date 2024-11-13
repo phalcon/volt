@@ -57,8 +57,8 @@ class Parser
         $parser = new phvolt_Parser($parserStatus);
         $parser->phvolt_Trace($debug);
 
+        $state = $parserStatus->getState();
         while (0 <= $scannerStatus = $scanner->scanForToken()) {
-            $state = $parserStatus->getState();
             $this->token = $scanner->getToken();
             $parserStatus->setToken($this->token);
             $state->setStartLength($codeLength - $state->getStartLength());
@@ -609,15 +609,12 @@ class Parser
             $state->setEnd($state->getStart());
         }
 
-        if ($parserStatus->getStatus() !== Status::PHVOLT_PARSING_OK) {
-            throw new Exception($parserStatus->getSyntaxError());
-        }
-
-        $parserStatus->getState()->setStartLength(0);
-
         if ($scannerStatus === Scanner::PHVOLT_SCANNER_RETCODE_EOF) {
             $parser->phvolt_(0);
         }
+
+        $state->setStartLength(0);
+        $state->setActiveToken(0);
 
         if ($parserStatus->getStatus() !== Status::PHVOLT_PARSING_OK) {
             throw new Exception($parserStatus->getSyntaxError());
