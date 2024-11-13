@@ -3336,6 +3336,10 @@ static const struct {
 
         /* (re)initialize the parser, if necessary */
         if ($this->yyidx < 0) {
+            if ($yymajor === 0) {
+                return;
+            }
+
             $this->yyidx = 0;
             $this->yyerrcnt = -1;
             $ent = new phvolt_yyStackEntry();
