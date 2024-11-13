@@ -2018,18 +2018,32 @@ class phvolt_Parser
     private function yy_find_shift_action($iLookAhead)
     {
         $stateno = $this->yystack[$this->yyidx]->stateno;
-        $i = self::$yy_shift_ofst[$stateno];
 
-        if ($i == self::YY_SHIFT_USE_DFLT) {
+        if ($stateno > self::YY_SHIFT_MAX || ($i = self::$yy_shift_ofst[$stateno]) == self::YY_SHIFT_USE_DFLT) {
             return self::$yy_default[$stateno];
         }
-
         if ($iLookAhead == self::YYNOCODE) {
             return $this->YY_NO_ACTION;
         }
-
         $i += $iLookAhead;
         if ($i < 0 || $i >= count(self::$yy_action) || self::$yy_lookahead[$i] != $iLookAhead) {
+            if ($iLookAhead > 0) {
+                if (
+                    isset(self::$yyFallback[$iLookAhead]) &&
+                    ($iFallback = self::$yyFallback[$iLookAhead]) != 0
+                ) {
+                    if ($this->yyTraceFILE) {
+                        fprintf(
+                            $this->yyTraceFILE,
+                            "%sFALLBACK %s => %s\n",
+                            $this->yyTracePrompt,
+                            self::$yyTokenName[$iLookAhead],
+                            self::$yyTokenName[$iFallback]
+                        );
+                    }
+                    return $this->yy_find_shift_action($iFallback);
+                }
+            }
             return self::$yy_default[$stateno];
         }
 
