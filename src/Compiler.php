@@ -70,8 +70,7 @@ class Compiler
      * Modes
      */
     public const PHVOLT_MODE_RAW                   = 0;
-    public const PHVOLT_PARSING_FAILED             = 0;
-    public const PHVOLT_PARSING_OK                 = 1;
+
     /**
      * Operators
      */

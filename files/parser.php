@@ -3293,7 +3293,7 @@ static const struct {
             $this->status->setSyntaxError($error_str);
         }
 
-        $this->status->setStatus(Compiler::PHVOLT_PARSING_FAILED);
+        $this->status->setStatus(Status::PHVOLT_PARSING_FAILED);
     }
 
     /*
