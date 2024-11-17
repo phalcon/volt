@@ -3253,9 +3253,9 @@ static const struct {
                 $error_str .= $token_name;
             }
 
-            $tokenValue = trim($this->status->getToken()->getValue());
-            if ($tokenValue) {
-                $error_str .= "(" . $tokenValue . ")";
+            $tokenValue = $this->status->getToken()->getValue();
+            if ($tokenValue !== null) {
+                $error_str .= "(" . trim($tokenValue) . ")";
             }
 
             $error_str .= " in ";
