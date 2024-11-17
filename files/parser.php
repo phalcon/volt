@@ -2747,7 +2747,7 @@ static const struct {
             case 70:
 #line 462 "parser.php.lemon"
                 {
-                    phvolt_ret_cache_statement($this->output, $this->yystack[$this->yyidx + -5]->minor, null, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+                    phvolt_ret_cache_statement($this->output, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -7]->minor);
                     $this->yy_destructor(66, $this->yystack[$this->yyidx + -6]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
@@ -2760,7 +2760,7 @@ static const struct {
             case 71:
 #line 466 "parser.php.lemon"
                 {
-                    phvolt_ret_cache_statement($this->output, $this->yystack[$this->yyidx + -6]->minor, $this->yystack[$this->yyidx + -5]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState());
+                    phvolt_ret_cache_statement($this->output, $this->yystack[$this->yyidx + -6]->minor, $this->yystack[$this->yyidx + -3]->minor, $this->status->getState(), $this->yystack[$this->yyidx + -5]->minor);
                     $this->yy_destructor(1, $this->yystack[$this->yyidx + -8]->minor);
                     $this->yy_destructor(66, $this->yystack[$this->yyidx + -7]->minor);
                     $this->yy_destructor(32, $this->yystack[$this->yyidx + -4]->minor);
@@ -3796,7 +3796,7 @@ function phvolt_ret_block_statement(array &$ret, Token $name, ?array $block_stat
     $ret['line'] = $state->getActiveLine();
 }
 
-function phvolt_ret_cache_statement(array &$ret, mixed $expr, mixed $lifetime = null, mixed $block_statements, State $state): void
+function phvolt_ret_cache_statement(array &$ret, mixed $expr, mixed $block_statements, State $state, mixed $lifetime = null): void
 {
     $ret = [];
     $ret['type'] = Compiler::PHVOLT_T_CACHE;
