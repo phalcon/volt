@@ -3254,7 +3254,7 @@ static const struct {
             }
 
             if ($this->status->getToken()->getValue()) {
-                $error_str .= "(" . $this->status->getToken()->getValue() . ")";
+                $error_str .= "(" . trim($this->status->getToken()->getValue()) . ")";
             }
 
             $error_str .= " in ";
