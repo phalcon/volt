@@ -23,18 +23,6 @@ class RenderCest
     use DiTrait;
 
     /**
-     * Tests Phalcon\Mvc\View\Engine\Volt :: render()
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2018-11-13
-     */
-    public function mvcViewEngineVoltRender(IntegrationTester $I)
-    {
-        $I->wantToTest('Mvc\View\Engine\Volt - render()');
-        $I->skipTest('Need implementation');
-    }
-
-    /**
      * Tests Phalcon\Mvc\View\Engine\Volt :: render() - events
      *
      * @author Phalcon Team <team@phalcon.io>
