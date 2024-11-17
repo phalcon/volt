@@ -30,6 +30,10 @@ class Parser
 {
     private ?Token $token = null;
 
+    private bool $debug = false;
+
+    private string $debugFile = 'volt.txt';
+
     public function __construct(private string $code)
     {
     }
@@ -46,7 +50,10 @@ class Parser
             return [];
         }
 
-        $debug = fopen('log.txt', 'w+');
+        $debug = null;
+        if ($this->debug) {
+            $debug = fopen($this->debugFile, 'w+');
+        }
 
         $codeLength = strlen($this->code);
         $parserState = new State($this->code);
