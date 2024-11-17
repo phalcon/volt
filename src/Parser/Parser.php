@@ -61,7 +61,7 @@ class Parser
         while (0 <= $scannerStatus = $scanner->scanForToken()) {
             $this->token = $scanner->getToken();
             $parserStatus->setToken($this->token);
-            $state->setStartLength($codeLength - $state->getStartLength());
+            $state->setStartLength($codeLength - $state->getCursor());
 
             $opcode = $this->token->getOpcode();
             $state->setActiveToken($opcode);
@@ -609,7 +609,12 @@ class Parser
             $state->setEnd($state->getStart());
         }
 
-        if ($scannerStatus === Scanner::PHVOLT_SCANNER_RETCODE_EOF) {
+        if (
+            $scannerStatus === Scanner::PHVOLT_SCANNER_RETCODE_ERR ||
+            $scannerStatus === Scanner::PHVOLT_SCANNER_RETCODE_IMPOSSIBLE
+        ) {
+            throw new Exception($this->createScannerErrorMessage($parserStatus));
+        } elseif ($scannerStatus === Scanner::PHVOLT_SCANNER_RETCODE_EOF) {
             $parser->phvolt_(0);
         }
 
@@ -640,6 +645,36 @@ class Parser
         );
 
         $parserStatus->setSyntaxError(substr($str, 0, $length));
+    }
+
+    private function createScannerErrorMessage(Status $parserStatus): string
+    {
+        $state = $parserStatus->getState();
+        if ($state->getStartLength() > 0) {
+            if ($state->getStartLength() > 16) {
+                $part = substr($state->getRawBuffer(), $state->getCursor(), 16);
+                $error = sprintf(
+                    "Scanning error before '%s...' in %s on line %d",
+                    $part,
+                    $state->getActiveFile(),
+                    $state->getActiveLine(),
+                );
+            } else {
+                $error = sprintf(
+                    "Scanning error before '%s' in %s on line %d",
+                    $state->getStart(),
+                    $state->getActiveFile(),
+                    $state->getActiveLine(),
+                );
+            }
+        } else {
+            $error = sprintf(
+                "Scanning error near to EOF in %s",
+                $state->getActiveFile(),
+            );
+        }
+
+        return $error;
     }
 
     private function phvoltParseWithToken(phvolt_Parser $parser, int $opcode, int $parserCode): void

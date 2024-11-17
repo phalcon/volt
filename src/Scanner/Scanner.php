@@ -232,12 +232,15 @@ class Scanner
                     case '~':
                         goto vv75;
                     default:
-                        $this->state->incrementStart();
+                        goto vv4;
                 }
 
                 vv2:
                 $status = self::PHVOLT_SCANNER_RETCODE_EOF;
                 break;
+
+                vv4:
+                $this->state->incrementStart();
 
                 vv5:
                 $status = self::PHVOLT_SCANNER_RETCODE_ERR;
