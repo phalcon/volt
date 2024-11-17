@@ -140,57 +140,6 @@ jobs:
           name: "unit-${{ matrix.php }}.coverage"
           path: "tests/support/coverage.xml"
 
-  qodana-analysis:
-    permissions:
-      contents: read
-
-    name: "Qodana Analysis"
-    runs-on: "ubuntu-22.04"
-    needs:
-      - "unit-tests"
-
-    steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v3"
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}  # to check out the actual pull request commit, not the merge commit
-          fetch-depth: 0  # a full history is required for pull request analysis
-
-      - name: 'Qodana Scan'
-        uses: JetBrains/qodana-action@v2023.2
-        env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
-        with:
-          args: --baseline,qodana.sarif.json
-
-  upload-coverage:
-    permissions:
-      contents: read
-
-    name: "Upload coverage"
-    runs-on: "ubuntu-22.04"
-    needs:
-      - "unit-tests"
-
-    steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v4"
-        with:
-          fetch-depth: 2
-
-      - name: "Display structure of downloaded files"
-        run: |
-          mkdir -p reports
-
-      - name: "Download coverage files"
-        uses: "actions/download-artifact@v4"
-        with:
-          path: "reports"
-
-      - name: "Display structure of downloaded files"
-        run: ls -R
-        working-directory: reports
-
 #      - name: "Upload to Codacy"
 #        run: |
 #          bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
@@ -214,10 +163,3 @@ jobs:
 #          fail_ci_if_error: true
 #          verbose: true
 #
-      - name: "Upload to Qodana"
-        run: |
-          docker run \
-            -v $(pwd):/data/project/ \
-            -v ./reports/:/data/coverage \
-            -e QODANA_TOKEN="${{ secrets.QODANA_TOKEN }}" \
-            jetbrains/qodana-php
