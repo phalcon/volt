@@ -37,7 +37,6 @@ env:
 
 permissions: { }
 jobs:
-
   # PHP CodeSniffer inspection
   phpcs:
     name: "Validate Tests code style"
@@ -103,6 +102,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: "Setup platform specific environment"
         shell: pwsh
         run: |
@@ -121,45 +123,14 @@ jobs:
           PHPTS: ${{ matrix.ts }}
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Validate composer"
-        run: composer validate --no-check-all --no-check-publish
-
-      - name: "Install development dependencies with Composer"
-        uses: "ramsey/composer-install@v2"
-        with:
-          composer-options: "--prefer-dist"
+      - run: composer validate --no-check-all --no-check-publish
+      - run: composer install --prefer-dist
 
       - name: "Run Unit Tests"
-        if: always()
-        run: |
-          composer test-coverage
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
-      - name: "Upload coverage file artifact"
-        uses: "actions/upload-artifact@v4"
-        with:
-          name: "unit-${{ matrix.php }}.coverage"
-          path: "tests/support/coverage.xml"
-
-#      - name: "Upload to Codacy"
-#        run: |
-#          bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
-#            -l php $(find ./reports/ -name '*.xml' | sed 's,^, -r ,' | xargs echo)
-
-#      - name: "Upload to Codacy"
-#        uses: codacy/codacy-coverage-reporter-action@v1.3.0
-#        with:
-#          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-#          # or
-#          # api-token: ${{ secrets.CODACY_API_TOKEN }}
-#          coverage-reports: reports
-#          # or a comma-separated list for multiple reports
-#          # coverage-reports: <PATH_TO_REPORT>, <PATH_TO_REPORT>
-
-#      - name: "Upload to Codecov"
-#        uses: "codecov/codecov-action@v3"
-#        with:
-#          token: ${{ secrets.CODECOV_TOKEN }}
-#          directory: reports
-#          fail_ci_if_error: true
-#          verbose: true
-#
+      - name: SonarQube Cloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
