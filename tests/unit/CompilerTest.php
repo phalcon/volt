@@ -19,4 +19,15 @@ final class CompilerTest extends TestCase
 
         $this->assertSame($expected, $actual);
     }
+
+    public function testNotExist(): void
+    {
+        $compiler  = new Compiler();
+
+        $source   = '{{ myfunction("a") }}';
+        $expected = "<?= \$this->callMacro('myfunction', ['a']) ?>";
+        $actual   = $compiler->compileString($source);
+
+        $this->assertSame($expected, $actual);
+    }
 }

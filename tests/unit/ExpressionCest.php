@@ -11,33 +11,22 @@
 
 declare(strict_types=1);
 
-namespace Phalcon\Tests\Integration\Mvc\View\Engine\Volt\Compiler;
+namespace Phalcon\Tests\Unit;
 
-use IntegrationTester;
-use Phalcon\Mvc\View\Engine\Volt\Compiler;
-use Phalcon\Tests\Fixtures\Traits\DiTrait;
+use Phalcon\Volt\Compiler;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Class ExpressionCest
- */
-class ExpressionCest
+final class ExpressionCest extends TestCase
 {
-    use DiTrait;
-
     /**
      * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: expression()
      *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2022-07-01
      */
-    public function mvcViewEngineVoltCompilerExpression(IntegrationTester $I)
+    public function testCompilerExpression(): void
     {
-        $I->wantToTest('Mvc\View\Engine\Volt\Compiler - expression()');
-
-        $this->setNewFactoryDefault();
-
         $volt = new Compiler();
-        $volt->setDI($this->container);
 
         // title("\r\n", "\n\n")
         $source   = [
@@ -66,6 +55,6 @@ class ExpressionCest
         $expected = "\"\t\", \"\n\n\"";
         $actual   = $volt->expression($source, true);
 
-        $I->assertEquals($expected, $actual);
+        $this->assertEquals($expected, $actual);
     }
 }

@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Phalcon\Tests\Integration\Mvc\View\Engine\Volt\Compiler;
+namespace Phalcon\Tests\Unit\Compiler;
 
 use Phalcon\Volt\Compiler;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +24,7 @@ final class CompileIfTest extends TestCase
      * @author Sid Roberts <https://github.com/SidRoberts>
      * @since  2019-05-22
      */
-    public function testMvcViewEngineVoltCompilerCompileIf()
+    public function testMvcViewEngineVoltCompilerCompileIf(): void
     {
         $compiler = new Compiler();
 

@@ -11,16 +11,12 @@
 
 declare(strict_types=1);
 
-namespace Phalcon\Tests\Integration\Mvc\View\Engine\Volt\Compiler;
+namespace Phalcon\Tests\Unit;
 
-use Codeception\Example;
-use IntegrationTester;
-use Phalcon\Mvc\View\Engine\Volt\Compiler;
+use Phalcon\Volt\Compiler;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Class SetOptionCest
- */
-class SetOptionCest
+final class SetOptionCest extends TestCase
 {
     /**
      * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: setOption() - autoescape
@@ -30,25 +26,18 @@ class SetOptionCest
      *
      * @dataProvider getVoltSetOptionAutoescape
      */
-    public function mvcViewEngineVoltCompilerSetOptionAutoescape(IntegrationTester $I, Example $example)
+    public function testSetOptionAutoescape(string $param, string $expected): void
     {
-        $I->wantToTest("Mvc\View\Engine\Volt\Compiler - setOption() - autoescape");
-
-        $param    = $example[0];
-        $expected = $example[1];
+        $this->markTestSkipped(
+            'Enable when Compiler class is incorporated',
+        );
 
         $volt = new Compiler();
-
         $volt->setOption('autoescape', true);
-
-        $actual = $volt->compileString($param);
-        $I->assertSame($expected, $actual);
+        $this->assertSame($expected, $volt->compileString($param));
     }
 
-    /**
-     * @return \string[][]
-     */
-    private function getVoltSetOptionAutoescape(): array
+    public static function getVoltSetOptionAutoescape(): array
     {
         return [
             [

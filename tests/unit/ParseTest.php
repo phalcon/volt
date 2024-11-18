@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Phalcon\Tests\Integration\Mvc\View\Engine\Volt\Compiler;
+namespace Phalcon\Tests\Unit;
 
 use Phalcon\Volt\Compiler;
 use Phalcon\Volt\Exception;
@@ -47,7 +47,7 @@ final class ParseTest extends TestCase
      *
      * @dataProvider getVoltSyntaxErrors
      */
-    public function mvcViewEngineVoltCompilerParseSyntaxError(
+    public function testParseSyntaxError(
         string $code,
         string $message
     ): void {
@@ -68,7 +68,7 @@ final class ParseTest extends TestCase
      *
      * @dataProvider getVoltExtendsError
      */
-    public function mvcViewEngineVoltCompilerParseExtendsWithError(
+    public function testParseExtendsWithError(
         string $code,
         string $message
     ): void {
@@ -288,7 +288,7 @@ final class ParseTest extends TestCase
                 {% endfor %}
 
                 ',
-                'Syntax error, unexpected token ~ in eval code on line 4',
+                'Syntax error, unexpected token ~(id) in eval code on line 4',
             ],
             [
                 '\'{{ link_to("album/" ~ album.id ~ "/" ~ $album.uri, ' .

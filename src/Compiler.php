@@ -667,7 +667,7 @@ class Compiler
          * "autoescape" mode
          */
         $oldAutoescape    = $this->autoescape;
-        $this->autoescape = $statement['enable'];
+        $this->autoescape = (bool)$statement['enable'];
 
         $compilation      = $this->statementList($statement['block_statements'], $extendsMode);
         $this->autoescape = $oldAutoescape;
@@ -1392,7 +1392,7 @@ class Compiler
                 throw new Exception("'autoescape' must be bool");
             }
 
-            $this->autoescape = $this->options['autoescape'];
+            $this->autoescape = (bool)$this->options['autoescape'];
         }
 
         $parser       = new Parser($viewCode);
