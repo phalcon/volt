@@ -26,6 +26,7 @@
         "ext-mbstring": "*"
     },
     "require-dev": {
+        "pds/skeleton": "^1.0",
         "phalcon/ide-stubs": "^5.8",
         "phpstan/phpstan": "^1.11",
         "phpunit/phpunit": "^10.5",

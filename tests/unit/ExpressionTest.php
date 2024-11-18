@@ -16,7 +16,7 @@ namespace Phalcon\Tests\Unit;
 use Phalcon\Volt\Compiler;
 use PHPUnit\Framework\TestCase;
 
-final class ExpressionCest extends TestCase
+final class ExpressionTest extends TestCase
 {
     /**
      * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: expression()

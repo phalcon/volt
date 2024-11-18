@@ -17,7 +17,7 @@ use Phalcon\Volt\Compiler;
 use Phalcon\Volt\Exception;
 use PHPUnit\Framework\TestCase;
 
-class CompileStringCest extends TestCase
+final class CompileStringTest extends TestCase
 {
     /**
      * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: compileString()

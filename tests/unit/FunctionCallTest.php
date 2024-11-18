@@ -16,7 +16,7 @@ namespace Phalcon\Tests\Unit;
 use Phalcon\Volt\Compiler;
 use PHPUnit\Framework\TestCase;
 
-class FunctionCallCest extends TestCase
+final class FunctionCallTest extends TestCase
 {
     /**
      * @dataProvider getExamples
