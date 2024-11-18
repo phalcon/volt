@@ -19,7 +19,6 @@ use PHPUnit\Framework\TestCase;
 
 class CompileStringCest extends TestCase
 {
-
     /**
      * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: compileString()
      *
