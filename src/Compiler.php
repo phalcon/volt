@@ -1751,6 +1751,10 @@ class Compiler
                     $exprCode = '(' . $leftCode . ')';
                     break;
 
+                case static::PHVOLT_T_ARRAYACCESS:
+                    $exprCode = $leftCode . "[" . $rightCode . "]";
+                    break;
+
                 case static::PHVOLT_T_SLICE:
                     /**
                      * Evaluate the start part of the slice
