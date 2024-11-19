@@ -4,7 +4,7 @@ services:
   phalcon-volt-8.1:
     container_name: phalcon-volt-8.1
     hostname: phalcon-volt-8.1
-    build: .docker/8.1
+    build: resources/docker/8.1
     tty: true
     working_dir: /srv
     volumes:

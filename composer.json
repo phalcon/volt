@@ -45,7 +45,7 @@
             "Phalcon\\Volt\\": "src/"
         },
         "files": [
-            "files/parser.php"
+            "resources/files/parser.php"
         ]
     },
     "autoload-dev": {
@@ -55,9 +55,9 @@
     },
     "support": {
         "email": "support@phalcon.io",
-        "issues": "https://github.com/phalcon/cphalcon/issues",
-        "forum": "https://phalcon.io/forum/",
-        "source": "https://github.com/phalcon/cphalcon",
+        "issues": "https://github.com/phalcon/volt/issues",
+        "discussions": "https://phalcon.io/discussions/",
+        "source": "https://github.com/phalcon/volt",
         "docs": "https://phalcon.io/docs/",
         "rss": "https://blog.phalcon.io/rss"
     },
