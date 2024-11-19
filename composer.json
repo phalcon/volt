@@ -18,7 +18,7 @@
         },
         {
             "name": "Contributors",
-            "homepage": "https://github.com/phalcon/cphalcon/graphs/contributors"
+            "homepage": "https://github.com/phalcon/volt/graphs/contributors"
         }
     ],
     "require": {
