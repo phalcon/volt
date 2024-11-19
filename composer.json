@@ -18,7 +18,7 @@
         },
         {
             "name": "Contributors",
-            "homepage": "https://github.com/phalcon/cphalcon/graphs/contributors"
+            "homepage": "https://github.com/phalcon/volt/graphs/contributors"
         }
     ],
     "require": {
@@ -26,6 +26,7 @@
         "ext-mbstring": "*"
     },
     "require-dev": {
+        "pds/skeleton": "^1.0",
         "phalcon/ide-stubs": "^5.8",
         "phpstan/phpstan": "^1.11",
         "phpunit/phpunit": "^10.5",
@@ -44,7 +45,7 @@
             "Phalcon\\Volt\\": "src/"
         },
         "files": [
-            "files/parser.php"
+            "resources/files/parser.php"
         ]
     },
     "autoload-dev": {
@@ -54,9 +55,9 @@
     },
     "support": {
         "email": "support@phalcon.io",
-        "issues": "https://github.com/phalcon/cphalcon/issues",
-        "forum": "https://phalcon.io/forum/",
-        "source": "https://github.com/phalcon/cphalcon",
+        "issues": "https://github.com/phalcon/volt/issues",
+        "discussions": "https://phalcon.io/discussions/",
+        "source": "https://github.com/phalcon/volt",
         "docs": "https://phalcon.io/docs/",
         "rss": "https://blog.phalcon.io/rss"
     },

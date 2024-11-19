@@ -16,7 +16,7 @@ namespace Phalcon\Tests\Unit;
 use Phalcon\Volt\Compiler;
 use PHPUnit\Framework\TestCase;
 
-final class SetOptionCest extends TestCase
+final class SetOptionTest extends TestCase
 {
     /**
      * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: setOption() - autoescape
