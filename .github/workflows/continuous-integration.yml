@@ -127,7 +127,7 @@ jobs:
       - run: composer install --prefer-dist
 
       - name: "Run Unit Tests"
-        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+        run: composer test-coverage
 
       - name: SonarQube Cloud Scan
         uses: SonarSource/sonarcloud-github-action@master

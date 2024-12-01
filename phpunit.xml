@@ -1,20 +1,18 @@
 <?xml version="1.0"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          bootstrap="./phpunit.php"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
-         cacheResultFile="./tests/support/output"
+         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
          colors="true"
-         verbose="true"
          processIsolation="true"
->
-    <coverage processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">./src</directory>
-        </include>
-    </coverage>
-    <testsuites>
-        <testsuite name="volt/unit">
-            <directory>./tests/unit</directory>
-        </testsuite>
-    </testsuites>
+         cacheDirectory="./tests/support/output/.phpunit.cache">
+  <testsuites>
+    <testsuite name="volt/unit">
+      <directory>./tests/unit</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+  </source>
 </phpunit>
