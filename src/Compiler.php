@@ -330,7 +330,7 @@ class Compiler
             $extension->initialize($this);
         }
 
-        $this->extensions = $extension;
+        $this->extensions[] = $extension;
 
         return $this;
     }
