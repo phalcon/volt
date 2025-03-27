@@ -689,7 +689,6 @@ class Parser
         $newToken = new Token();
         $newToken->setOpcode($opcode);
         $newToken->setValue($this->token->getValue());
-        $newToken->setFreeFlag(true);
 
         $this->token = $newToken;
 

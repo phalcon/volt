@@ -15,15 +15,9 @@ namespace Phalcon\Volt\Scanner;
 
 class Token
 {
-    protected bool $freeFlag = false;
     protected int $length = 0;
     protected mixed $opcode = null;
     protected mixed $value = null;
-
-    public function getFreeFlag(): bool
-    {
-        return $this->freeFlag;
-    }
 
     public function getLength(): int
     {
@@ -38,13 +32,6 @@ class Token
     public function getValue(): mixed
     {
         return $this->value;
-    }
-
-    public function setFreeFlag(bool $free): self
-    {
-        $this->freeFlag = $free;
-
-        return $this;
     }
 
     public function setLength(int $length): self
