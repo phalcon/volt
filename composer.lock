@@ -162,16 +162,16 @@
         },
         {
             "name": "phalcon/ide-stubs",
-            "version": "v5.8.0",
+            "version": "v5.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phalcon/ide-stubs.git",
-                "reference": "f9cc44828f6d4b8110c633a274a9da7067973800"
+                "reference": "1ba9552a45df84031f561133923a7c8d601e2da1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phalcon/ide-stubs/zipball/f9cc44828f6d4b8110c633a274a9da7067973800",
-                "reference": "f9cc44828f6d4b8110c633a274a9da7067973800",
+                "url": "https://api.github.com/repos/phalcon/ide-stubs/zipball/1ba9552a45df84031f561133923a7c8d601e2da1",
+                "reference": "1ba9552a45df84031f561133923a7c8d601e2da1",
                 "shasum": ""
             },
             "require": {
@@ -225,7 +225,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-07-18T22:40:31+00:00"
+            "time": "2025-03-10T17:29:12+00:00"
         },
         {
             "name": "phar-io/manifest",
