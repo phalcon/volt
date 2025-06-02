@@ -107,11 +107,6 @@ class State
         return $this->rawBuffer;
     }
 
-    public function getRawBufferCursor(): int
-    {
-        return $this->rawBufferCursor;
-    }
-
     public function getStart(): ?string
     {
         return $this->start;
