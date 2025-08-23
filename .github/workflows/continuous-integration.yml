@@ -29,9 +29,6 @@ env:
   LANGUAGE: en_US.UTF-8
   LC_ALL: en_US.UTF-8
 
-  # Windows specific
-  TOOLS_DIR: 'C:\tools'
-
   # PHP extensions required by Composer
   EXTENSIONS: mbstring
 
