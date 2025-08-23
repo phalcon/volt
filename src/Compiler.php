@@ -368,9 +368,6 @@ class Compiler
     /**
      * Resolves attribute reading
      *
-     * @param array $expr
-     *
-     * @return string
      * @throws BaseException
      */
     public function attributeReader(array $expr): string
