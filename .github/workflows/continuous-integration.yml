@@ -53,7 +53,7 @@ jobs:
         php:
           - '8.1'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: "Setup PHP"
         uses: shivammathur/setup-php@v2
@@ -101,7 +101,7 @@ jobs:
           - { name: ubuntu-gcc, os: ubuntu-20.04, compiler: gcc }
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
