@@ -400,14 +400,7 @@ class Compiler
                 }
             }
         } else {
-            $leftCode = $this->expression($left);
-            $leftType = $left['type'];
-
-            if ($leftType != static::PHVOLT_T_DOT && $leftType != static::PHVOLT_T_FCALL) {
-                $exprCode .= $leftCode;
-            } else {
-                $exprCode .= $leftCode;
-            }
+            $exprCode .= $this->expression($left);
         }
 
         $exprCode .= '->';
