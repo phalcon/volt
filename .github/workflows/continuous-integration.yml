@@ -45,7 +45,7 @@ jobs:
     permissions:
       contents: read
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: true
@@ -98,7 +98,7 @@ jobs:
           - ubuntu-gcc
         include:
           # Linux
-          - { name: ubuntu-gcc, os: ubuntu-20.04, compiler: gcc }
+          - { name: ubuntu-gcc, os: ubuntu-latest, compiler: gcc }
 
     steps:
       - uses: actions/checkout@v5
