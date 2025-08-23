@@ -8,8 +8,8 @@
 name: "Phalcon Volt CI"
 
 on:
-  schedule:
-    - cron: '0 2 * * *' # Daily at 02:00 runs only on default branch
+#  schedule:
+#    - cron: '0 2 * * *' # Daily at 02:00 runs only on default branch
   push:
     paths-ignore:
       - '**.md'
@@ -72,9 +72,19 @@ jobs:
         run: |
           composer cs
 
-#      - name: "PHPStan"
-#        run: |
-#          composer analyze
+  sonar:
+    name: "SonarCloud Analysis"
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v5
+          with:
+            fetch-depth: 0
+
+        - name: SonarQube Cloud Scan
+          uses: SonarSource/sonarqube-scan-action@v5
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   unit-tests:
     needs: phpcs
@@ -89,6 +99,9 @@ jobs:
       matrix:
         php:
           - '8.1'
+          - '8.2'
+          - '8.3'
+          - '8.4'
         ts:
           - 'ts'
         name:
@@ -125,9 +138,3 @@ jobs:
 
       - name: "Run Unit Tests"
         run: composer test-coverage
-
-      - name: SonarQube Cloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
