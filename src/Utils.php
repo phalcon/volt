@@ -206,8 +206,13 @@ final class Utils
      * @param string $raw The inner text (for named and (...) cases). For :placeholder it is unused.
      * @return string|null
      */
-    private static function replaceMarker(bool $named, array $paths, array $replacements, &$position, string $raw): ?string
-    {
+    private static function replaceMarker(
+        bool $named,
+        array $paths,
+        array $replacements,
+        int &$position,
+        string $raw,
+    ): ?string {
         $notValid = false;
         $item     = null; // variable name to use (for named)
 
