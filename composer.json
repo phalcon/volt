@@ -23,7 +23,8 @@
     ],
     "require": {
         "php": ">=8.1",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "ext-ctype": "*"
     },
     "require-dev": {
         "pds/skeleton": "^1.0",
