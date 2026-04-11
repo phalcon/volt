@@ -1,7 +1,6 @@
 {
     "name": "phalcon/volt",
     "description": "Phalcon Volt is a HTML template engine for sender-side rendering.",
-    "version": "1.0.0",
     "keywords": [
         "phalcon",
         "volt",
