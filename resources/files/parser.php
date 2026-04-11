@@ -3528,12 +3528,8 @@ function phvolt_ret_for_statement(
 ): void
 {
     $ret = [
-        "type" => Compiler::PHVOLT_T_FOR,
+        "type"     => Compiler::PHVOLT_T_FOR,
         "variable" => $variable->getValue(),
-        "expr" => $expr,
-        "block_statements" => $block_statements,
-        "file" => $state->getActiveFile(),
-        "line" => $state->getActiveLine(),
     ];
 
     unset($variable);
@@ -3543,9 +3539,15 @@ function phvolt_ret_for_statement(
         unset($key);
     }
 
+    $ret["expr"] = $expr;
+
     if ($if_expr !== null) {
         $ret["if_expr"] = $if_expr;
     }
+
+    $ret["block_statements"] = $block_statements;
+    $ret["file"]             = $state->getActiveFile();
+    $ret["line"]             = $state->getActiveLine();
 }
 
 function phvolt_ret_literal_zval(&$ret, $type, ?Token $token = null, ?State $state = null): void
@@ -3596,8 +3598,6 @@ function phvolt_ret_macro_call_statement(&$ret, $expr, $arguments, $caller, Stat
     $ret = [
         "type" => Compiler::PHVOLT_T_CALL,
         "name" => $expr,
-        "file" => $state->getActiveFile(),
-        "line" => $state->getActiveLine(),
     ];
 
     if ($arguments !== null) {
@@ -3607,6 +3607,9 @@ function phvolt_ret_macro_call_statement(&$ret, $expr, $arguments, $caller, Stat
     if ($caller !== null) {
         $ret["caller"] = $caller;
     }
+
+    $ret["file"] = $state->getActiveFile();
+    $ret["line"] = $state->getActiveLine();
 }
 
 function phvolt_ret_echo_statement(&$ret, $expr, State $state): void
