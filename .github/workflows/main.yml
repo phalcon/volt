@@ -133,5 +133,5 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          file: ./tests/_output/coverage.xml
+          files: ./tests/_output/coverage.xml
           fail_ci_if_error: false
