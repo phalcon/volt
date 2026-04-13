@@ -40,7 +40,7 @@ class Parser
      * @return array<mixed>
      * @throws Exception
      */
-    public function parse(string $code, string $templatePath = ''): array
+    public function parse(string $code, string $templatePath = 'eval code'): array
     {
         if (strlen($code) === 0) {
             return [];
