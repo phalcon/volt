@@ -421,6 +421,8 @@ final class ParserTest extends TestCase
         $result1 = $parser->parse('{{ name }}', 'first.volt');
         $result2 = $parser->parse('{% if active %}yes{% endif %}', 'second.volt');
 
+        $this->assertCount(1, $result1);
+        $this->assertCount(1, $result2);
         $this->assertSame(359, $result1[0]['type']); // PHVOLT_T_ECHO
         $this->assertSame(300, $result2[0]['type']); // PHVOLT_T_IF
     }
