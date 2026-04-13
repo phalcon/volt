@@ -625,12 +625,6 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: '#^Parameter \#1 \$templatePath of method Phalcon\\Volt\\Parser\\Parser\:\:parseView\(\) expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Compiler.php
-
-		-
 			message: '#^Parameter \#1 \$test of method Phalcon\\Volt\\Compiler\:\:resolveTest\(\) expects array, mixed given\.$#'
 			identifier: argument.type
 			count: 1
