@@ -110,30 +110,10 @@ class Parser
                 Compiler::PHVOLT_T_NULL              => $parser->phvolt_(Opcode::NULL->value),
                 Compiler::PHVOLT_T_TRUE              => $parser->phvolt_(Opcode::TRUE->value),
                 Compiler::PHVOLT_T_FALSE             => $parser->phvolt_(Opcode::FALSE->value),
-                Compiler::PHVOLT_T_INTEGER           => $this->parseWithToken(
-                    $parser,
-                    $token,
-                    Compiler::PHVOLT_T_INTEGER,
-                    Opcode::INTEGER
-                ),
-                Compiler::PHVOLT_T_DOUBLE            => $this->parseWithToken(
-                    $parser,
-                    $token,
-                    Compiler::PHVOLT_T_DOUBLE,
-                    Opcode::DOUBLE
-                ),
-                Compiler::PHVOLT_T_STRING            => $this->parseWithToken(
-                    $parser,
-                    $token,
-                    Compiler::PHVOLT_T_STRING,
-                    Opcode::STRING
-                ),
-                Compiler::PHVOLT_T_IDENTIFIER        => $this->parseWithToken(
-                    $parser,
-                    $token,
-                    Compiler::PHVOLT_T_IDENTIFIER,
-                    Opcode::IDENTIFIER
-                ),
+                Compiler::PHVOLT_T_INTEGER           => $this->parseWithToken($parser, $token, Opcode::INTEGER),
+                Compiler::PHVOLT_T_DOUBLE            => $this->parseWithToken($parser, $token, Opcode::DOUBLE),
+                Compiler::PHVOLT_T_STRING            => $this->parseWithToken($parser, $token, Opcode::STRING),
+                Compiler::PHVOLT_T_IDENTIFIER        => $this->parseWithToken($parser, $token, Opcode::IDENTIFIER),
                 Compiler::PHVOLT_T_IF                => $this->handleIf($parser, $parserStatus, $state),
                 Compiler::PHVOLT_T_ELSE              => $state->getIfLevel() === 0 && $state->getForLevel() > 0
                     ? $parser->phvolt_(Opcode::ELSEFOR->value)
@@ -311,7 +291,8 @@ class Parser
             return;
         }
 
-        $this->parseWithToken($parser, $token, Compiler::PHVOLT_T_IDENTIFIER, Opcode::IDENTIFIER);
+        $newToken = new Token(Compiler::PHVOLT_T_IDENTIFIER, $token->value);
+        $parser->phvolt_(Opcode::IDENTIFIER->value, $newToken);
     }
 
     private function handleElseif(phvolt_Parser $parser, Status $parserStatus, State $state): void
@@ -473,7 +454,7 @@ class Parser
             $state->incrementStatementPosition();
         }
 
-        $this->parseWithToken($parser, $token, Compiler::PHVOLT_T_RAW_FRAGMENT, Opcode::RAW_FRAGMENT);
+        $this->parseWithToken($parser, $token, Opcode::RAW_FRAGMENT);
     }
 
     private function handleSet(phvolt_Parser $parser, Status $parserStatus, State $state): void
@@ -533,9 +514,9 @@ class Parser
         return true;
     }
 
-    private function parseWithToken(phvolt_Parser $parser, Token $token, int $opcode, Opcode $parserCode): void
+    private function parseWithToken(phvolt_Parser $parser, Token $token, Opcode $parserCode): void
     {
-        $newToken = new Token($opcode, $token->value);
+        $newToken = new Token($token->opcode, $token->value);
 
         $parser->phvolt_($parserCode->value, $newToken);
     }
