@@ -35,7 +35,7 @@ jobs:
           - '8.5'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: "Setup PHP"
         uses: shivammathur/setup-php@v2
@@ -47,8 +47,8 @@ jobs:
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Install development dependencies with Composer"
-        uses: "ramsey/composer-install@v3"
+      - name: Install development dependencies with Composer
+        uses: ramsey/composer-install@v4
         with:
           composer-options: "--prefer-dist"
 
@@ -62,7 +62,7 @@ jobs:
     name: "SonarCloud Analysis"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -90,7 +90,7 @@ jobs:
           - '8.5'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -106,7 +106,7 @@ jobs:
         run: composer validate --no-check-all --no-check-publish
 
       - name: Install dependencies
-        uses: ramsey/composer-install@v3
+        uses: ramsey/composer-install@v4
         with:
           composer-options: "--prefer-dist"
 
@@ -122,14 +122,14 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.5'
-          extensions: mbstring, ctype
-          coverage: xdebug
+          extensions: mbstring, ctype, pcov
+          coverage: pcov
           tools: composer:v2
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -140,10 +140,10 @@ jobs:
           composer-options: "--prefer-dist"
 
       - name: Run tests with coverage
-        run: vendor/bin/phpunit -c phpunit.xml --coverage-clover coverage.xml
+        run: composer test-coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          file: ./coverage.xml
+          file: ./tests/_output/coverage.xml
           fail_ci_if_error: false
