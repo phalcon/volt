@@ -79,7 +79,7 @@ class Compiler
     public const PHVOLT_T_AND              = 266;
     public const PHVOLT_T_ARRAY            = 360;
     public const PHVOLT_T_ARRAYACCESS      = 361;
-    public const PHVOLT_T_ASSIGN           = 64; //'=';
+    public const PHVOLT_T_ASSIGN           = 61; //'=';
     public const PHVOLT_T_AUTOESCAPE       = 317;
     public const PHVOLT_T_BLOCK            = 307;
     public const PHVOLT_T_BREAK            = 320;
@@ -192,8 +192,8 @@ class Compiler
     public const PHVOLT_T_RAW_FRAGMENT      = 357;
     public const PHVOLT_T_RESOLVED_EXPR     = 364;
     public const PHVOLT_T_RETURN            = 327;
-    public const PHVOLT_T_SBRACKET_CLOSE    = 91; //']';
-    public const PHVOLT_T_SBRACKET_OPEN     = 93; //'[';
+    public const PHVOLT_T_SBRACKET_CLOSE    = 93; //']';
+    public const PHVOLT_T_SBRACKET_OPEN     = 91; //'[';
     public const PHVOLT_T_SCALAR            = 384;
     public const PHVOLT_T_SET               = 306;
     public const PHVOLT_T_SLICE             = 365;

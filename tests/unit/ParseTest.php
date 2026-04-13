@@ -288,7 +288,7 @@ final class ParseTest extends TestCase
                 {% endfor %}
 
                 ',
-                'Syntax error, unexpected token ~ in eval code on line 4',
+                'Syntax error, unexpected token ~(id) in eval code on line 4',
             ],
             [
                 '\'{{ link_to("album/" ~ album.id ~ "/" ~ $album.uri, ' .
