@@ -85,370 +85,105 @@ class Parser
             $opcode = $token->opcode;
             $state->setActiveToken($opcode);
 
-            switch ($opcode) {
-                case Compiler::PHVOLT_T_IGNORE:
-                    break;
-
-                case Compiler::PHVOLT_T_ADD:
-                    $parser->phvolt_(Opcode::PLUS->value);
-                    break;
-
-                case Compiler::PHVOLT_T_SUB:
-                    $parser->phvolt_(Opcode::MINUS->value);
-                    break;
-
-                case Compiler::PHVOLT_T_MUL:
-                    $parser->phvolt_(Opcode::TIMES->value);
-                    break;
-
-                case Compiler::PHVOLT_T_DIV:
-                    $parser->phvolt_(Opcode::DIVIDE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_MOD:
-                    $parser->phvolt_(Opcode::MOD->value);
-                    break;
-
-                case Compiler::PHVOLT_T_AND:
-                    $parser->phvolt_(Opcode::AND->value);
-                    break;
-
-                case Compiler::PHVOLT_T_OR:
-                    $parser->phvolt_(Opcode::OR->value);
-                    break;
-
-                case Compiler::PHVOLT_T_IS:
-                    $parser->phvolt_(Opcode::IS->value);
-                    break;
-
-                case Compiler::PHVOLT_T_EQUALS:
-                    $parser->phvolt_(Opcode::EQUALS->value);
-                    break;
-
-                case Compiler::PHVOLT_T_NOTEQUALS:
-                    $parser->phvolt_(Opcode::NOTEQUALS->value);
-                    break;
-
-                case Compiler::PHVOLT_T_LESS:
-                    $parser->phvolt_(Opcode::LESS->value);
-                    break;
-
-                case Compiler::PHVOLT_T_GREATER:
-                    $parser->phvolt_(Opcode::GREATER->value);
-                    break;
-
-                case Compiler::PHVOLT_T_GREATEREQUAL:
-                    $parser->phvolt_(Opcode::GREATEREQUAL->value);
-                    break;
-
-                case Compiler::PHVOLT_T_LESSEQUAL:
-                    $parser->phvolt_(Opcode::LESSEQUAL->value);
-                    break;
-
-                case Compiler::PHVOLT_T_IDENTICAL:
-                    $parser->phvolt_(Opcode::IDENTICAL->value);
-                    break;
-
-                case Compiler::PHVOLT_T_NOTIDENTICAL:
-                    $parser->phvolt_(Opcode::NOTIDENTICAL->value);
-                    break;
-
-                case Compiler::PHVOLT_T_NOT:
-                    $parser->phvolt_(Opcode::NOT->value);
-                    break;
-
-                case Compiler::PHVOLT_T_DOT:
-                    $parser->phvolt_(Opcode::DOT->value);
-                    break;
-
-                case Compiler::PHVOLT_T_CONCAT:
-                    $parser->phvolt_(Opcode::CONCAT->value);
-                    break;
-
-                case Compiler::PHVOLT_T_RANGE:
-                    $parser->phvolt_(Opcode::RANGE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_PIPE:
-                    $parser->phvolt_(Opcode::PIPE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_COMMA:
-                    $parser->phvolt_(Opcode::COMMA->value);
-                    break;
-
-                case Compiler::PHVOLT_T_COLON:
-                    $parser->phvolt_(Opcode::COLON->value);
-                    break;
-
-                case Compiler::PHVOLT_T_QUESTION:
-                    $parser->phvolt_(Opcode::QUESTION->value);
-                    break;
-
-                case Compiler::PHVOLT_T_PARENTHESES_OPEN:
-                    $parser->phvolt_(Opcode::PARENTHESES_OPEN->value);
-                    break;
-
-                case Compiler::PHVOLT_T_PARENTHESES_CLOSE:
-                    $parser->phvolt_(Opcode::PARENTHESES_CLOSE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_SBRACKET_OPEN:
-                    $parser->phvolt_(Opcode::SBRACKET_OPEN->value);
-                    break;
-
-                case Compiler::PHVOLT_T_SBRACKET_CLOSE:
-                    $parser->phvolt_(Opcode::SBRACKET_CLOSE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_CBRACKET_OPEN:
-                    $parser->phvolt_(Opcode::CBRACKET_OPEN->value);
-                    break;
-
-                case Compiler::PHVOLT_T_CBRACKET_CLOSE:
-                    $parser->phvolt_(Opcode::CBRACKET_CLOSE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_OPEN_DELIMITER:
-                    $parser->phvolt_(Opcode::OPEN_DELIMITER->value);
-                    break;
-
-                case Compiler::PHVOLT_T_CLOSE_DELIMITER:
-                    $parser->phvolt_(Opcode::CLOSE_DELIMITER->value);
-                    break;
-
-                case Compiler::PHVOLT_T_OPEN_EDELIMITER:
-                    $this->handleOpenEdelimiter($parser, $parserStatus, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_CLOSE_EDELIMITER:
-                    $parser->phvolt_(Opcode::CLOSE_EDELIMITER->value);
-                    break;
-
-                case Compiler::PHVOLT_T_NULL:
-                    $parser->phvolt_(Opcode::NULL->value);
-                    break;
-
-                case Compiler::PHVOLT_T_TRUE:
-                    $parser->phvolt_(Opcode::TRUE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_FALSE:
-                    $parser->phvolt_(Opcode::FALSE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_INTEGER:
-                    $this->parseWithToken($parser, $token, Compiler::PHVOLT_T_INTEGER, Opcode::INTEGER);
-                    break;
-
-                case Compiler::PHVOLT_T_DOUBLE:
-                    $this->parseWithToken($parser, $token, Compiler::PHVOLT_T_DOUBLE, Opcode::DOUBLE);
-                    break;
-
-                case Compiler::PHVOLT_T_STRING:
-                    $this->parseWithToken($parser, $token, Compiler::PHVOLT_T_STRING, Opcode::STRING);
-                    break;
-
-                case Compiler::PHVOLT_T_IDENTIFIER:
-                    $this->parseWithToken($parser, $token, Compiler::PHVOLT_T_IDENTIFIER, Opcode::IDENTIFIER);
-                    break;
-
-                case Compiler::PHVOLT_T_IF:
-                    $this->handleIf($parser, $parserStatus, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_ELSE:
-                    if ($state->getIfLevel() === 0 && $state->getForLevel() > 0) {
-                        $parser->phvolt_(Opcode::ELSEFOR->value);
-                    } else {
-                        $parser->phvolt_(Opcode::ELSE->value);
-                    }
-                    break;
-
-                case Compiler::PHVOLT_T_ELSEFOR:
-                    $parser->phvolt_(Opcode::ELSEFOR->value);
-                    break;
-
-                case Compiler::PHVOLT_T_ELSEIF:
-                    $this->handleElseif($parser, $parserStatus, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_ENDIF:
-                    $this->handleEndif($parser, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_FOR:
-                    $this->handleFor($parser, $parserStatus, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_IN:
-                    $parser->phvolt_(Opcode::IN->value);
-                    break;
-
-                case Compiler::PHVOLT_T_ENDFOR:
-                    $this->handleEndfor($parser, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_SWITCH:
-                    $this->handleSwitch($parser, $parserStatus, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_CASE:
-                    $this->handleCase($parser, $parserStatus);
-                    break;
-
-                case Compiler::PHVOLT_T_DEFAULT:
-                    $this->handleDefault($parser, $parserStatus, $token, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_ENDSWITCH:
-                    $this->handleEndswitch($parser, $parserStatus, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_RAW_FRAGMENT:
-                    $this->handleRawFragment($parser, $parserStatus, $token, $state, $codeLength);
-                    break;
-
-                case Compiler::PHVOLT_T_SET:
-                    $this->handleSet($parser, $parserStatus, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_ASSIGN:
-                    $parser->phvolt_(Opcode::ASSIGN->value);
-                    break;
-
-                case Compiler::PHVOLT_T_ADD_ASSIGN:
-                    $parser->phvolt_(Opcode::ADD_ASSIGN->value);
-                    break;
-
-                case Compiler::PHVOLT_T_SUB_ASSIGN:
-                    $parser->phvolt_(Opcode::SUB_ASSIGN->value);
-                    break;
-
-                case Compiler::PHVOLT_T_MUL_ASSIGN:
-                    $parser->phvolt_(Opcode::MUL_ASSIGN->value);
-                    break;
-
-                case Compiler::PHVOLT_T_DIV_ASSIGN:
-                    $parser->phvolt_(Opcode::DIV_ASSIGN->value);
-                    break;
-
-                case Compiler::PHVOLT_T_INCR:
-                    $parser->phvolt_(Opcode::INCR->value);
-                    break;
-
-                case Compiler::PHVOLT_T_DECR:
-                    $parser->phvolt_(Opcode::DECR->value);
-                    break;
-
-                case Compiler::PHVOLT_T_BLOCK:
-                    $this->handleBlock($parser, $parserStatus, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_ENDBLOCK:
-                    $this->handleEndblock($parser, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_MACRO:
-                    $this->handleMacro($parser, $parserStatus, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_ENDMACRO:
-                    $this->handleEndmacro($parser, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_CALL:
-                    $parser->phvolt_(Opcode::CALL->value);
-                    break;
-
-                case Compiler::PHVOLT_T_ENDCALL:
-                    $parser->phvolt_(Opcode::ENDCALL->value);
-                    break;
-
-                case Compiler::PHVOLT_T_CACHE:
-                    $parser->phvolt_(Opcode::CACHE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_ENDCACHE:
-                    $parser->phvolt_(Opcode::ENDCACHE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_RAW:
-                    $this->handleRaw($parser, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_ENDRAW:
-                    $this->handleEndraw($parser, $state);
-                    break;
-
-                case Compiler::PHVOLT_T_INCLUDE:
-                    $parser->phvolt_(Opcode::INCLUDE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_WITH:
-                    $parser->phvolt_(Opcode::WITH->value);
-                    break;
-
-                case Compiler::PHVOLT_T_DEFINED:
-                    $parser->phvolt_(Opcode::DEFINED->value);
-                    break;
-
-                case Compiler::PHVOLT_T_EMPTY:
-                    $parser->phvolt_(Opcode::EMPTY->value);
-                    break;
-
-                case Compiler::PHVOLT_T_EVEN:
-                    $parser->phvolt_(Opcode::EVEN->value);
-                    break;
-
-                case Compiler::PHVOLT_T_ODD:
-                    $parser->phvolt_(Opcode::ODD->value);
-                    break;
-
-                case Compiler::PHVOLT_T_NUMERIC:
-                    $parser->phvolt_(Opcode::NUMERIC->value);
-                    break;
-
-                case Compiler::PHVOLT_T_SCALAR:
-                    $parser->phvolt_(Opcode::SCALAR->value);
-                    break;
-
-                case Compiler::PHVOLT_T_ITERABLE:
-                    $parser->phvolt_(Opcode::ITERABLE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_DO:
-                    $parser->phvolt_(Opcode::DO->value);
-                    break;
-
-                case Compiler::PHVOLT_T_RETURN:
-                    $parser->phvolt_(Opcode::RETURN->value);
-                    break;
-
-                case Compiler::PHVOLT_T_AUTOESCAPE:
-                    $parser->phvolt_(Opcode::AUTOESCAPE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_ENDAUTOESCAPE:
-                    $parser->phvolt_(Opcode::ENDAUTOESCAPE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_BREAK:
-                    $parser->phvolt_(Opcode::BREAK->value);
-                    break;
-
-                case Compiler::PHVOLT_T_CONTINUE:
-                    $parser->phvolt_(Opcode::CONTINUE->value);
-                    break;
-
-                case Compiler::PHVOLT_T_EXTENDS:
-                    $this->handleExtends($parser, $parserStatus, $state);
-                    break;
-
-                default:
-                    $this->handleUnknownOpcode($parserStatus, $opcode);
-                    break;
-            }
+            match ($opcode) {
+                Compiler::PHVOLT_T_IGNORE          => null,
+                Compiler::PHVOLT_T_ADD             => $parser->phvolt_(Opcode::PLUS->value),
+                Compiler::PHVOLT_T_SUB             => $parser->phvolt_(Opcode::MINUS->value),
+                Compiler::PHVOLT_T_MUL             => $parser->phvolt_(Opcode::TIMES->value),
+                Compiler::PHVOLT_T_DIV             => $parser->phvolt_(Opcode::DIVIDE->value),
+                Compiler::PHVOLT_T_MOD             => $parser->phvolt_(Opcode::MOD->value),
+                Compiler::PHVOLT_T_AND             => $parser->phvolt_(Opcode::AND->value),
+                Compiler::PHVOLT_T_OR              => $parser->phvolt_(Opcode::OR->value),
+                Compiler::PHVOLT_T_IS              => $parser->phvolt_(Opcode::IS->value),
+                Compiler::PHVOLT_T_EQUALS          => $parser->phvolt_(Opcode::EQUALS->value),
+                Compiler::PHVOLT_T_NOTEQUALS       => $parser->phvolt_(Opcode::NOTEQUALS->value),
+                Compiler::PHVOLT_T_LESS            => $parser->phvolt_(Opcode::LESS->value),
+                Compiler::PHVOLT_T_GREATER         => $parser->phvolt_(Opcode::GREATER->value),
+                Compiler::PHVOLT_T_GREATEREQUAL    => $parser->phvolt_(Opcode::GREATEREQUAL->value),
+                Compiler::PHVOLT_T_LESSEQUAL       => $parser->phvolt_(Opcode::LESSEQUAL->value),
+                Compiler::PHVOLT_T_IDENTICAL       => $parser->phvolt_(Opcode::IDENTICAL->value),
+                Compiler::PHVOLT_T_NOTIDENTICAL    => $parser->phvolt_(Opcode::NOTIDENTICAL->value),
+                Compiler::PHVOLT_T_NOT             => $parser->phvolt_(Opcode::NOT->value),
+                Compiler::PHVOLT_T_DOT             => $parser->phvolt_(Opcode::DOT->value),
+                Compiler::PHVOLT_T_CONCAT          => $parser->phvolt_(Opcode::CONCAT->value),
+                Compiler::PHVOLT_T_RANGE           => $parser->phvolt_(Opcode::RANGE->value),
+                Compiler::PHVOLT_T_PIPE            => $parser->phvolt_(Opcode::PIPE->value),
+                Compiler::PHVOLT_T_COMMA           => $parser->phvolt_(Opcode::COMMA->value),
+                Compiler::PHVOLT_T_COLON           => $parser->phvolt_(Opcode::COLON->value),
+                Compiler::PHVOLT_T_QUESTION        => $parser->phvolt_(Opcode::QUESTION->value),
+                Compiler::PHVOLT_T_PARENTHESES_OPEN  => $parser->phvolt_(Opcode::PARENTHESES_OPEN->value),
+                Compiler::PHVOLT_T_PARENTHESES_CLOSE => $parser->phvolt_(Opcode::PARENTHESES_CLOSE->value),
+                Compiler::PHVOLT_T_SBRACKET_OPEN   => $parser->phvolt_(Opcode::SBRACKET_OPEN->value),
+                Compiler::PHVOLT_T_SBRACKET_CLOSE  => $parser->phvolt_(Opcode::SBRACKET_CLOSE->value),
+                Compiler::PHVOLT_T_CBRACKET_OPEN   => $parser->phvolt_(Opcode::CBRACKET_OPEN->value),
+                Compiler::PHVOLT_T_CBRACKET_CLOSE  => $parser->phvolt_(Opcode::CBRACKET_CLOSE->value),
+                Compiler::PHVOLT_T_OPEN_DELIMITER  => $parser->phvolt_(Opcode::OPEN_DELIMITER->value),
+                Compiler::PHVOLT_T_CLOSE_DELIMITER => $parser->phvolt_(Opcode::CLOSE_DELIMITER->value),
+                Compiler::PHVOLT_T_OPEN_EDELIMITER  => $this->handleOpenEdelimiter($parser, $parserStatus, $state),
+                Compiler::PHVOLT_T_CLOSE_EDELIMITER => $parser->phvolt_(Opcode::CLOSE_EDELIMITER->value),
+                Compiler::PHVOLT_T_NULL            => $parser->phvolt_(Opcode::NULL->value),
+                Compiler::PHVOLT_T_TRUE            => $parser->phvolt_(Opcode::TRUE->value),
+                Compiler::PHVOLT_T_FALSE           => $parser->phvolt_(Opcode::FALSE->value),
+                Compiler::PHVOLT_T_INTEGER
+                    => $this->parseWithToken($parser, $token, Compiler::PHVOLT_T_INTEGER, Opcode::INTEGER),
+                Compiler::PHVOLT_T_DOUBLE
+                    => $this->parseWithToken($parser, $token, Compiler::PHVOLT_T_DOUBLE, Opcode::DOUBLE),
+                Compiler::PHVOLT_T_STRING
+                    => $this->parseWithToken($parser, $token, Compiler::PHVOLT_T_STRING, Opcode::STRING),
+                Compiler::PHVOLT_T_IDENTIFIER
+                    => $this->parseWithToken($parser, $token, Compiler::PHVOLT_T_IDENTIFIER, Opcode::IDENTIFIER),
+                Compiler::PHVOLT_T_IF         => $this->handleIf($parser, $parserStatus, $state),
+                Compiler::PHVOLT_T_ELSE       => $state->getIfLevel() === 0 && $state->getForLevel() > 0
+                    ? $parser->phvolt_(Opcode::ELSEFOR->value)
+                    : $parser->phvolt_(Opcode::ELSE->value),
+                Compiler::PHVOLT_T_ELSEFOR    => $parser->phvolt_(Opcode::ELSEFOR->value),
+                Compiler::PHVOLT_T_ELSEIF     => $this->handleElseif($parser, $parserStatus, $state),
+                Compiler::PHVOLT_T_ENDIF      => $this->handleEndif($parser, $state),
+                Compiler::PHVOLT_T_FOR        => $this->handleFor($parser, $parserStatus, $state),
+                Compiler::PHVOLT_T_IN         => $parser->phvolt_(Opcode::IN->value),
+                Compiler::PHVOLT_T_ENDFOR     => $this->handleEndfor($parser, $state),
+                Compiler::PHVOLT_T_SWITCH     => $this->handleSwitch($parser, $parserStatus, $state),
+                Compiler::PHVOLT_T_CASE       => $this->handleCase($parser, $parserStatus),
+                Compiler::PHVOLT_T_DEFAULT    => $this->handleDefault($parser, $parserStatus, $token, $state),
+                Compiler::PHVOLT_T_ENDSWITCH  => $this->handleEndswitch($parser, $parserStatus, $state),
+                Compiler::PHVOLT_T_RAW_FRAGMENT
+                    => $this->handleRawFragment($parser, $parserStatus, $token, $state, $codeLength),
+                Compiler::PHVOLT_T_SET        => $this->handleSet($parser, $parserStatus, $state),
+                Compiler::PHVOLT_T_ASSIGN     => $parser->phvolt_(Opcode::ASSIGN->value),
+                Compiler::PHVOLT_T_ADD_ASSIGN => $parser->phvolt_(Opcode::ADD_ASSIGN->value),
+                Compiler::PHVOLT_T_SUB_ASSIGN => $parser->phvolt_(Opcode::SUB_ASSIGN->value),
+                Compiler::PHVOLT_T_MUL_ASSIGN => $parser->phvolt_(Opcode::MUL_ASSIGN->value),
+                Compiler::PHVOLT_T_DIV_ASSIGN => $parser->phvolt_(Opcode::DIV_ASSIGN->value),
+                Compiler::PHVOLT_T_INCR       => $parser->phvolt_(Opcode::INCR->value),
+                Compiler::PHVOLT_T_DECR       => $parser->phvolt_(Opcode::DECR->value),
+                Compiler::PHVOLT_T_BLOCK      => $this->handleBlock($parser, $parserStatus, $state),
+                Compiler::PHVOLT_T_ENDBLOCK   => $this->handleEndblock($parser, $state),
+                Compiler::PHVOLT_T_MACRO      => $this->handleMacro($parser, $parserStatus, $state),
+                Compiler::PHVOLT_T_ENDMACRO   => $this->handleEndmacro($parser, $state),
+                Compiler::PHVOLT_T_CALL       => $parser->phvolt_(Opcode::CALL->value),
+                Compiler::PHVOLT_T_ENDCALL    => $parser->phvolt_(Opcode::ENDCALL->value),
+                Compiler::PHVOLT_T_CACHE      => $parser->phvolt_(Opcode::CACHE->value),
+                Compiler::PHVOLT_T_ENDCACHE   => $parser->phvolt_(Opcode::ENDCACHE->value),
+                Compiler::PHVOLT_T_RAW        => $this->handleRaw($parser, $state),
+                Compiler::PHVOLT_T_ENDRAW     => $this->handleEndraw($parser, $state),
+                Compiler::PHVOLT_T_INCLUDE    => $parser->phvolt_(Opcode::INCLUDE->value),
+                Compiler::PHVOLT_T_WITH       => $parser->phvolt_(Opcode::WITH->value),
+                Compiler::PHVOLT_T_DEFINED    => $parser->phvolt_(Opcode::DEFINED->value),
+                Compiler::PHVOLT_T_EMPTY      => $parser->phvolt_(Opcode::EMPTY->value),
+                Compiler::PHVOLT_T_EVEN       => $parser->phvolt_(Opcode::EVEN->value),
+                Compiler::PHVOLT_T_ODD        => $parser->phvolt_(Opcode::ODD->value),
+                Compiler::PHVOLT_T_NUMERIC    => $parser->phvolt_(Opcode::NUMERIC->value),
+                Compiler::PHVOLT_T_SCALAR     => $parser->phvolt_(Opcode::SCALAR->value),
+                Compiler::PHVOLT_T_ITERABLE   => $parser->phvolt_(Opcode::ITERABLE->value),
+                Compiler::PHVOLT_T_DO         => $parser->phvolt_(Opcode::DO->value),
+                Compiler::PHVOLT_T_RETURN     => $parser->phvolt_(Opcode::RETURN->value),
+                Compiler::PHVOLT_T_AUTOESCAPE    => $parser->phvolt_(Opcode::AUTOESCAPE->value),
+                Compiler::PHVOLT_T_ENDAUTOESCAPE => $parser->phvolt_(Opcode::ENDAUTOESCAPE->value),
+                Compiler::PHVOLT_T_BREAK      => $parser->phvolt_(Opcode::BREAK->value),
+                Compiler::PHVOLT_T_CONTINUE   => $parser->phvolt_(Opcode::CONTINUE->value),
+                Compiler::PHVOLT_T_EXTENDS    => $this->handleExtends($parser, $parserStatus, $state),
+                default                        => $this->handleUnknownOpcode($parserStatus, $opcode),
+            };
 
             if ($parserStatus->getStatus() !== Status::PHVOLT_PARSING_OK) {
                 break;
