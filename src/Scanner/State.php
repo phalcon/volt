@@ -17,28 +17,28 @@ use Phalcon\Volt\Compiler;
 
 class State
 {
-    public mixed $activeToken = null;
-    public int $blockLevel = 0;
-    public int $extendsMode = 0;
-    public int $forLevel = 0;
-    public int $forcedRawState = 0;
-    public int $ifLevel = 0;
-    public int $macroLevel = 0;
-    public ?int $marker = null;
-    public int $oldIfLevel = 0;
-    public string $rawBuffer;
-    public string $rawFragment = '';
-    public int $rawBufferCursor = 0;
-    public int $startLength;
-    public int $statementPosition = 0;
-    public int $switchLevel = 0;
+    protected ?int $activeToken       = null;
+    protected int $blockLevel        = 0;
+    protected int $extendsMode       = 0;
+    protected int $forLevel          = 0;
+    protected int $forcedRawState    = 0;
+    protected int $ifLevel           = 0;
+    protected int $macroLevel        = 0;
+    protected ?int $marker            = null;
+    protected int $oldIfLevel        = 0;
+    protected string $rawBuffer;
+    protected string $rawFragment       = '';
+    protected int $rawBufferCursor   = 0;
+    protected int $startLength;
+    protected int $statementPosition = 0;
+    protected int $switchLevel       = 0;
     private bool $whitespaceControl = false;
-    protected string $activeFile = 'eval code';
-    protected int $activeLine = 1;
-    protected int $cursor = 0;
-    protected ?string $end = null;
-    protected int $mode = Compiler::PHVOLT_MODE_RAW;
-    protected ?string $start = null;
+    protected string $activeFile        = 'eval code';
+    protected int $activeLine        = 1;
+    protected int $cursor            = 0;
+    protected ?string $end               = null;
+    protected int $mode              = Compiler::PHVOLT_MODE_RAW;
+    protected ?string $start             = null;
 
     public function __construct(string $buffer)
     {
@@ -50,9 +50,51 @@ class State
         }
     }
 
-    public function extendsMode(int $extendsMode): self
+    public function appendToRawFragment(string $value): self
     {
-        $this->extendsMode = $extendsMode;
+        $this->rawFragment .= $value;
+
+        return $this;
+    }
+
+    public function decrementBlockLevel(): self
+    {
+        $this->blockLevel--;
+
+        return $this;
+    }
+
+    public function decrementForcedRawState(): self
+    {
+        $this->forcedRawState--;
+
+        return $this;
+    }
+
+    public function decrementForLevel(): self
+    {
+        $this->forLevel--;
+
+        return $this;
+    }
+
+    public function decrementIfLevel(): self
+    {
+        $this->ifLevel--;
+
+        return $this;
+    }
+
+    public function decrementMacroLevel(): self
+    {
+        $this->macroLevel--;
+
+        return $this;
+    }
+
+    public function decrementSwitchLevel(): self
+    {
+        $this->switchLevel--;
 
         return $this;
     }
@@ -67,9 +109,14 @@ class State
         return $this->activeLine;
     }
 
-    public function getActiveToken(): mixed
+    public function getActiveToken(): ?int
     {
         return $this->activeToken;
+    }
+
+    public function getBlockLevel(): int
+    {
+        return $this->blockLevel;
     }
 
     public function getCursor(): int
@@ -77,14 +124,34 @@ class State
         return $this->cursor;
     }
 
-    public function getMarker(): ?int
+    public function getExtendsMode(): int
     {
-        return $this->marker;
+        return $this->extendsMode;
+    }
+
+    public function getForLevel(): int
+    {
+        return $this->forLevel;
+    }
+
+    public function getForcedRawState(): int
+    {
+        return $this->forcedRawState;
     }
 
     public function getIfLevel(): int
     {
         return $this->ifLevel;
+    }
+
+    public function getMacroLevel(): int
+    {
+        return $this->macroLevel;
+    }
+
+    public function getMarker(): ?int
+    {
+        return $this->marker;
     }
 
     public function getMode(): int
@@ -97,6 +164,11 @@ class State
         return $this->rawBuffer[$this->cursor + $increment] ?? null;
     }
 
+    public function getOldIfLevel(): int
+    {
+        return $this->oldIfLevel;
+    }
+
     public function getPrevious(int $decrement = 1): ?string
     {
         return $this->rawBuffer[$this->cursor - $decrement] ?? null;
@@ -105,6 +177,16 @@ class State
     public function getRawBuffer(): string
     {
         return $this->rawBuffer;
+    }
+
+    public function getRawBufferCursor(): int
+    {
+        return $this->rawBufferCursor;
+    }
+
+    public function getRawFragment(): string
+    {
+        return $this->rawFragment;
     }
 
     public function getStart(): ?string
@@ -117,6 +199,16 @@ class State
         return $this->startLength;
     }
 
+    public function getStatementPosition(): int
+    {
+        return $this->statementPosition;
+    }
+
+    public function getSwitchLevel(): int
+    {
+        return $this->switchLevel;
+    }
+
     public function getWhitespaceControl(): bool
     {
         return $this->whitespaceControl;
@@ -125,6 +217,41 @@ class State
     public function incrementActiveLine(): self
     {
         $this->activeLine++;
+
+        return $this;
+    }
+
+    public function incrementBlockLevel(): self
+    {
+        $this->blockLevel++;
+
+        return $this;
+    }
+
+    public function incrementForcedRawState(): self
+    {
+        $this->forcedRawState++;
+
+        return $this;
+    }
+
+    public function incrementForLevel(): self
+    {
+        $this->forLevel++;
+
+        return $this;
+    }
+
+    public function incrementIfLevel(): self
+    {
+        $this->ifLevel++;
+
+        return $this;
+    }
+
+    public function incrementMacroLevel(): self
+    {
+        $this->macroLevel++;
 
         return $this;
     }
@@ -144,24 +271,16 @@ class State
         return $this;
     }
 
-    public function setCursor(int $cursor): self
+    public function incrementStatementPosition(): self
     {
-        $this->cursor = $cursor;
-        $this->setStart($this->rawBuffer[$this->cursor] ?? null);
+        $this->statementPosition++;
 
         return $this;
     }
 
-    public function setMarkerCursor(int $cursor): self
+    public function incrementSwitchLevel(): self
     {
-        $this->cursor = $cursor;
-
-        return $this;
-    }
-
-    public function setMarker(int $marker): self
-    {
-        $this->marker = $marker;
+        $this->switchLevel++;
 
         return $this;
     }
@@ -180,7 +299,7 @@ class State
         return $this;
     }
 
-    public function setActiveToken(mixed $activeToken): self
+    public function setActiveToken(?int $activeToken): self
     {
         $this->activeToken = $activeToken;
 
@@ -194,9 +313,24 @@ class State
         return $this;
     }
 
+    public function setCursor(int $cursor): self
+    {
+        $this->cursor = $cursor;
+        $this->setStart($this->rawBuffer[$this->cursor] ?? null);
+
+        return $this;
+    }
+
     public function setEnd(?string $end): self
     {
         $this->end = $end;
+
+        return $this;
+    }
+
+    public function setExtendsMode(int $extendsMode): self
+    {
+        $this->extendsMode = $extendsMode;
 
         return $this;
     }
@@ -229,6 +363,20 @@ class State
         return $this;
     }
 
+    public function setMarker(int $marker): self
+    {
+        $this->marker = $marker;
+
+        return $this;
+    }
+
+    public function setMarkerCursor(int $cursor): self
+    {
+        $this->cursor = $cursor;
+
+        return $this;
+    }
+
     public function setMode(int $mode): self
     {
         $this->mode = $mode;
@@ -246,6 +394,20 @@ class State
     public function setRawBuffer(string $rawBuffer): self
     {
         $this->rawBuffer = $rawBuffer;
+
+        return $this;
+    }
+
+    public function setRawBufferCursor(int $rawBufferCursor): self
+    {
+        $this->rawBufferCursor = $rawBufferCursor;
+
+        return $this;
+    }
+
+    public function setRawFragment(string $rawFragment): self
+    {
+        $this->rawFragment = $rawFragment;
 
         return $this;
     }

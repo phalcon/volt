@@ -21,13 +21,12 @@ class Status
     public const PHVOLT_PARSING_FAILED = 0;
     public const PHVOLT_PARSING_OK     = 1;
 
-    protected ?string $syntaxError = null;
-
-    protected ?Token $token = null;
+    private ?string $syntaxError = null;
+    private ?Token $token       = null;
 
     public function __construct(
-        protected State $scannerState,
-        protected int $status = self::PHVOLT_PARSING_OK,
+        private State $scannerState,
+        private int $status = self::PHVOLT_PARSING_OK,
     ) {
     }
 
@@ -51,21 +50,21 @@ class Status
         return $this->token;
     }
 
-    public function setStatus(int $status): self
+    public function setStatus(int $status): static
     {
         $this->status = $status;
 
         return $this;
     }
 
-    public function setSyntaxError(string $syntaxError): self
+    public function setSyntaxError(string $syntaxError): static
     {
         $this->syntaxError = $syntaxError;
 
         return $this;
     }
 
-    public function setToken(Token $token): self
+    public function setToken(Token $token): static
     {
         $this->token = $token;
 

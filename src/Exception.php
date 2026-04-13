@@ -15,4 +15,26 @@ namespace Phalcon\Volt;
 
 class Exception extends \Exception
 {
+    /** @var array<mixed> */
+    protected array $statement = [];
+
+    /**
+     * @param array<mixed> $statement
+     */
+    public function __construct(
+        string $message = '',
+        array $statement = [],
+        int $code = 0,
+        ?\Throwable $previous = null,
+    ) {
+        $this->statement = $statement;
+
+        parent::__construct($message, $code, $previous);
+    }
+
+    /** @return array<mixed> */
+    public function getStatement(): array
+    {
+        return $this->statement;
+    }
 }
