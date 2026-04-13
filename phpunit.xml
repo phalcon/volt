@@ -12,12 +12,6 @@
             <directory>tests/unit</directory>
         </testsuite>
     </testsuites>
-    <coverage>                                                                                                                                                     
-        <report>
-            <clover outputFile="tests/_output/coverage.xml"/>
-            <html outputDirectory="tests/_output/coverage"/>                                                                                                       
-        </report>                                                                                                                                                         
-    </coverage>          
     <source>
         <include>
             <directory>src</directory>
