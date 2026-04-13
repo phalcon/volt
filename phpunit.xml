@@ -13,7 +13,8 @@
         </testsuite>
     </testsuites>
     <coverage>                                                                                                                                                     
-        <report>                                                                                                                                                          
+        <report>
+            <clover outputFile="tests/_output/coverage.xml"/>
             <html outputDirectory="tests/_output/coverage"/>                                                                                                       
         </report>                                                                                                                                                         
     </coverage>          
