@@ -14,13 +14,10 @@ declare(strict_types=1);
 namespace Phalcon\Volt\Scanner;
 
 use Phalcon\Volt\Compiler;
+use Phalcon\Volt\Scanner\ScannerStatus;
 
 class Scanner
 {
-    public const PHVOLT_SCANNER_RETCODE_EOF        = -1;
-    public const PHVOLT_SCANNER_RETCODE_ERR        = -2;
-    public const PHVOLT_SCANNER_RETCODE_IMPOSSIBLE = -3;
-
     private Token $token;
 
     public function __construct(private State $state)
@@ -33,11 +30,12 @@ class Scanner
         return $this->token;
     }
 
-    public function scanForToken(): int
+    public function scanForToken(): ScannerStatus
     {
         $start = $this->state->getCursor();
-        $status = self::PHVOLT_SCANNER_RETCODE_IMPOSSIBLE;
-        while (self::PHVOLT_SCANNER_RETCODE_IMPOSSIBLE === $status) {
+        $status = ScannerStatus::IMPOSSIBLE;
+        /** @phpstan-ignore identical.alwaysTrue */
+        while (ScannerStatus::IMPOSSIBLE === $status) {
             $cursor = $this->state->getStart();
             $mode = $this->state->getMode();
             if ($mode === Compiler::PHVOLT_MODE_RAW || $mode === Compiler::PHVOLT_MODE_COMMENT) {
@@ -52,45 +50,41 @@ class Scanner
                     if ($next !== '#') {
                         $this->state->setMode(Compiler::PHVOLT_MODE_CODE);
 
-                        if (!empty($this->state->rawFragment)) {
+                        if ($this->state->getRawFragment() !== '') {
                             if ($this->state->getWhitespaceControl()) {
-                                $this->state->rawFragment = ltrim($this->state->rawFragment);
+                                $this->state->setRawFragment(ltrim($this->state->getRawFragment()));
                                 $this->state->setWhitespaceControl(false);
                             }
 
                             if ($doubleNext === '-') {
-                                $this->state->rawFragment = rtrim($this->state->rawFragment);
+                                $this->state->setRawFragment(rtrim($this->state->getRawFragment()));
                             }
 
-                            $this
-                                ->token
-                                ->setOpcode(Compiler::PHVOLT_T_RAW_FRAGMENT)
-                                ->setValue($this->state->rawFragment)
-                            ;
+                            $this->token = new Token(Compiler::PHVOLT_T_RAW_FRAGMENT, $this->state->getRawFragment());
 
-                            $this->state->rawFragment = '';
+                            $this->state->setRawFragment('');
                         } else {
-                            $this->token->setOpcode(Compiler::PHVOLT_T_IGNORE);
+                            $this->token = new Token(Compiler::PHVOLT_T_IGNORE);
                         }
                     } else {
                         while ($next = $this->state->incrementStart()->getStart()) {
                             $doubleNext = $this->state->getNext();
                             if ($next === '#' && $doubleNext === '}') {
                                 $this->state->incrementStart(2);
-                                $this->token->setOpcode(Compiler::PHVOLT_T_IGNORE);
-                                return 0;
+                                $this->token = new Token(Compiler::PHVOLT_T_IGNORE);
+                                return ScannerStatus::OK;
                             } elseif ($next === "\n") {
                                 $this->state->incrementActiveLine();
                             }
                         }
 
-                        return self::PHVOLT_SCANNER_RETCODE_EOF;
+                        return ScannerStatus::EOF;
                     }
 
-                    return 0;
+                    return ScannerStatus::OK;
                 }
 
-                $this->state->rawFragment .= $cursor;
+                $this->state->appendToRawFragment($cursor);
                 $this->state->incrementStart();
             } else {
                 $vvch = $cursor;
@@ -236,14 +230,14 @@ class Scanner
                 }
 
                 vv2:
-                $status = self::PHVOLT_SCANNER_RETCODE_EOF;
+                $status = ScannerStatus::EOF;
                 break;
 
                 vv4:
                 $this->state->incrementStart();
 
                 vv5:
-                $status = self::PHVOLT_SCANNER_RETCODE_ERR;
+                $status = ScannerStatus::ERR;
                 break;
                 vv6:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -256,13 +250,13 @@ class Scanner
                         goto vv8;
                 }
                 vv8:
-                $this->token->setOpcode(Compiler::PHVOLT_T_IGNORE);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_IGNORE);
+                return ScannerStatus::OK;
                 vv9:
                 $this->state->incrementStart();
                 $this->state->incrementActiveLine();
-                $this->token->setOpcode(Compiler::PHVOLT_T_IGNORE);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_IGNORE);
+                return ScannerStatus::OK;
                 vv11:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
@@ -272,8 +266,8 @@ class Scanner
                         goto vv12;
                 }
                 vv12:
-                $this->token->setOpcode(Compiler::PHVOLT_T_NOT);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_NOT);
+                return ScannerStatus::OK;
 
                 vv13:
                 $vvaccept = 0;
@@ -293,8 +287,8 @@ class Scanner
                         goto vv15;
                 }
                 vv15:
-                $this->token->setOpcode(Compiler::PHVOLT_T_MOD);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_MOD);
+                return ScannerStatus::OK;
 
                 vv16:
                 $vvaccept = 0;
@@ -307,13 +301,13 @@ class Scanner
 
                 vv17:
                 $this->state->incrementStart();
-                $this->token->setOpcode(Compiler::PHVOLT_T_PARENTHESES_OPEN);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_PARENTHESES_OPEN);
+                return ScannerStatus::OK;
                 vv19:
                 $this->state->incrementStart();
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_PARENTHESES_CLOSE);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_PARENTHESES_CLOSE);
+                    return ScannerStatus::OK;
                 }
                 vv21:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -325,8 +319,8 @@ class Scanner
                 }
                 vv22:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_MUL);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_MUL);
+                    return ScannerStatus::OK;
                 }
                 vv23:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -340,13 +334,13 @@ class Scanner
                 }
 
                 vv24:
-                $this->token->setOpcode(Compiler::PHVOLT_T_ADD);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_ADD);
+                return ScannerStatus::OK;
 
                 vv25:
                 $this->state->incrementStart();
-                $this->token->setOpcode(Compiler::PHVOLT_T_COMMA);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_COMMA);
+                return ScannerStatus::OK;
 
                 vv27:
                 $vvaccept = 1;
@@ -366,8 +360,8 @@ class Scanner
                 }
 
                 vv28:
-                $this->token->setOpcode(Compiler::PHVOLT_T_SUB);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_SUB);
+                return ScannerStatus::OK;
 
                 vv29:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -379,8 +373,8 @@ class Scanner
                 }
 
                 vv30:
-                $this->token->setOpcode(Compiler::PHVOLT_T_DOT);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_DOT);
+                return ScannerStatus::OK;
 
                 vv31:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -392,8 +386,8 @@ class Scanner
                 }
 
                 vv32:
-                $this->token->setOpcode(Compiler::PHVOLT_T_DIV);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_DIV);
+                return ScannerStatus::OK;
 
                 vv33:
                 $vvaccept = 2;
@@ -418,16 +412,16 @@ class Scanner
                 }
 
                 vv35:
-                $this->token->setOpcode(Compiler::PHVOLT_T_INTEGER);
-                $this->token->setValue(
+                $this->token = new Token(
+                    Compiler::PHVOLT_T_INTEGER,
                     substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
                 );
-                return 0;
+                return ScannerStatus::OK;
 
                 vv36:
                 $this->state->incrementStart();
-                $this->token->setOpcode(Compiler::PHVOLT_T_COLON);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_COLON);
+                return ScannerStatus::OK;
                 vv38:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
@@ -439,8 +433,8 @@ class Scanner
                         goto vv39;
                 }
                 vv39:
-                $this->token->setOpcode(Compiler::PHVOLT_T_LESS);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_LESS);
+                return ScannerStatus::OK;
                 vv40:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
@@ -451,8 +445,8 @@ class Scanner
                 }
                 vv41:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ASSIGN);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_ASSIGN);
+                    return ScannerStatus::OK;
                 }
                 vv42:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -464,14 +458,14 @@ class Scanner
                 }
                 vv43:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_GREATER);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_GREATER);
+                    return ScannerStatus::OK;
                 }
                 vv44:
                 $this->state->incrementStart();
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_QUESTION);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_QUESTION);
+                    return ScannerStatus::OK;
                 }
                 vv46:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -487,11 +481,11 @@ class Scanner
                 }
 
                 vv47:
-                $this->token->setOpcode(Compiler::PHVOLT_T_IDENTIFIER);
-                $this->token->setValue(
+                $this->token = new Token(
+                    Compiler::PHVOLT_T_IDENTIFIER,
                     substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
                 );
-                return 0;
+                return ScannerStatus::OK;
 
                 vv48:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -735,8 +729,8 @@ class Scanner
                 vv63:
                 $this->state->incrementStart();
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_SBRACKET_OPEN);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_SBRACKET_OPEN);
+                    return ScannerStatus::OK;
                 }
                 vv65:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -801,8 +795,8 @@ class Scanner
                 vv66:
                 $this->state->incrementStart();
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_SBRACKET_CLOSE);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_SBRACKET_CLOSE);
+                    return ScannerStatus::OK;
                 }
                 vv68:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -835,13 +829,13 @@ class Scanner
                 }
                 vv70:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_CBRACKET_OPEN);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_CBRACKET_OPEN);
+                    return ScannerStatus::OK;
                 }
                 vv71:
                     $this->state->incrementStart();
-                    $this->token->setOpcode(Compiler::PHVOLT_T_PIPE);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_PIPE);
+                    return ScannerStatus::OK;
                 vv73:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
@@ -852,14 +846,14 @@ class Scanner
                 }
                 vv74:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_CBRACKET_CLOSE);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_CBRACKET_CLOSE);
+                    return ScannerStatus::OK;
                 }
                 vv75:
                 $this->state->incrementStart();
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_CONCAT);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_CONCAT);
+                    return ScannerStatus::OK;
                 }
                 vv77:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -871,8 +865,8 @@ class Scanner
                 }
                 vv78:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_NOTEQUALS);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_NOTEQUALS);
+                    return ScannerStatus::OK;
                 }
                 vv79:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -904,11 +898,11 @@ class Scanner
                 vv82:
                 $this->state->incrementStart();
                 $start++;
-                $this->token->setOpcode(Compiler::PHVOLT_T_STRING);
-                $this->token->setValue(
+                $this->token = new Token(
+                    Compiler::PHVOLT_T_STRING,
                     substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start - 1)
                 );
-                return 0;
+                return ScannerStatus::OK;
                 vv84:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
@@ -920,8 +914,8 @@ class Scanner
                 vv85:
                 $this->state->incrementStart();
                 $this->state->setMode(Compiler::PHVOLT_MODE_RAW);
-                $this->token->setOpcode(Compiler::PHVOLT_T_CLOSE_DELIMITER);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_CLOSE_DELIMITER);
+                return ScannerStatus::OK;
                 vv87:
                 $vvch = $this->state->incrementStart()->getStart();
                 vv88:
@@ -946,20 +940,20 @@ class Scanner
                 vv90:
                 $this->state->incrementStart();
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_MUL_ASSIGN);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_MUL_ASSIGN);
+                    return ScannerStatus::OK;
                 }
                 vv92:
                 $this->state->incrementStart();
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_INCR);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_INCR);
+                    return ScannerStatus::OK;
                 }
                 vv94:
                 $this->state->incrementStart();
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ADD_ASSIGN);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_ADD_ASSIGN);
+                    return ScannerStatus::OK;
                 }
                 vv96:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -972,13 +966,13 @@ class Scanner
 
                 vv97:
                 $this->state->incrementStart();
-                $this->token->setOpcode(Compiler::PHVOLT_T_DECR);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_DECR);
+                return ScannerStatus::OK;
 
                 vv99:
                 $this->state->incrementStart();
-                $this->token->setOpcode(Compiler::PHVOLT_T_SUB_ASSIGN);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_SUB_ASSIGN);
+                return ScannerStatus::OK;
 
                 vv101:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -991,13 +985,13 @@ class Scanner
 
                 vv102:
                 $this->state->incrementStart();
-                $this->token->setOpcode(Compiler::PHVOLT_T_RANGE);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_RANGE);
+                return ScannerStatus::OK;
 
                 vv104:
                 $this->state->incrementStart();
-                $this->token->setOpcode(Compiler::PHVOLT_T_DIV_ASSIGN);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_DIV_ASSIGN);
+                return ScannerStatus::OK;
 
                 vv106:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -1019,14 +1013,14 @@ class Scanner
                 vv107:
                 $this->state->incrementStart();
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_LESSEQUAL);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_LESSEQUAL);
+                    return ScannerStatus::OK;
                 }
                 vv109:
                 $this->state->incrementStart();
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_NOTEQUALS);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_NOTEQUALS);
+                    return ScannerStatus::OK;
                 }
                 vv111:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -1038,14 +1032,14 @@ class Scanner
                 }
                 vv112:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_EQUALS);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_EQUALS);
+                    return ScannerStatus::OK;
                 }
                 vv113:
                 $this->state->incrementStart();
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_GREATEREQUAL);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_GREATEREQUAL);
+                    return ScannerStatus::OK;
                 }
                 vv115:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -1189,9 +1183,9 @@ class Scanner
                 }
 
                 vv123:
-                $this->state->statementPosition++;
-                $this->token->setOpcode(Compiler::PHVOLT_T_DO);
-                return 0;
+                $this->state->incrementStatementPosition();
+                $this->token = new Token(Compiler::PHVOLT_T_DO);
+                return ScannerStatus::OK;
 
                 vv124:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -1329,9 +1323,9 @@ class Scanner
                 }
                 vv132:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_IF);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_IF);
+                    return ScannerStatus::OK;
                 }
                 vv133:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -1407,8 +1401,8 @@ class Scanner
                 }
 
                 vv134:
-                $this->token->setOpcode(Compiler::PHVOLT_T_IN);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_IN);
+                return ScannerStatus::OK;
 
                 vv135:
                 $vvaccept = 3;
@@ -1487,17 +1481,17 @@ class Scanner
                 }
 
                 vv136:
-                if ($this->state->activeToken === Compiler::PHVOLT_T_DOT) {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_IDENTIFIER);
-                    $this->token->setValue(
+                if ($this->state->getActiveToken() === Compiler::PHVOLT_T_DOT) {
+                    $this->token = new Token(
+                        Compiler::PHVOLT_T_IDENTIFIER,
                         substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
                     );
                 } else {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_IS);
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_IS);
                 }
 
-                return 0;
+                return ScannerStatus::OK;
 
                 vv137:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -1620,8 +1614,8 @@ class Scanner
                 }
                 vv143:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_OR);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_OR);
+                    return ScannerStatus::OK;
                 }
                 vv144:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -1772,8 +1766,8 @@ class Scanner
 
                 vv153:
                 $this->state->setWhitespaceControl(false);
-                $this->token->setOpcode(Compiler::PHVOLT_T_OPEN_DELIMITER);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_OPEN_DELIMITER);
+                return ScannerStatus::OK;
 
                 vv154:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -1786,33 +1780,33 @@ class Scanner
 
                 vv155:
                 $this->state->setWhitespaceControl(false);
-                $this->state->statementPosition++;
-                $this->token->setOpcode(Compiler::PHVOLT_T_OPEN_EDELIMITER);
-                return 0;
+                $this->state->incrementStatementPosition();
+                $this->token = new Token(Compiler::PHVOLT_T_OPEN_EDELIMITER);
+                return ScannerStatus::OK;
 
                 vv156:
                 $this->state->incrementStart();
                 $this->state->setMode(Compiler::PHVOLT_MODE_RAW);
-                $this->token->setOpcode(Compiler::PHVOLT_T_CLOSE_EDELIMITER);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_CLOSE_EDELIMITER);
+                return ScannerStatus::OK;
                 vv158:
                 $this->state->incrementStart();
-                $this->token->setOpcode(Compiler::PHVOLT_T_NOTIDENTICAL);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_NOTIDENTICAL);
+                return ScannerStatus::OK;
 
                 vv160:
                 $this->state->incrementStart();
                 $this->state->setMode(Compiler::PHVOLT_MODE_RAW);
                 $this->state->setWhitespaceControl(true);
-                $this->token->setOpcode(Compiler::PHVOLT_T_CLOSE_DELIMITER);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_CLOSE_DELIMITER);
+                return ScannerStatus::OK;
 
                 vv162:
                 $this->state->incrementStart();
                 $this->state->setMode(Compiler::PHVOLT_MODE_RAW);
                 $this->state->setWhitespaceControl(true);
-                $this->token->setOpcode(Compiler::PHVOLT_T_CLOSE_EDELIMITER);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_CLOSE_EDELIMITER);
+                return ScannerStatus::OK;
                 vv164:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
@@ -1832,17 +1826,17 @@ class Scanner
                 }
                 vv166:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_DOUBLE);
-                    $this->token->setValue(
+                    $this->token = new Token(
+                        Compiler::PHVOLT_T_DOUBLE,
                         substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
                     );
-                    return 0;
+                    return ScannerStatus::OK;
                 }
                 vv167:
                 $this->state->incrementStart();
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_IDENTICAL);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_IDENTICAL);
+                    return ScannerStatus::OK;
                 }
                 vv169:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -1917,8 +1911,8 @@ class Scanner
                 }
                 vv170:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_AND);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_AND);
+                    return ScannerStatus::OK;
                 }
                 vv171:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -2143,9 +2137,9 @@ class Scanner
                 }
                 vv186:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_FOR);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_FOR);
+                    return ScannerStatus::OK;
                 }
                 vv187:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -2256,9 +2250,9 @@ class Scanner
                 }
                 vv192:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_NOT);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_NOT);
+                    return ScannerStatus::OK;
                 }
                 vv193:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -2351,9 +2345,9 @@ class Scanner
                 }
 
                 vv196:
-                $this->state->statementPosition++;
-                $this->token->setOpcode(Compiler::PHVOLT_T_ODD);
-                return 0;
+                $this->state->incrementStatementPosition();
+                $this->token = new Token(Compiler::PHVOLT_T_ODD);
+                return ScannerStatus::OK;
 
                 vv197:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -2428,9 +2422,9 @@ class Scanner
                 }
                 vv198:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_RAW);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_RAW);
+                    return ScannerStatus::OK;
                 }
                 vv199:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -2523,16 +2517,16 @@ class Scanner
                 }
                 vv202:
                 {
-                if ($this->state->activeToken === Compiler::PHVOLT_T_DOT) {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_IDENTIFIER);
-                    $this->token->setValue(
+                if ($this->state->getActiveToken() === Compiler::PHVOLT_T_DOT) {
+                    $this->token = new Token(
+                        Compiler::PHVOLT_T_IDENTIFIER,
                         substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
                     );
                 } else {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_SET);
+                    $this->token = new Token(Compiler::PHVOLT_T_SET);
                 }
 
-                return 0;
+                return ScannerStatus::OK;
                 }
                 vv203:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -2575,15 +2569,15 @@ class Scanner
                 vv207:
                 $this->state->incrementStart();
                 $this->state->setWhitespaceControl(false);
-                $this->token->setOpcode(Compiler::PHVOLT_T_OPEN_DELIMITER);
-                return 0;
+                $this->token = new Token(Compiler::PHVOLT_T_OPEN_DELIMITER);
+                return ScannerStatus::OK;
 
                 vv209:
                 $this->state->incrementStart();
                 $this->state->setWhitespaceControl(false);
-                $this->state->statementPosition++;
-                $this->token->setOpcode(Compiler::PHVOLT_T_OPEN_EDELIMITER);
-                return 0;
+                $this->state->incrementStatementPosition();
+                $this->token = new Token(Compiler::PHVOLT_T_OPEN_EDELIMITER);
+                return ScannerStatus::OK;
 
                 vv211:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -2694,9 +2688,9 @@ class Scanner
                 }
                 vv216:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_CALL);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_CALL);
+                    return ScannerStatus::OK;
                 }
                 vv217:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -2771,8 +2765,8 @@ class Scanner
                 }
                 vv218:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_CASE);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_CASE);
+                    return ScannerStatus::OK;
                 }
                 vv219:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -2876,8 +2870,8 @@ class Scanner
                 }
                 vv223:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ELSE);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_ELSE);
+                    return ScannerStatus::OK;
                 }
                 vv224:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -3033,9 +3027,9 @@ class Scanner
                 }
 
                 vv234:
-                $this->state->statementPosition++;
-                $this->token->setOpcode(Compiler::PHVOLT_T_EVEN);
-                return 0;
+                $this->state->incrementStatementPosition();
+                $this->token = new Token(Compiler::PHVOLT_T_EVEN);
+                return ScannerStatus::OK;
 
                 vv235:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -3164,8 +3158,8 @@ class Scanner
                 }
                 vv242:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_NULL);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_NULL);
+                    return ScannerStatus::OK;
                 }
                 vv243:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -3276,8 +3270,8 @@ class Scanner
                 }
                 vv248:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_TRUE);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_TRUE);
+                    return ScannerStatus::OK;
                 }
                 vv249:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -3352,8 +3346,8 @@ class Scanner
                 }
                 vv250:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_WITH);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_WITH);
+                    return ScannerStatus::OK;
                 }
                 vv251:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -3448,9 +3442,9 @@ class Scanner
                 }
 
                 vv255:
-                $this->state->statementPosition++;
-                $this->token->setOpcode(Compiler::PHVOLT_T_BLOCK);
-                return 0;
+                $this->state->incrementStatementPosition();
+                $this->token = new Token(Compiler::PHVOLT_T_BLOCK);
+                return ScannerStatus::OK;
 
                 vv256:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -3525,9 +3519,9 @@ class Scanner
                 }
                 vv257:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_BREAK);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_BREAK);
+                    return ScannerStatus::OK;
                 }
                 vv258:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -3602,9 +3596,9 @@ class Scanner
                 }
                 vv259:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_CACHE);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_CACHE);
+                    return ScannerStatus::OK;
                 }
                 vv260:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -3724,9 +3718,9 @@ class Scanner
                 }
                 vv266:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_EMPTY);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_EMPTY);
+                    return ScannerStatus::OK;
                 }
                 vv267:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -3840,8 +3834,8 @@ class Scanner
                 }
                 vv272:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ENDIF);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_ENDIF);
+                    return ScannerStatus::OK;
                 }
                 vv273:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -3952,8 +3946,8 @@ class Scanner
                 }
                 vv278:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_FALSE);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_FALSE);
+                    return ScannerStatus::OK;
                 }
                 vv279:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -4055,9 +4049,9 @@ class Scanner
                 }
                 vv283:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_MACRO);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_MACRO);
+                    return ScannerStatus::OK;
                 }
                 vv284:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -4221,8 +4215,8 @@ class Scanner
                 }
                 vv295:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ELSEIF);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_ELSEIF);
+                    return ScannerStatus::OK;
                 }
                 vv296:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -4333,8 +4327,8 @@ class Scanner
                 }
                 vv301:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ENDFOR);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_ENDFOR);
+                    return ScannerStatus::OK;
                 }
                 vv302:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -4418,9 +4412,9 @@ class Scanner
                 }
                 vv304:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ENDRAW);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_ENDRAW);
+                    return ScannerStatus::OK;
                 }
                 vv305:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -4452,9 +4446,9 @@ class Scanner
                 vv308:
                 $this->state->incrementStart();
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_NOTEQUALS);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_NOTEQUALS);
+                    return ScannerStatus::OK;
                 }
                 vv310:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -4547,8 +4541,8 @@ class Scanner
                 }
                 vv313:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_RETURN);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_RETURN);
+                    return ScannerStatus::OK;
                 }
                 vv314:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -4623,9 +4617,9 @@ class Scanner
                 }
                 vv315:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_SCALAR);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_SCALAR);
+                    return ScannerStatus::OK;
                 }
                 vv316:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -4700,9 +4694,9 @@ class Scanner
                 }
                 vv317:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_SWITCH);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_SWITCH);
+                    return ScannerStatus::OK;
                 }
                 vv318:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -4802,11 +4796,11 @@ class Scanner
                         goto vv322;
                 }
                 vv322:
-                $this->token->setOpcode(Compiler::PHVOLT_T_DEFAULT);
-                $this->token->setValue(
+                $this->token = new Token(
+                    Compiler::PHVOLT_T_DEFAULT,
                     substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
                 );
-                return 0;
+                return ScannerStatus::OK;
                 vv323:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
@@ -4880,9 +4874,9 @@ class Scanner
                 }
                 vv324:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_DEFINED);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_DEFINED);
+                    return ScannerStatus::OK;
                 }
                 vv325:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -4957,8 +4951,8 @@ class Scanner
                 }
                 vv326:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ELSEFOR);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_ELSEFOR);
+                    return ScannerStatus::OK;
                 }
                 vv327:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -5060,8 +5054,8 @@ class Scanner
                 }
                 vv331:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ENDCALL);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_ENDCALL);
+                    return ScannerStatus::OK;
                 }
                 vv332:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -5153,9 +5147,9 @@ class Scanner
                         goto vv335;
                 }
                 vv335:
-                $this->state->statementPosition++;
-                $this->token->setOpcode(Compiler::PHVOLT_T_EXTENDS);
-                return 0;
+                $this->state->incrementStatementPosition();
+                $this->token = new Token(Compiler::PHVOLT_T_EXTENDS);
+                return ScannerStatus::OK;
 
                 vv336:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -5230,9 +5224,9 @@ class Scanner
                 }
                 vv337:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_INCLUDE);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_INCLUDE);
+                    return ScannerStatus::OK;
                 }
                 vv338:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -5316,16 +5310,16 @@ class Scanner
                 }
                 vv340:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_NUMERIC);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_NUMERIC);
+                    return ScannerStatus::OK;
                 }
                 vv341:
                 $this->state->incrementStart();
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_NOTEQUALS);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_NOTEQUALS);
+                    return ScannerStatus::OK;
                 }
                 vv343:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -5409,9 +5403,9 @@ class Scanner
                 }
                 vv345:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_CONTINUE);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_CONTINUE);
+                    return ScannerStatus::OK;
                 }
                 vv346:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -5495,8 +5489,8 @@ class Scanner
                 }
                 vv348:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ENDBLOCK);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_ENDBLOCK);
+                    return ScannerStatus::OK;
                 }
                 vv349:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -5571,8 +5565,8 @@ class Scanner
                 }
                 vv350:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ENDCACHE);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_ENDCACHE);
+                    return ScannerStatus::OK;
                 }
                 vv351:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -5647,8 +5641,8 @@ class Scanner
                 }
                 vv352:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ENDMACRO);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_ENDMACRO);
+                    return ScannerStatus::OK;
                 }
                 vv353:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -5732,9 +5726,9 @@ class Scanner
                 }
                 vv355:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ITERABLE);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_ITERABLE);
+                    return ScannerStatus::OK;
                 }
                 vv356:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -5827,8 +5821,8 @@ class Scanner
                 }
                 vv359:
                 {
-                    $this->token->setOpcode(Compiler::PHVOLT_T_ENDSWITCH);
-                    return 0;
+                    $this->token = new Token(Compiler::PHVOLT_T_ENDSWITCH);
+                    return ScannerStatus::OK;
                 }
                 vv360:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -5903,9 +5897,9 @@ class Scanner
                 }
                 vv361:
                 {
-                    $this->state->statementPosition++;
-                    $this->token->setOpcode(Compiler::PHVOLT_T_AUTOESCAPE);
-                    return 0;
+                    $this->state->incrementStatementPosition();
+                    $this->token = new Token(Compiler::PHVOLT_T_AUTOESCAPE);
+                    return ScannerStatus::OK;
                 }
                 vv362:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -6006,9 +6000,9 @@ class Scanner
                         goto vv366;
                 }
                 vv366:
-                $this->state->statementPosition++;
-                $this->token->setOpcode(Compiler::PHVOLT_T_ENDAUTOESCAPE);
-                return 0;
+                $this->state->incrementStatementPosition();
+                $this->token = new Token(Compiler::PHVOLT_T_ENDAUTOESCAPE);
+                return ScannerStatus::OK;
             }
         }
 

@@ -1,8 +1,14 @@
 .idea/
-composer.phar
+.worktrees/
 /vendor/
 /lemon-php/
-log.txt
-tests/support/output/
-tests/support/coverage/
+composer.phar
+
+# PHPUnit
+.phpunit.result.cache/
+tests/_output/
+coverage/
+coverage.xml
+
+# Volt compiled templates
 *.volt.php

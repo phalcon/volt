@@ -99,6 +99,6 @@ class Tokens
         'MACRO'         => Compiler::PHVOLT_T_MACRO,
         'ENDMACRO'      => Compiler::PHVOLT_T_ENDMACRO,
         'CALL'          => Compiler::PHVOLT_T_CALL,
-        null            => 0,
+        ''              => 0,
     ];
 }

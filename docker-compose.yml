@@ -1,11 +1,65 @@
-# For local development only.
-
 services:
-  phalcon-volt-8.1:
-    container_name: phalcon-volt-8.1
-    hostname: phalcon-volt-8.1
-    build: resources/docker/8.1
-    tty: true
-    working_dir: /srv
+  volt-dev-8.1:
+    container_name: volt-dev-8.1
+    hostname: volt-dev-81
+    build:
+      dockerfile: resources/docker/develop/Dockerfile
+      args:
+        PHP_VERSION: 8.1
+    working_dir: /app
     volumes:
-      - .:/srv
+      - .:/app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  volt-dev-8.2:
+    container_name: volt-dev-8.2
+    hostname: volt-dev-82
+    build:
+      dockerfile: resources/docker/develop/Dockerfile
+      args:
+        PHP_VERSION: 8.2
+    working_dir: /app
+    volumes:
+      - .:/app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  volt-dev-8.3:
+    container_name: volt-dev-8.3
+    hostname: volt-dev-83
+    build:
+      dockerfile: resources/docker/develop/Dockerfile
+      args:
+        PHP_VERSION: 8.3
+    working_dir: /app
+    volumes:
+      - .:/app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  volt-dev-8.4:
+    container_name: volt-dev-8.4
+    hostname: volt-dev-84
+    build:
+      dockerfile: resources/docker/develop/Dockerfile
+      args:
+        PHP_VERSION: 8.4
+    working_dir: /app
+    volumes:
+      - .:/app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  volt-dev-8.5:
+    container_name: volt-dev-8.5
+    hostname: volt-dev-85
+    build:
+      dockerfile: resources/docker/develop/Dockerfile
+      args:
+        PHP_VERSION: 8.5
+    working_dir: /app
+    volumes:
+      - .:/app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

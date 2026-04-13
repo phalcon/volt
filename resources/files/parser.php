@@ -3253,7 +3253,7 @@ static const struct {
                 $error_str .= $token_name;
             }
 
-            $tokenValue = $this->status->getToken()->getValue();
+            $tokenValue = $this->status->getToken()->value;
             $tokenValue = $tokenValue !== null ? trim($tokenValue) : null;
             if ($tokenValue) {
                 $error_str .= "(" . $tokenValue . ")";
@@ -3266,27 +3266,27 @@ static const struct {
             $error_str .= "Syntax error, unexpected EOF in " . $this->status->getState()->getActiveFile();
 
             /* Report unclosed 'if' blocks */
-            if (($this->status->getState()->getIfLevel() + $this->status->getState()->oldIfLevel) > 0) {
-                if (($this->status->getState()->getIfLevel() + $this->status->getState()->oldIfLevel) == 1) {
+            if (($this->status->getState()->getIfLevel() + $this->status->getState()->getOldIfLevel()) > 0) {
+                if (($this->status->getState()->getIfLevel() + $this->status->getState()->getOldIfLevel()) == 1) {
                     $error_str .= ", there is one 'if' block without close";
                 } else {
                     $error_str .= ", there are ";
-                    $error_str .= $this->status->getState()->ifLevel + $this->status->getState()->oldIfLevel;
+                    $error_str .= $this->status->getState()->getIfLevel() + $this->status->getState()->getOldIfLevel();
                     $error_str .= " 'if' blocks without close";
                 }
             }
 
             /* Report unclosed 'for' blocks */
-            if ($this->status->getState()->forLevel > 0) {
-                if ($this->status->getState()->forLevel == 1) {
+            if ($this->status->getState()->getForLevel() > 0) {
+                if ($this->status->getState()->getForLevel() == 1) {
                     $error_str .= ", there is one 'for' block without close";
                 } else {
-                    $error_str .= ", there are " . $this->status->getState()->ifLevel . " 'for' blocks without close";
+                    $error_str .= ", there are " . $this->status->getState()->getIfLevel() . " 'for' blocks without close";
                 }
             }
 
             /* Report unclosed 'switch' blocks */
-            if ($this->status->getState()->switchLevel > 0) {
+            if ($this->status->getState()->getSwitchLevel() > 0) {
                 $error_str .= ", there is a 'switch' block without 'endswitch'";
             }
         }
@@ -3529,7 +3529,7 @@ function phvolt_ret_for_statement(
 {
     $ret = [
         "type" => Compiler::PHVOLT_T_FOR,
-        "variable" => $variable->getValue(),
+        "variable" => $variable->value,
         "expr" => $expr,
         "block_statements" => $block_statements,
         "file" => $state->getActiveFile(),
@@ -3539,7 +3539,7 @@ function phvolt_ret_for_statement(
     unset($variable);
 
     if ($key) {
-        $ret["key"] = $key->getValue();
+        $ret["key"] = $key->value;
         unset($key);
     }
 
@@ -3553,8 +3553,8 @@ function phvolt_ret_literal_zval(&$ret, $type, ?Token $token = null, ?State $sta
     $ret = [
         'type' => $type,
     ];
-    if ($token !== null && $token->getValue() !== null) {
-        $ret['value'] = $token->getValue();
+    if ($token !== null && $token->value !== null) {
+        $ret['value'] = $token->value;
     }
 
     $ret['file'] = $state->getActiveFile();
@@ -3565,8 +3565,8 @@ function phvolt_ret_named_item(?Token $token = null, array $expr = [], ?State $s
 {
     $ret['expr'] = $expr;
 
-    if ($token !== null && $token->getValue() !== null) {
-        $ret['name'] = $token->getValue();
+    if ($token !== null && $token->value !== null) {
+        $ret['name'] = $token->value;
         unset($token);
     }
 
@@ -3657,7 +3657,7 @@ function phvolt_ret_include_statement(array &$ret, array $path, ?array $params, 
 function phvolt_ret_macro_parameter(array &$ret, Token $variable, ?array $default_value, State $state): void
 {
     $ret = [];
-    $ret['variable'] = $variable->getValue();
+    $ret['variable'] = $variable->value;
 
     // Free the variable token memory
     unset($variable);
@@ -3749,7 +3749,7 @@ function phvolt_ret_macro_statement(array &$ret, Token $macro_name, ?array $para
     $ret = [];
     $ret['type'] = Compiler::PHVOLT_T_MACRO;
 
-    $ret['name'] = $macro_name->getValue();
+    $ret['name'] = $macro_name->value;
     unset($macro_name);
 
     if ($parameters !== null) {
@@ -3785,7 +3785,7 @@ function phvolt_ret_block_statement(array &$ret, Token $name, ?array $block_stat
     $ret = [];
     $ret['type'] = Compiler::PHVOLT_T_BLOCK;
 
-    $ret['name'] = $name->getValue();
+    $ret['name'] = $name->value;
     unset($name);
 
     if ($block_statements !== null) {
