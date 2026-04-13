@@ -21,8 +21,9 @@ class Status
     public const PHVOLT_PARSING_FAILED = 0;
     public const PHVOLT_PARSING_OK     = 1;
 
-    private ?string $syntaxError = null;
-    private ?Token $token       = null;
+    private ?string $lastTokenValue = null;
+    private ?string $syntaxError    = null;
+    private ?Token $token           = null;
 
     public function __construct(
         private State $scannerState,
@@ -43,6 +44,11 @@ class Status
     public function getSyntaxError(): ?string
     {
         return $this->syntaxError;
+    }
+
+    public function getLastTokenValue(): ?string
+    {
+        return $this->lastTokenValue;
     }
 
     public function getToken(): ?Token
@@ -67,6 +73,9 @@ class Status
     public function setToken(Token $token): static
     {
         $this->token = $token;
+        if ($token->value !== null) {
+            $this->lastTokenValue = $token->value;
+        }
 
         return $this;
     }
