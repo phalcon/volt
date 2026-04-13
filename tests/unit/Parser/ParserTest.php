@@ -21,15 +21,15 @@ final class ParserTest extends TestCase
 {
     public function testEmptyTemplateReturnsEmptyArray(): void
     {
-        $parser = new Parser('');
+        $parser = new Parser();
 
-        $this->assertSame([], $parser->parseView('test.volt'));
+        $this->assertSame([], $parser->parse('', 'test.volt'));
     }
 
     public function testRawTextFragment(): void
     {
-        $parser = new Parser('Hello World');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('Hello World', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -39,8 +39,8 @@ final class ParserTest extends TestCase
 
     public function testEchoVariable(): void
     {
-        $parser = new Parser('{{ name }}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('{{ name }}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -50,8 +50,8 @@ final class ParserTest extends TestCase
 
     public function testIfStatement(): void
     {
-        $parser = new Parser('{% if active %}yes{% endif %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('{% if active %}yes{% endif %}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -60,8 +60,8 @@ final class ParserTest extends TestCase
 
     public function testForLoop(): void
     {
-        $parser = new Parser('{% for item in items %}{{ item }}{% endfor %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('{% for item in items %}{{ item }}{% endfor %}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -72,8 +72,8 @@ final class ParserTest extends TestCase
 
     public function testSetStatement(): void
     {
-        $parser = new Parser('{% set x = 1 %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('{% set x = 1 %}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -82,8 +82,11 @@ final class ParserTest extends TestCase
 
     public function testExtendsStatement(): void
     {
-        $parser = new Parser("{% extends 'base.volt' %}{% block content %}hello{% endblock %}");
-        $result = $parser->parseView('child.volt');
+        $parser = new Parser();
+        $result = $parser->parse(
+            "{% extends 'base.volt' %}{% block content %}hello{% endblock %}",
+            'child.volt'
+        );
 
         $this->assertIsArray($result);
     }
@@ -92,15 +95,15 @@ final class ParserTest extends TestCase
     {
         $this->expectException(Exception::class);
 
-        $parser = new Parser('{% endif %}');
-        $parser->parseView('test.volt');
+        $parser = new Parser();
+        $parser->parse('{% endif %}', 'test.volt');
     }
 
     public function testTemplatePathInErrorMessage(): void
     {
         try {
-            $parser = new Parser('{% endif %}');
-            $parser->parseView('mytemplate.volt');
+            $parser = new Parser();
+            $parser->parse('{% endif %}', 'mytemplate.volt');
             $this->fail('Expected exception not thrown');
         } catch (Exception $e) {
             $this->assertStringContainsString('mytemplate.volt', $e->getMessage());
@@ -111,26 +114,18 @@ final class ParserTest extends TestCase
     {
         $this->expectException(Exception::class);
 
-        $parser = new Parser('{% switch x %}{% switch y %}{% endswitch %}{% endswitch %}');
-        $parser->parseView('test.volt');
+        $parser = new Parser();
+        $parser->parse('{% switch x %}{% switch y %}{% endswitch %}{% endswitch %}', 'test.volt');
     }
 
     public function testDebugMode(): void
     {
-        $debugFile = sys_get_temp_dir() . '/volt_debug_test.txt';
-        $parser    = new Parser('{{ name }}');
+        $testsDir = dirname(__FILE__, 3);
+        $debugFile = $testsDir . '/_output/volt_debug_test.txt';
+        $parser    = new Parser();
+        $parser->setDebug(true)->setDebugFile($debugFile);
 
-        $ref = new \ReflectionClass($parser);
-
-        $debugProp = $ref->getProperty('debug');
-        $debugProp->setAccessible(true);
-        $debugProp->setValue($parser, true);
-
-        $fileProp = $ref->getProperty('debugFile');
-        $fileProp->setAccessible(true);
-        $fileProp->setValue($parser, $debugFile);
-
-        $result = $parser->parseView('test.volt');
+        $result = $parser->parse('{{ name }}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertFileExists($debugFile);
@@ -140,8 +135,11 @@ final class ParserTest extends TestCase
 
     public function testElseForViaElse(): void
     {
-        $parser = new Parser('{% for x in items %}{{ x }}{% else %}empty{% endfor %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse(
+            '{% for x in items %}{{ x }}{% else %}empty{% endfor %}',
+            'test.volt'
+        );
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -150,8 +148,11 @@ final class ParserTest extends TestCase
 
     public function testElsefor(): void
     {
-        $parser = new Parser('{% for x in items %}{{ x }}{% elsefor %}empty{% endfor %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse(
+            '{% for x in items %}{{ x }}{% elsefor %}empty{% endfor %}',
+            'test.volt'
+        );
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -163,14 +164,14 @@ final class ParserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Unexpected ENDIF');
 
-        $parser = new Parser('{% elseif x %}');
-        $parser->parseView('test.volt');
+        $parser = new Parser();
+        $parser->parse('{% elseif x %}', 'test.volt');
     }
 
     public function testSwitchWithCase(): void
     {
-        $parser = new Parser('{% switch x %}{% case 1 %}one{% endswitch %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('{% switch x %}{% case 1 %}one{% endswitch %}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -179,8 +180,11 @@ final class ParserTest extends TestCase
 
     public function testSwitchWithDefault(): void
     {
-        $parser = new Parser('{% switch x %}{% default %}fallback{% endswitch %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse(
+            '{% switch x %}{% default %}fallback{% endswitch %}',
+            'test.volt'
+        );
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -192,8 +196,8 @@ final class ParserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Unexpected CASE');
 
-        $parser = new Parser('{% case 1 %}');
-        $parser->parseView('test.volt');
+        $parser = new Parser();
+        $parser->parse('{% case 1 %}', 'test.volt');
     }
 
     public function testEndswitchWithoutSwitchThrowsException(): void
@@ -201,8 +205,8 @@ final class ParserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Unexpected ENDSWITCH');
 
-        $parser = new Parser('{% endswitch %}');
-        $parser->parseView('test.volt');
+        $parser = new Parser();
+        $parser->parse('{% endswitch %}', 'test.volt');
     }
 
     public function testBlockInsideBlockThrowsException(): void
@@ -210,8 +214,11 @@ final class ParserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Embedding blocks into other blocks is not supported');
 
-        $parser = new Parser('{% block outer %}{% block inner %}{% endblock %}{% endblock %}');
-        $parser->parseView('test.volt');
+        $parser = new Parser();
+        $parser->parse(
+            '{% block outer %}{% block inner %}{% endblock %}{% endblock %}',
+            'test.volt'
+        );
     }
 
     public function testMacroInsideMacroThrowsException(): void
@@ -219,14 +226,20 @@ final class ParserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Embedding macros into other macros is not allowed');
 
-        $parser = new Parser('{% macro outer() %}{% macro inner() %}{% endmacro %}{% endmacro %}');
-        $parser->parseView('test.volt');
+        $parser = new Parser();
+        $parser->parse(
+            '{% macro outer() %}{% macro inner() %}{% endmacro %}{% endmacro %}',
+            'test.volt'
+        );
     }
 
     public function testMacroAndEndmacro(): void
     {
-        $parser = new Parser('{% macro greet(name) %}Hello {{ name }}{% endmacro %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse(
+            '{% macro greet(name) %}Hello {{ name }}{% endmacro %}',
+            'test.volt'
+        );
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -235,8 +248,8 @@ final class ParserTest extends TestCase
 
     public function testCallAndEndcall(): void
     {
-        $parser = new Parser('{% call greet() %}{% endcall %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('{% call greet() %}{% endcall %}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -245,8 +258,8 @@ final class ParserTest extends TestCase
 
     public function testRawAndEndraw(): void
     {
-        $parser = new Parser('{% raw %}{{ not_evaluated }}{% endraw %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('{% raw %}{{ not_evaluated }}{% endraw %}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -255,8 +268,8 @@ final class ParserTest extends TestCase
 
     public function testIncludeWith(): void
     {
-        $parser = new Parser('{% include "partial.volt" with vars %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('{% include "partial.volt" with vars %}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -265,8 +278,11 @@ final class ParserTest extends TestCase
 
     public function testReturnInMacro(): void
     {
-        $parser = new Parser('{% macro compute(x) %}{% return x %}{% endmacro %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse(
+            '{% macro compute(x) %}{% return x %}{% endmacro %}',
+            'test.volt'
+        );
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -275,8 +291,8 @@ final class ParserTest extends TestCase
 
     public function testAddAssign(): void
     {
-        $parser = new Parser('{% set counter += 1 %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('{% set counter += 1 %}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -285,8 +301,8 @@ final class ParserTest extends TestCase
 
     public function testSubAssign(): void
     {
-        $parser = new Parser('{% set counter -= 1 %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('{% set counter -= 1 %}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -295,8 +311,8 @@ final class ParserTest extends TestCase
 
     public function testMulAssign(): void
     {
-        $parser = new Parser('{% set counter *= 2 %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('{% set counter *= 2 %}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -305,8 +321,8 @@ final class ParserTest extends TestCase
 
     public function testDivAssign(): void
     {
-        $parser = new Parser('{% set counter /= 2 %}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('{% set counter /= 2 %}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -318,8 +334,8 @@ final class ParserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Child templates only may contain blocks');
 
-        $parser = new Parser('{% extends "base.volt" %}{{ something }}');
-        $parser->parseView('test.volt');
+        $parser = new Parser();
+        $parser->parse('{% extends "base.volt" %}{{ something }}', 'test.volt');
     }
 
     public function testForInExtendsModeThrowsException(): void
@@ -327,8 +343,8 @@ final class ParserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Child templates only may contain blocks');
 
-        $parser = new Parser('{% extends "base.volt" %}{% for x in y %}{% endfor %}');
-        $parser->parseView('test.volt');
+        $parser = new Parser();
+        $parser->parse('{% extends "base.volt" %}{% for x in y %}{% endfor %}', 'test.volt');
     }
 
     public function testSwitchInExtendsModeThrowsException(): void
@@ -336,8 +352,8 @@ final class ParserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Child templates only may contain blocks');
 
-        $parser = new Parser('{% extends "base.volt" %}{% switch x %}{% endswitch %}');
-        $parser->parseView('test.volt');
+        $parser = new Parser();
+        $parser->parse('{% extends "base.volt" %}{% switch x %}{% endswitch %}', 'test.volt');
     }
 
     public function testSetInExtendsModeThrowsException(): void
@@ -345,8 +361,8 @@ final class ParserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Child templates only may contain blocks');
 
-        $parser = new Parser('{% extends "base.volt" %}{% set x = 1 %}');
-        $parser->parseView('test.volt');
+        $parser = new Parser();
+        $parser->parse('{% extends "base.volt" %}{% set x = 1 %}', 'test.volt');
     }
 
     public function testRawFragmentInExtendsModeThrowsException(): void
@@ -354,8 +370,8 @@ final class ParserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Child templates only may contain blocks');
 
-        $parser = new Parser('{% extends "base.volt" %}non-blank content');
-        $parser->parseView('test.volt');
+        $parser = new Parser();
+        $parser->parse('{% extends "base.volt" %}non-blank content', 'test.volt');
     }
 
     public function testScannerErrorNearEof(): void
@@ -363,10 +379,11 @@ final class ParserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Scanning error');
 
-        $parser = new Parser(
-            '{{ link_to("album/" ~ album.id ~ "/" ~ $album.uri, "test") }}'
+        $parser = new Parser();
+        $parser->parse(
+            '{{ link_to("album/" ~ album.id ~ "/" ~ $album.uri, "test") }}',
+            'test.volt'
         );
-        $parser->parseView('test.volt');
     }
 
     public function testIfInExtendsModeThrowsException(): void
@@ -374,14 +391,14 @@ final class ParserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Child templates only may contain blocks');
 
-        $parser = new Parser('{% extends "base.volt" %}{% if x %}yes{% endif %}');
-        $parser->parseView('test.volt');
+        $parser = new Parser();
+        $parser->parse('{% extends "base.volt" %}{% if x %}yes{% endif %}', 'test.volt');
     }
 
     public function testCurlyBracketEmptyExpression(): void
     {
-        $parser = new Parser('{{ {} }}');
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse('{{ {} }}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -390,11 +407,24 @@ final class ParserTest extends TestCase
 
     public function testCurlyBracketDictExpression(): void
     {
-        $parser = new Parser("{{ {'key': 'value'} }}");
-        $result = $parser->parseView('test.volt');
+        $parser = new Parser();
+        $result = $parser->parse("{{ {'key': 'value'} }}", 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
         $this->assertSame(359, $result[0]['type']); // PHVOLT_T_ECHO
+    }
+
+    public function testParserIsReusable(): void
+    {
+        $parser = new Parser();
+
+        $result1 = $parser->parse('{{ name }}', 'first.volt');
+        $result2 = $parser->parse('{% if active %}yes{% endif %}', 'second.volt');
+
+        $this->assertCount(1, $result1);
+        $this->assertCount(1, $result2);
+        $this->assertSame(359, $result1[0]['type']); // PHVOLT_T_ECHO
+        $this->assertSame(300, $result2[0]['type']); // PHVOLT_T_IF
     }
 }
