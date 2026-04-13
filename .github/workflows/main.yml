@@ -61,6 +61,7 @@ jobs:
 
   tests:
     name: Unit tests
+    needs: phpcs
     runs-on: ubuntu-latest
 
     permissions:
@@ -84,7 +85,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, ctype
-          coverage: none
+          coverage: xdebug
           tools: composer:v2
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
