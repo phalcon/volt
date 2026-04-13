@@ -857,3 +857,4 @@ parameters:
 			identifier: offsetAccess.invalidOffset
 			count: 2
 			path: src/Compiler.php
+			reportUnmatched: false
