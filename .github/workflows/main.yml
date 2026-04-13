@@ -42,6 +42,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, ctype
+          coverage: none
           ini-values: apc.enable_cli=on, session.save_path=/tmp
           tools: pecl
         env:
@@ -58,22 +59,8 @@ jobs:
       - name: "PHPStan"
         run: composer analyze
 
-  sonar:
-    name: "SonarCloud Analysis"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: SonarQube Cloud Scan
-        uses: SonarSource/sonarqube-scan-action@v7
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   tests:
-    name: PHP ${{ matrix.php }}
+    name: Unit tests
     runs-on: ubuntu-latest
 
     permissions:
@@ -128,8 +115,8 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.5'
-          extensions: mbstring, ctype, pcov
-          coverage: pcov
+          extensions: mbstring, ctype
+          coverage: xdebug
           tools: composer:v2
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
