@@ -1385,8 +1385,8 @@ class Compiler
             $this->autoescape = (bool)$this->options['autoescape'];
         }
 
-        $parser       = new Parser($viewCode);
-        $intermediate = $parser->parseView($this->currentPath);
+        $parser       = new Parser();
+        $intermediate = $parser->parse($viewCode, $this->currentPath ?? '');
         $compilation  = $this->statementList($intermediate, $extendsMode);
 
         /**
@@ -2215,7 +2215,7 @@ class Compiler
      */
     public function parse(string $viewCode): array
     {
-        return (new Parser($viewCode))->parseView("eval code");
+        return (new Parser())->parse($viewCode, 'eval code');
     }
 
     /**
