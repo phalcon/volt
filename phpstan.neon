@@ -1,6 +1,9 @@
+includes:
+    - phpstan-baseline.neon
+
 parameters:
     bootstrapFiles:
         - phpunit.php
     paths:
         - src
-    level: 1
+    level: max

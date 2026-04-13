@@ -1,18 +1,23 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         bootstrap="./phpunit.php"
-         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="phpunit.php"
          colors="true"
-         processIsolation="true"
-         cacheDirectory="./tests/support/output/.phpunit.cache">
-  <testsuites>
-    <testsuite name="volt/unit">
-      <directory>./tests/unit</directory>
-    </testsuite>
-  </testsuites>
-  <source>
-    <include>
-      <directory suffix=".php">./src</directory>
-    </include>
-  </source>
+         cacheDirectory="tests/_output/.phpunit.result.cache"
+         beStrictAboutOutputDuringTests="false"
+         failOnRisky="false"
+         failOnWarning="true">
+    <testsuites>
+        <testsuite name="Volt Test Suite">
+            <directory>tests/unit</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>src</directory>
+        </include>
+        <exclude>
+            <file>resources/files/parser.php</file>
+        </exclude>
+    </source>
 </phpunit>

@@ -1,13 +1,15 @@
 {
     "name": "phalcon/volt",
-    "description": "Phalcon Volt is a HTML template engine for sender-side rendering.",
+    "description": "Phalcon Volt is an HTML template engine for server-side rendering.",
+    "type": "library",
     "keywords": [
         "phalcon",
         "volt",
         "template",
         "engine",
-        "HTML"
+        "html"
     ],
+    "homepage": "https://phalcon.io",
     "license": "MIT",
     "authors": [
         {
@@ -20,11 +22,24 @@
             "homepage": "https://github.com/phalcon/volt/graphs/contributors"
         }
     ],
-    "require": {
-        "php": ">=8.1",
-        "ext-mbstring": "*",
-        "ext-ctype": "*"
+    "support": {
+        "email": "support@phalcon.io",
+        "issues": "https://github.com/phalcon/volt/issues",
+        "source": "https://github.com/phalcon/volt",
+        "discussions": "https://phalcon.io/discussions/",
+        "docs": "https://phalcon.io/docs/",
+        "rss": "https://blog.phalcon.io/rss"
     },
+    "require": {
+        "php": ">=8.1 <9.0",
+        "ext-ctype": "*",
+        "ext-mbstring": "*"
+    },
+    "suggest": {
+        "phalcon/phalcon": "The Phalcon framework this module integrates with"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "require-dev": {
         "pds/skeleton": "^1.0",
         "phalcon/ide-stubs": "^5.8",
@@ -53,20 +68,12 @@
             "Phalcon\\Tests\\Unit\\": "tests/unit/"
         }
     },
-    "support": {
-        "email": "support@phalcon.io",
-        "issues": "https://github.com/phalcon/volt/issues",
-        "discussions": "https://phalcon.io/discussions/",
-        "source": "https://github.com/phalcon/volt",
-        "docs": "https://phalcon.io/docs/",
-        "rss": "https://blog.phalcon.io/rss"
-    },
     "scripts": {
-        "analyze": "vendor/bin/phpstan analyse -c phpstan.neon",
+        "analyze": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1024M",
         "cs": "vendor/bin/phpcs --standard=phpcs.xml",
         "cs-fix": "vendor/bin/phpcbf --standard=phpcs.xml",
-        "test": "vendor/bin/phpunit",
-        "test-coverage": "vendor/bin/phpunit --coverage-clover ./tests/support/coverage.xml",
+        "test": "vendor/bin/phpunit -c phpunit.xml --fail-on-all-issues",
+        "test-coverage": "vendor/bin/phpunit -c phpunit.xml --coverage-clover ./tests/support/coverage.xml",
         "test-coverage-html": "vendor/bin/phpunit --testdox --coverage-html ./tests/support/coverage/"
     }
 }
