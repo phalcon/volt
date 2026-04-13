@@ -120,7 +120,8 @@ final class ParserTest extends TestCase
 
     public function testDebugMode(): void
     {
-        $debugFile = '/app/volt_debug_test.txt';
+        $testsDir = dirname(__FILE__, 3);
+        $debugFile = $testsDir . '/_output/volt_debug_test.txt';
         $parser    = new Parser();
         $parser->setDebug(true)->setDebugFile($debugFile);
 
