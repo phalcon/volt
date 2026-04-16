@@ -127,7 +127,12 @@ class Parser
                 CompilerOpcode::ENDFOR->value            => $this->handleEndfor($parser, $state),
                 CompilerOpcode::SWITCH->value            => $this->handleSwitch($parser, $parserStatus, $state),
                 CompilerOpcode::CASE->value              => $this->handleCase($parser, $parserStatus),
-                CompilerOpcode::DEFAULT->value           => $this->handleDefault($parser, $parserStatus, $token, $state),
+                CompilerOpcode::DEFAULT->value           => $this->handleDefault(
+                    $parser,
+                    $parserStatus,
+                    $token,
+                    $state
+                ),
                 CompilerOpcode::ENDSWITCH->value         => $this->handleEndswitch($parser, $parserStatus, $state),
                 CompilerOpcode::RAW_FRAGMENT->value      => $this->handleRawFragment(
                     $parser,
