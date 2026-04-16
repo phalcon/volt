@@ -21,25 +21,25 @@ final class OpcodeTest extends TestCase
     public function testOpcodeValues(): void
     {
         // ASCII-value tokens
-        $this->assertSame(43,  Opcode::ADD->value);
-        $this->assertSame(61,  Opcode::ASSIGN->value);
+        $this->assertSame(43, Opcode::ADD->value);
+        $this->assertSame(61, Opcode::ASSIGN->value);
         $this->assertSame(125, Opcode::CBRACKET_CLOSE->value);
         $this->assertSame(123, Opcode::CBRACKET_OPEN->value);
         $this->assertSame(126, Opcode::CONCAT->value);
-        $this->assertSame(47,  Opcode::DIV->value);
-        $this->assertSame(46,  Opcode::DOT->value);
-        $this->assertSame(62,  Opcode::GREATER->value);
-        $this->assertSame(60,  Opcode::LESS->value);
-        $this->assertSame(37,  Opcode::MOD->value);
-        $this->assertSame(42,  Opcode::MUL->value);
-        $this->assertSame(33,  Opcode::NOT->value);
-        $this->assertSame(41,  Opcode::PARENTHESES_CLOSE->value);
-        $this->assertSame(40,  Opcode::PARENTHESES_OPEN->value);
+        $this->assertSame(47, Opcode::DIV->value);
+        $this->assertSame(46, Opcode::DOT->value);
+        $this->assertSame(62, Opcode::GREATER->value);
+        $this->assertSame(60, Opcode::LESS->value);
+        $this->assertSame(37, Opcode::MOD->value);
+        $this->assertSame(42, Opcode::MUL->value);
+        $this->assertSame(33, Opcode::NOT->value);
+        $this->assertSame(41, Opcode::PARENTHESES_CLOSE->value);
+        $this->assertSame(40, Opcode::PARENTHESES_OPEN->value);
         $this->assertSame(124, Opcode::PIPE->value);
-        $this->assertSame(63,  Opcode::QUESTION->value);
-        $this->assertSame(93,  Opcode::SBRACKET_CLOSE->value);
-        $this->assertSame(91,  Opcode::SBRACKET_OPEN->value);
-        $this->assertSame(45,  Opcode::SUB->value);
+        $this->assertSame(63, Opcode::QUESTION->value);
+        $this->assertSame(93, Opcode::SBRACKET_CLOSE->value);
+        $this->assertSame(91, Opcode::SBRACKET_OPEN->value);
+        $this->assertSame(45, Opcode::SUB->value);
 
         // Numeric-range tokens
         $this->assertSame(257, Opcode::IGNORE->value);
