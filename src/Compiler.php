@@ -17,6 +17,7 @@ use Closure;
 use Exception as BaseException;
 use Phalcon\Di\DiInterface;
 use Phalcon\Mvc\ViewBaseInterface;
+use Phalcon\Volt\Compiler\Opcode;
 use Phalcon\Volt\Parser\Parser;
 
 use function addslashes;
@@ -375,7 +376,7 @@ class Compiler
         $exprCode = '';
         $left     = $expr['left'];
 
-        if ($left['type'] == static::PHVOLT_T_IDENTIFIER) {
+        if ($left['type'] == Opcode::IDENTIFIER->value) {
             $variable = $left['value'];
 
             /**
@@ -403,7 +404,7 @@ class Compiler
         $exprCode .= '->';
         $right    = $expr['right'];
 
-        if ($right['type'] == static::PHVOLT_T_IDENTIFIER) {
+        if ($right['type'] == Opcode::IDENTIFIER->value) {
             $exprCode .= $right['value'];
         } else {
             $exprCode .= $this->expression($right);
@@ -695,7 +696,7 @@ class Compiler
         if ($lifetime !== null) {
             $compilation .= '$_cacheKey[' . $exprCode . ']';
 
-            if ($lifetime['type'] == static::PHVOLT_T_IDENTIFIER) {
+            if ($lifetime['type'] == Opcode::IDENTIFIER->value) {
                 $compilation .= '$_cache[' . $exprCode . ']->start(' . $exprCode . ', $' . $lifetime['value'] . '); ';
             } else {
                 $compilation .= '$_cache[' . $exprCode . ']->start(' . $exprCode . ', ' . $lifetime['value'] . '); ';
@@ -715,7 +716,7 @@ class Compiler
          * Check if the cache has a lifetime
          */
         if ($lifetime !== null) {
-            if ($lifetime['type'] == static::PHVOLT_T_IDENTIFIER) {
+            if ($lifetime['type'] == Opcode::IDENTIFIER->value) {
                 $compilation .= '<?php $_cache[' . $exprCode
                     . ']->save(' . $exprCode . ', null, $' . $lifetime['value'] . '); ';
             } else {
@@ -810,13 +811,13 @@ class Compiler
         $expr     = $statement['expr'];
         $exprCode = $this->expression($expr);
 
-        if ($expr == static::PHVOLT_T_FCALL) {
+        if ($expr == Opcode::FCALL->value) {
             if ($this->isTagFactory($expr)) {
                 $exprCode = $this->expression($expr, true);
             }
 
             $name = $expr['name'];
-            if ($name == static::PHVOLT_T_IDENTIFIER) {
+            if ($name == Opcode::IDENTIFIER->value) {
                 /**
                  * super() is a function however the return of this function
                  * must be output as it is
@@ -993,7 +994,7 @@ class Compiler
                     break;
                 }
 
-                if ($blockStatement['type'] == static::PHVOLT_T_ELSEFOR) {
+                if ($blockStatement['type'] == Opcode::ELSEFOR->value) {
                     $compilation                   .= '<?php $' . $prefixLevel . 'iterated = false; ?>';
                     $forElse                       = $prefixLevel;
                     $this->forElsePointers[$level] = $forElse;
@@ -1340,19 +1341,19 @@ class Compiler
              * Generate the right operator
              */
             switch ($assignment['op']) {
-                case static::PHVOLT_T_ADD_ASSIGN:
+                case Opcode::ADD_ASSIGN->value:
                     $compilation .= ' ' . $target . ' += ' . $exprCode . ';';
                     break;
 
-                case static::PHVOLT_T_SUB_ASSIGN:
+                case Opcode::SUB_ASSIGN->value:
                     $compilation .= ' ' . $target . ' -= ' . $exprCode . ';';
                     break;
 
-                case static::PHVOLT_T_MUL_ASSIGN:
+                case Opcode::MUL_ASSIGN->value:
                     $compilation .= ' ' . $target . ' *= ' . $exprCode . ';';
                     break;
 
-                case static::PHVOLT_T_DIV_ASSIGN:
+                case Opcode::DIV_ASSIGN->value:
                     $compilation .= ' ' . $target . ' /= ' . $exprCode . ';';
                     break;
 
@@ -1584,7 +1585,7 @@ class Compiler
             /**
              * Attribute reading needs special handling
              */
-            if ($type == static::PHVOLT_T_DOT) {
+            if ($type == Opcode::DOT->value) {
                 $exprCode = $this->attributeReader($expr);
 
                 break;
@@ -1600,7 +1601,7 @@ class Compiler
             /**
              * Operator "is" also needs special handling
              */
-            if ($type == static::PHVOLT_T_IS) {
+            if ($type == Opcode::IS->value) {
                 $exprCode = $this->resolveTest($expr['right'], $leftCode);
 
                 break;
@@ -1609,7 +1610,7 @@ class Compiler
             /**
              * We don't resolve the right expression for filters
              */
-            if ($type == self::PHVOLT_T_PIPE) {
+            if ($type == Opcode::PIPE->value) {
                 $exprCode = $this->resolveFilter($expr['right'], $leftCode);
 
                 break;
@@ -1622,23 +1623,23 @@ class Compiler
             $rightCode = isset($expr['right']) ? $this->expression($expr['right'], $doubleQuotes) : '';
 
             switch ($type) {
-                case static::PHVOLT_T_NOT:
+                case Opcode::NOT->value:
                     $exprCode = '!' . $rightCode;
                     break;
 
-                case static::PHVOLT_T_MUL:
+                case Opcode::MUL->value:
                     $exprCode = $leftCode . ' * ' . $rightCode;
                     break;
 
-                case static::PHVOLT_T_ADD:
+                case Opcode::ADD->value:
                     $exprCode = $leftCode . ' + ' . $rightCode;
                     break;
 
-                case static::PHVOLT_T_SUB:
+                case Opcode::SUB->value:
                     $exprCode = $leftCode . ' - ' . $rightCode;
                     break;
 
-                case static::PHVOLT_T_DIV:
+                case Opcode::DIV->value:
                     $exprCode = $leftCode . ' / ' . $rightCode;
                     break;
 
@@ -1646,7 +1647,7 @@ class Compiler
                     $exprCode = $leftCode . ' % ' . $rightCode;
                     break;
 
-                case static::PHVOLT_T_LESS:
+                case Opcode::LESS->value:
                     $exprCode = $leftCode . ' < ' . $rightCode;
                     break;
 
@@ -1663,17 +1664,17 @@ class Compiler
                     $exprCode = 'pow(' . $leftCode . ', ' . $rightCode . ')';
                     break;
 
-                case static::PHVOLT_T_ARRAY:
+                case Opcode::ARRAY->value:
                     $exprCode = isset($expr['left']) ? '[' . $leftCode . ']' : [];
                     break;
 
                 case 258:
                 case 259:
-                case static::PHVOLT_T_RESOLVED_EXPR:
+                case Opcode::RESOLVED_EXPR->value:
                     $exprCode = $expr['value'];
                     break;
 
-                case static::PHVOLT_T_STRING:
+                case Opcode::STRING->value:
                     if ($doubleQuotes === false) {
                         $exprCode = '\'' . str_replace('\'', '\\\'', $expr['value']) . '\'';
                     } else {
@@ -1681,23 +1682,23 @@ class Compiler
                     }
                     break;
 
-                case static::PHVOLT_T_NULL:
+                case Opcode::NULL->value:
                     $exprCode = 'null';
                     break;
 
-                case static::PHVOLT_T_FALSE:
+                case Opcode::FALSE->value:
                     $exprCode = 'false';
                     break;
 
-                case static::PHVOLT_T_TRUE:
+                case Opcode::TRUE->value:
                     $exprCode = 'true';
                     break;
 
-                case static::PHVOLT_T_IDENTIFIER:
+                case Opcode::IDENTIFIER->value:
                     $exprCode = '$' . $expr['value'];
                     break;
 
-                case static::PHVOLT_T_AND:
+                case Opcode::AND->value:
                     $exprCode = $leftCode . ' && ' . $rightCode;
                     break;
 
@@ -1705,7 +1706,7 @@ class Compiler
                     $exprCode = $leftCode . ' || ' . $rightCode;
                     break;
 
-                case static::PHVOLT_T_LESSEQUAL:
+                case Opcode::LESSEQUAL->value:
                     $exprCode = $leftCode . ' <= ' . $rightCode;
                     break;
 
@@ -1729,23 +1730,23 @@ class Compiler
                     $exprCode = $leftCode .= ' !== ' . $rightCode;
                     break;
 
-                case static::PHVOLT_T_RANGE:
+                case Opcode::RANGE->value:
                     $exprCode = 'range(' . $leftCode . ', ' . $rightCode . ')';
                     break;
 
-                case static::PHVOLT_T_FCALL:
+                case Opcode::FCALL->value:
                     $exprCode = $this->functionCall($expr, $doubleQuotes);
                     break;
 
-                case static::PHVOLT_T_ENCLOSED:
+                case Opcode::ENCLOSED->value:
                     $exprCode = '(' . $leftCode . ')';
                     break;
 
-                case static::PHVOLT_T_ARRAYACCESS:
+                case Opcode::ARRAYACCESS->value:
                     $exprCode = $leftCode . "[" . $rightCode . "]";
                     break;
 
-                case static::PHVOLT_T_SLICE:
+                case Opcode::SLICE->value:
                     /**
                      * Evaluate the start part of the slice
                      */
@@ -1759,80 +1760,80 @@ class Compiler
                     $exprCode = '$this->slice(' . $leftCode . ', ' . $startCode . ', ' . $endCode . ')';
                     break;
 
-                case static::PHVOLT_T_NOT_ISSET:
+                case Opcode::NOT_ISSET->value:
                     $exprCode = '!isset(' . $leftCode . ')';
                     break;
 
-                case static::PHVOLT_T_ISSET:
+                case Opcode::ISSET->value:
                     $exprCode = 'isset(' . $leftCode . ')';
                     break;
 
-                case static::PHVOLT_T_NOT_ISEMPTY:
+                case Opcode::NOT_ISEMPTY->value:
                     $exprCode = '!empty(' . $leftCode . ')';
                     break;
 
-                case static::PHVOLT_T_ISEMPTY:
+                case Opcode::ISEMPTY->value:
                     $exprCode = 'empty(' . $leftCode . ')';
                     break;
 
-                case static::PHVOLT_T_NOT_ISEVEN:
+                case Opcode::NOT_ISEVEN->value:
                     $exprCode = '!(((' . $leftCode . ') % 2) == 0)';
                     break;
 
-                case static::PHVOLT_T_ISEVEN:
+                case Opcode::ISEVEN->value:
                     $exprCode = '(((' . $leftCode . ') % 2) == 0)';
                     break;
 
-                case static::PHVOLT_T_NOT_ISODD:
+                case Opcode::NOT_ISODD->value:
                     $exprCode = '!(((' . $leftCode . ') % 2) != 0)';
                     break;
 
-                case static::PHVOLT_T_ISODD:
+                case Opcode::ISODD->value:
                     $exprCode = '(((' . $leftCode . ') % 2) != 0)';
                     break;
 
-                case static::PHVOLT_T_NOT_ISNUMERIC:
+                case Opcode::NOT_ISNUMERIC->value:
                     $exprCode = '!is_numeric(' . $leftCode . ')';
                     break;
 
-                case static::PHVOLT_T_ISNUMERIC:
+                case Opcode::ISNUMERIC->value:
                     $exprCode = 'is_numeric(' . $leftCode . ')';
                     break;
 
-                case static::PHVOLT_T_NOT_ISSCALAR:
+                case Opcode::NOT_ISSCALAR->value:
                     $exprCode = '!is_scalar(' . $leftCode . ')';
                     break;
 
-                case static::PHVOLT_T_ISSCALAR:
+                case Opcode::ISSCALAR->value:
                     $exprCode = 'is_scalar(' . $leftCode . ')';
                     break;
 
-                case static::PHVOLT_T_NOT_ISITERABLE:
+                case Opcode::NOT_ISITERABLE->value:
                     $exprCode = '!(is_array(' . $leftCode . ') || (' . $leftCode . ') instanceof Traversable)';
                     break;
 
-                case static::PHVOLT_T_ISITERABLE:
+                case Opcode::ISITERABLE->value:
                     $exprCode = '(is_array(' . $leftCode . ') || (' . $leftCode . ') instanceof Traversable)';
                     break;
 
-                case static::PHVOLT_T_IN:
+                case Opcode::IN->value:
                     $exprCode = '$this->isIncluded(' . $leftCode . ', ' . $rightCode . ')';
                     break;
 
-                case static::PHVOLT_T_NOT_IN:
+                case Opcode::NOT_IN->value:
                     $exprCode = '!$this->isIncluded(' . $leftCode . ', ' . $rightCode . ')';
                     break;
 
-                case static::PHVOLT_T_TERNARY:
+                case Opcode::TERNARY->value:
                     $exprCode = '(' . $this->expression($expr['ternary'], $doubleQuotes)
                         . ' ? ' . $leftCode . ' : ' . $rightCode . ')';
                     break;
 
-                case static::PHVOLT_T_MINUS:
+                case Opcode::MINUS->value:
                     $exprCode = '-' . $rightCode;
                     break;
 
-                case static::PHVOLT_T_PLUS:
+                case Opcode::PLUS->value:
                     $exprCode = '+' . $rightCode;
                     break;
 
@@ -1909,7 +1910,7 @@ class Compiler
         /**
          * Check if it's a single function
          */
-        if ($nameType == static::PHVOLT_T_IDENTIFIER) {
+        if ($nameType == Opcode::IDENTIFIER->value) {
             $name = $nameExpr['value'];
 
             /**
@@ -2225,7 +2226,7 @@ class Compiler
     {
         $type = $test['type'];
 
-        if ($type === self::PHVOLT_T_IDENTIFIER) {
+        if ($type === Opcode::IDENTIFIER->value) {
             $name = $test['value'];
 
             /**
@@ -2274,7 +2275,7 @@ class Compiler
         /**
          * Check if right part is a function call
          */
-        if ($type === self::PHVOLT_T_FCALL) {
+        if ($type === Opcode::FCALL->value) {
             $testName = $test['name'];
 
             if (isset($testName['value'])) {
@@ -2373,10 +2374,10 @@ class Compiler
         /**
          * Check if the filter is a single identifier
          */
-        if ($type === self::PHVOLT_T_IDENTIFIER) {
+        if ($type === Opcode::IDENTIFIER->value) {
             $name = $filter['value'];
         } else {
-            if ($type !== self::PHVOLT_T_FCALL) {
+            if ($type !== Opcode::FCALL->value) {
                 /**
                  * Unknown filter throw an exception
                  */
@@ -2748,19 +2749,19 @@ class Compiler
              * Compile the statement according to the statement's type
              */
             switch ($type) {
-                case self::PHVOLT_T_RAW_FRAGMENT:
+                case Opcode::RAW_FRAGMENT->value:
                     $compilation .= $statement["value"];
                     break;
 
-                case self::PHVOLT_T_IF:
+                case Opcode::IF->value:
                     $compilation .= $this->compileIf($statement, $extendsMode);
                     break;
 
-                case self::PHVOLT_T_ELSEIF:
+                case Opcode::ELSEIF->value:
                     $compilation .= $this->compileElseIf($statement);
                     break;
 
-                case self::PHVOLT_T_SWITCH:
+                case Opcode::SWITCH->value:
                     $compilation .= $this->compileSwitch(
                         $statement,
                         $extendsMode
@@ -2768,15 +2769,15 @@ class Compiler
 
                     break;
 
-                case self::PHVOLT_T_CASE:
+                case Opcode::CASE->value:
                     $compilation .= $this->compileCase($statement);
                     break;
 
-                case self::PHVOLT_T_DEFAULT:
+                case Opcode::DEFAULT->value:
                     $compilation .= $this->compileCase($statement, false);
                     break;
 
-                case self::PHVOLT_T_FOR:
+                case Opcode::FOR->value:
                     $compilation .= $this->compileForeach(
                         $statement,
                         $extendsMode
@@ -2784,15 +2785,15 @@ class Compiler
 
                     break;
 
-                case self::PHVOLT_T_SET:
+                case Opcode::SET->value:
                     $compilation .= $this->compileSet($statement);
                     break;
 
-                case self::PHVOLT_T_ECHO:
+                case Opcode::ECHO->value:
                     $compilation .= $this->compileEcho($statement);
                     break;
 
-                case self::PHVOLT_T_BLOCK:
+                case Opcode::BLOCK->value:
                     /**
                      * Block statement
                      */
@@ -2825,7 +2826,7 @@ class Compiler
 
                     break;
 
-                case self::PHVOLT_T_EXTENDS:
+                case Opcode::EXTENDS->value:
                     /**
                      * Extends statement
                      */
@@ -2853,20 +2854,20 @@ class Compiler
 
                     break;
 
-                case self::PHVOLT_T_INCLUDE:
+                case Opcode::INCLUDE->value:
                     $compilation .= $this->compileInclude($statement);
 
                     break;
 
-                case self::PHVOLT_T_DO:
+                case Opcode::DO->value:
                     $compilation .= $this->compileDo($statement);
                     break;
 
-                case self::PHVOLT_T_RETURN:
+                case Opcode::RETURN->value:
                     $compilation .= $this->compileReturn($statement);
                     break;
 
-                case self::PHVOLT_T_AUTOESCAPE:
+                case Opcode::AUTOESCAPE->value:
                     $compilation .= $this->compileAutoEscape(
                         $statement,
                         $extendsMode
@@ -2874,14 +2875,14 @@ class Compiler
 
                     break;
 
-                case self::PHVOLT_T_CONTINUE:
+                case Opcode::CONTINUE->value:
                     /**
                      * "Continue" statement
                      */
                     $compilation .= "<?php continue; ?>";
                     break;
 
-                case self::PHVOLT_T_BREAK:
+                case Opcode::BREAK->value:
                     /**
                      * "Break" statement
                      */
@@ -2895,7 +2896,7 @@ class Compiler
                     $compilation .= $this->compileForElse();
                     break;
 
-                case self::PHVOLT_T_MACRO:
+                case Opcode::MACRO->value:
                     /**
                      * Define a macro
                      */

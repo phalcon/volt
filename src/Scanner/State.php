@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Volt\Scanner;
 
-use Phalcon\Volt\Compiler;
+use Phalcon\Volt\Scanner\Mode;
 
 class State
 {
@@ -37,13 +37,14 @@ class State
     protected int $activeLine        = 1;
     protected int $cursor            = 0;
     protected ?string $end               = null;
-    protected int $mode              = Compiler::PHVOLT_MODE_RAW;
+    protected int $mode;
     protected ?string $start             = null;
 
     public function __construct(string $buffer)
     {
         $this->rawBuffer   = $buffer;
         $this->startLength = mb_strlen($buffer);
+        $this->mode        = Mode::RAW->value;
         if ($this->startLength > 0) {
             $this->setStart($buffer[0]);
             $this->setEnd($buffer[0]);
