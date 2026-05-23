@@ -48,6 +48,36 @@ final class ParserTest extends TestCase
         $this->assertSame('name', $result[0]['expr']['value']);
     }
 
+    /**
+     * @issue cphalcon#17002
+     */
+    public function testEchoStringDoubleEscapedQuote(): void
+    {
+        $parser = new Parser();
+        $result = $parser->parse('{{ "say \"hi\"" }}', 'test.volt');
+
+        $this->assertIsArray($result);
+        $this->assertCount(1, $result);
+        $this->assertSame(359, $result[0]['type']);         // PHVOLT_T_ECHO
+        $this->assertSame(260, $result[0]['expr']['type']); // PHVOLT_T_STRING
+        $this->assertSame('say \"hi\"', $result[0]['expr']['value']);
+    }
+
+    /**
+     * @issue cphalcon#17002
+     */
+    public function testEchoStringSingleEscapedQuote(): void
+    {
+        $parser = new Parser();
+        $result = $parser->parse('{{ \'Let\\\'s Encrypt\' }}', 'test.volt');
+
+        $this->assertIsArray($result);
+        $this->assertCount(1, $result);
+        $this->assertSame(359, $result[0]['type']);         // PHVOLT_T_ECHO
+        $this->assertSame(260, $result[0]['expr']['type']); // PHVOLT_T_STRING
+        $this->assertSame('Let\\\'s Encrypt', $result[0]['expr']['value']);
+    }
+
     public function testIfStatement(): void
     {
         $parser = new Parser();

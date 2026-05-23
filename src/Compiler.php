@@ -1676,7 +1676,9 @@ class Compiler
 
                 case Opcode::STRING->value:
                     if ($doubleQuotes === false) {
-                        $exprCode = '\'' . str_replace('\'', '\\\'', $expr['value']) . '\'';
+                        $exprCode = '\''
+                            . preg_replace('/(?<!\\\\)\'/', '\\\\\'', $expr['value'])
+                            . '\'';
                     } else {
                         $exprCode = '"' . $expr['value'] . '"';
                     }
