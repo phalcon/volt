@@ -7,7 +7,7 @@ parameters:
     # on every leg.
     phpVersion: 80100
     bootstrapFiles:
-        - phpunit.php
+        - ../phpunit.php
     paths:
-        - src
+        - ../src
     level: max

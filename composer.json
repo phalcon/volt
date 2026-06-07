@@ -69,11 +69,11 @@
         }
     },
     "scripts": {
-        "analyze": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit 1024M",
-        "cs": "vendor/bin/phpcs --standard=phpcs.xml",
-        "cs-fix": "vendor/bin/phpcbf --standard=phpcs.xml",
-        "test": "vendor/bin/phpunit -c phpunit.xml",
-        "test-coverage": "vendor/bin/phpunit -c phpunit.xml --coverage-clover tests/_output/coverage.xml",
-        "test-coverage-html": "vendor/bin/phpunit -c phpunit.xml --coverage-html tests/_output/"
+        "analyze": "vendor/bin/phpstan analyse -c resources/phpstan.neon --memory-limit 1024M",
+        "cs": "vendor/bin/phpcs --standard=resources/phpcs.xml",
+        "cs-fix": "vendor/bin/phpcbf --standard=resources/phpcs.xml",
+        "test": "vendor/bin/phpunit -c resources/phpunit.xml",
+        "test-coverage": "vendor/bin/phpunit -c resources/phpunit.xml --coverage-clover tests/_output/coverage.xml",
+        "test-coverage-html": "vendor/bin/phpunit -c resources/phpunit.xml --coverage-html tests/_output/"
     }
 }

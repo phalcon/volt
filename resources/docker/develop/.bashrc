@@ -71,5 +71,5 @@ alias untar='tar xvf'
 
 PATH=$PATH:./vendor/bin
 
-alias test='vendor/bin/phpunit -c phpunit.xml'
-alias test-coverage='vendor/bin/phpunit -c phpunit.xml --coverage-html tests/support/coverage/'
+alias test='vendor/bin/phpunit -c resources/phpunit.xml'
+alias test-coverage='vendor/bin/phpunit -c resources/phpunit.xml --coverage-html tests/support/coverage/'
