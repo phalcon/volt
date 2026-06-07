@@ -18,16 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class FunctionCallTest extends TestCase
 {
-    /**
-     * @dataProvider getExamples
-     * @author       Phalcon Team <team@phalcon.io>
-     * @since        2020-01-11
-     */
-    public function testCompilerFunctionCall(string $code, string $expected): void
-    {
-        $volt = new Compiler();
-        $this->assertSame($expected, $volt->compileString($code));
-    }
 
     public static function getExamples(): array
     {
@@ -443,5 +433,15 @@ final class FunctionCallTest extends TestCase
                 '<?= $this->tag->ul("test", [\'class\' => "label label-info"]) ?>',
             ],*/
         ];
+    }
+    /**
+     * @dataProvider getExamples
+     * @author       Phalcon Team <team@phalcon.io>
+     * @since        2020-01-11
+     */
+    public function testCompilerFunctionCall(string $code, string $expected): void
+    {
+        $volt = new Compiler();
+        $this->assertSame($expected, $volt->compileString($code));
     }
 }

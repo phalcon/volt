@@ -31,15 +31,40 @@ final class EchoTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserEchoVar(): void
+    public function testMvcViewEngineVoltParserEchoDouble(): void
     {
-        $source   = '{{ name }}';
+        $source   = '{{ 3.14 }}';
         $expected = [
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 265,
-                    'value' => 'name',
+                    'type' => 259,
+                    'value' => '3.14',
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserEchoFalse(): void
+    {
+        $source   = '{{ false }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 262,
                     'file' => 'eval code',
                     'line' => 1,
                 ],
@@ -83,41 +108,14 @@ final class EchoTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserEchoDouble(): void
+    public function testMvcViewEngineVoltParserEchoNull(): void
     {
-        $source   = '{{ 3.14 }}';
+        $source   = '{{ null }}';
         $expected = [
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 259,
-                    'value' => '3.14',
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
-    public function testMvcViewEngineVoltParserEchoStringSingle(): void
-    {
-        $source   = '{{ \'Hello\' }}';
-        $expected = [
-            [
-                'type' => 359,
-                'expr' => [
-                    'type' => 260,
-                    'value' => 'Hello',
+                    'type' => 261,
                     'file' => 'eval code',
                     'line' => 1,
                 ],
@@ -161,14 +159,15 @@ final class EchoTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserEchoNull(): void
+    public function testMvcViewEngineVoltParserEchoStringSingle(): void
     {
-        $source   = '{{ null }}';
+        $source   = '{{ \'Hello\' }}';
         $expected = [
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 261,
+                    'type' => 260,
+                    'value' => 'Hello',
                     'file' => 'eval code',
                     'line' => 1,
                 ],
@@ -186,39 +185,15 @@ final class EchoTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserEchoTrue(): void
+    public function testMvcViewEngineVoltParserEchoTrimBoth(): void
     {
-        $source   = '{{ true }}';
+        $source   = '{{- name -}}';
         $expected = [
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 263,
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
-    public function testMvcViewEngineVoltParserEchoFalse(): void
-    {
-        $source   = '{{ false }}';
-        $expected = [
-            [
-                'type' => 359,
-                'expr' => [
-                    'type' => 262,
+                    'type' => 265,
+                    'value' => 'name',
                     'file' => 'eval code',
                     'line' => 1,
                 ],
@@ -288,9 +263,34 @@ final class EchoTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserEchoTrimBoth(): void
+    public function testMvcViewEngineVoltParserEchoTrue(): void
     {
-        $source   = '{{- name -}}';
+        $source   = '{{ true }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 263,
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserEchoVar(): void
+    {
+        $source   = '{{ name }}';
         $expected = [
             [
                 'type' => 359,

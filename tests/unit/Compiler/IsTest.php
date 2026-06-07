@@ -62,37 +62,6 @@ final class IsTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserExprIsNotDefined(): void
-    {
-        $source   = '{{ var is not defined }}';
-        $expected = [
-            [
-                'type' => 359,
-                'expr' => [
-                    'type' => 362,
-                    'left' => [
-                        'type' => 265,
-                        'value' => 'var',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
     public function testMvcViewEngineVoltParserExprIsEmpty(): void
     {
         $source   = '{{ var is empty }}';
@@ -101,37 +70,6 @@ final class IsTest extends TestCase
                 'type' => 359,
                 'expr' => [
                     'type' => 386,
-                    'left' => [
-                        'type' => 265,
-                        'value' => 'var',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
-    public function testMvcViewEngineVoltParserExprIsNotEmpty(): void
-    {
-        $source   = '{{ var is not empty }}';
-        $expected = [
-            [
-                'type' => 359,
-                'expr' => [
-                    'type' => 392,
                     'left' => [
                         'type' => 265,
                         'value' => 'var',
@@ -186,6 +124,99 @@ final class IsTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
+    public function testMvcViewEngineVoltParserExprIsIterable(): void
+    {
+        $source   = '{{ var is iterable }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 391,
+                    'left' => [
+                        'type' => 265,
+                        'value' => 'var',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserExprIsNotDefined(): void
+    {
+        $source   = '{{ var is not defined }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 362,
+                    'left' => [
+                        'type' => 265,
+                        'value' => 'var',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserExprIsNotEmpty(): void
+    {
+        $source   = '{{ var is not empty }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 392,
+                    'left' => [
+                        'type' => 265,
+                        'value' => 'var',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
     public function testMvcViewEngineVoltParserExprIsNotEven(): void
     {
         $source   = '{{ number is not even }}';
@@ -217,76 +248,14 @@ final class IsTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserExprIsOdd(): void
+    public function testMvcViewEngineVoltParserExprIsNotIterable(): void
     {
-        $source   = '{{ number is odd }}';
+        $source   = '{{ var is not iterable }}';
         $expected = [
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 388,
-                    'left' => [
-                        'type' => 265,
-                        'value' => 'number',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
-    public function testMvcViewEngineVoltParserExprIsNotOdd(): void
-    {
-        $source   = '{{ number is not odd }}';
-        $expected = [
-            [
-                'type' => 359,
-                'expr' => [
-                    'type' => 394,
-                    'left' => [
-                        'type' => 265,
-                        'value' => 'number',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
-    public function testMvcViewEngineVoltParserExprIsNumeric(): void
-    {
-        $source   = '{{ var is numeric }}';
-        $expected = [
-            [
-                'type' => 359,
-                'expr' => [
-                    'type' => 389,
+                    'type' => 397,
                     'left' => [
                         'type' => 265,
                         'value' => 'var',
@@ -341,17 +310,17 @@ final class IsTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserExprIsScalar(): void
+    public function testMvcViewEngineVoltParserExprIsNotOdd(): void
     {
-        $source   = '{{ var is scalar }}';
+        $source   = '{{ number is not odd }}';
         $expected = [
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 390,
+                    'type' => 394,
                     'left' => [
                         'type' => 265,
-                        'value' => 'var',
+                        'value' => 'number',
                         'file' => 'eval code',
                         'line' => 1,
                     ],
@@ -403,14 +372,14 @@ final class IsTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserExprIsIterable(): void
+    public function testMvcViewEngineVoltParserExprIsNumeric(): void
     {
-        $source   = '{{ var is iterable }}';
+        $source   = '{{ var is numeric }}';
         $expected = [
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 391,
+                    'type' => 389,
                     'left' => [
                         'type' => 265,
                         'value' => 'var',
@@ -434,14 +403,45 @@ final class IsTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserExprIsNotIterable(): void
+    public function testMvcViewEngineVoltParserExprIsOdd(): void
     {
-        $source   = '{{ var is not iterable }}';
+        $source   = '{{ number is odd }}';
         $expected = [
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 397,
+                    'type' => 388,
+                    'left' => [
+                        'type' => 265,
+                        'value' => 'number',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserExprIsScalar(): void
+    {
+        $source   = '{{ var is scalar }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 390,
                     'left' => [
                         'type' => 265,
                         'value' => 'var',

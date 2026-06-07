@@ -35,8 +35,8 @@ enum Opcode: int
     case DECR              = 28;
     case DEFAULT           = 43;
     case DEFINED           = 80;
-    case DIVIDE            = 18;
     case DIV_ASSIGN        = 49;
+    case DIVIDE            = 18;
     case DO                = 73;
     case DOT               = 30;
     case DOUBLE            = 56;

@@ -30,6 +30,7 @@ final class StateTest extends TestCase
         $this->assertSame(0, $state->getBlockLevel());
         $this->assertSame(0, $state->getExtendsMode());
         $this->assertSame(0, $state->getForLevel());
+        $this->assertSame(0, $state->getForcedRawState());
         $this->assertSame(0, $state->getIfLevel());
         $this->assertSame(0, $state->getMacroLevel());
         $this->assertSame(0, $state->getOldIfLevel());
@@ -41,48 +42,14 @@ final class StateTest extends TestCase
         $this->assertFalse($state->getWhitespaceControl());
     }
 
-    public function testSettersAndGetters(): void
+    public function testGetPrevious(): void
     {
-        $state = new State('test');
+        $state = new State('hello');
+        $state->setCursor(2);
 
-        $state->setBlockLevel(2);
-        $this->assertSame(2, $state->getBlockLevel());
-
-        $state->setExtendsMode(1);
-        $this->assertSame(1, $state->getExtendsMode());
-
-        $state->setForLevel(3);
-        $this->assertSame(3, $state->getForLevel());
-
-        $state->setVerbatim(1);
-        $this->assertSame(1, $state->getVerbatim());
-
-        $state->setIfLevel(1);
-        $this->assertSame(1, $state->getIfLevel());
-
-        $state->setMacroLevel(1);
-        $this->assertSame(1, $state->getMacroLevel());
-
-        $state->setOldIfLevel(2);
-        $this->assertSame(2, $state->getOldIfLevel());
-
-        $state->setStatementPosition(5);
-        $this->assertSame(5, $state->getStatementPosition());
-
-        $state->setSwitchLevel(1);
-        $this->assertSame(1, $state->getSwitchLevel());
-
-        $state->setRawFragment('hello');
-        $this->assertSame('hello', $state->getRawFragment());
-
-        $state->appendToRawFragment(' world');
-        $this->assertSame('hello world', $state->getRawFragment());
-
-        $state->setActiveToken(42);
-        $this->assertSame(42, $state->getActiveToken());
-
-        $state->setWhitespaceControl(true);
-        $this->assertTrue($state->getWhitespaceControl());
+        $this->assertSame('e', $state->getPrevious());
+        $this->assertSame('h', $state->getPrevious(2));
+        $this->assertNull($state->getPrevious(10));
     }
 
     public function testIncrementMethods(): void
@@ -121,16 +88,12 @@ final class StateTest extends TestCase
 
         $state->incrementStatementPosition();
         $this->assertSame(1, $state->getStatementPosition());
-    }
 
-    public function testGetPrevious(): void
-    {
-        $state = new State('hello');
-        $state->setCursor(2);
+        $state->incrementForcedRawState();
+        $this->assertSame(1, $state->getForcedRawState());
 
-        $this->assertSame('e', $state->getPrevious());
-        $this->assertSame('h', $state->getPrevious(2));
-        $this->assertNull($state->getPrevious(10));
+        $state->decrementForcedRawState();
+        $this->assertSame(0, $state->getForcedRawState());
     }
 
     public function testIncrementRawBufferCursor(): void
@@ -175,5 +138,49 @@ final class StateTest extends TestCase
 
         $state->setRawBufferCursor(5);
         $this->assertSame(5, $state->getRawBufferCursor());
+    }
+
+    public function testSettersAndGetters(): void
+    {
+        $state = new State('test');
+
+        $state->setBlockLevel(2);
+        $this->assertSame(2, $state->getBlockLevel());
+
+        $state->setExtendsMode(1);
+        $this->assertSame(1, $state->getExtendsMode());
+
+        $state->setForLevel(3);
+        $this->assertSame(3, $state->getForLevel());
+
+        $state->setForcedRawState(1);
+        $this->assertSame(1, $state->getForcedRawState());
+
+        $state->setIfLevel(1);
+        $this->assertSame(1, $state->getIfLevel());
+
+        $state->setMacroLevel(1);
+        $this->assertSame(1, $state->getMacroLevel());
+
+        $state->setOldIfLevel(2);
+        $this->assertSame(2, $state->getOldIfLevel());
+
+        $state->setStatementPosition(5);
+        $this->assertSame(5, $state->getStatementPosition());
+
+        $state->setSwitchLevel(1);
+        $this->assertSame(1, $state->getSwitchLevel());
+
+        $state->setRawFragment('hello');
+        $this->assertSame('hello', $state->getRawFragment());
+
+        $state->appendToRawFragment(' world');
+        $this->assertSame('hello world', $state->getRawFragment());
+
+        $state->setActiveToken(42);
+        $this->assertSame(42, $state->getActiveToken());
+
+        $state->setWhitespaceControl(true);
+        $this->assertTrue($state->getWhitespaceControl());
     }
 }

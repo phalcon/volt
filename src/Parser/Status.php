@@ -31,6 +31,11 @@ class Status
     ) {
     }
 
+    public function getLastTokenValue(): ?string
+    {
+        return $this->lastTokenValue;
+    }
+
     public function getState(): State
     {
         return $this->scannerState;
@@ -44,11 +49,6 @@ class Status
     public function getSyntaxError(): ?string
     {
         return $this->syntaxError;
-    }
-
-    public function getLastTokenValue(): ?string
-    {
-        return $this->lastTokenValue;
     }
 
     public function getToken(): ?Token

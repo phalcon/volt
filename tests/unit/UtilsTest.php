@@ -9,13 +9,6 @@ use PHPUnit\Framework\TestCase;
 
 final class UtilsTest extends TestCase
 {
-    /**
-     * @dataProvider getUriProvider
-     */
-    public function testGetUri(string $input, string $expected): void
-    {
-        $this->assertSame($expected, Utils::getUri($input));
-    }
 
     public static function getUriProvider(): array
     {
@@ -32,14 +25,6 @@ final class UtilsTest extends TestCase
             ['\\foo\\bar\\baz.txt', 'bar'],
             ['foo\\bar\\baz', 'bar'],
         ];
-    }
-
-    /**
-     * @dataProvider replacePathsProvider
-     */
-    public function testReplacePaths($pattern, $paths, $replacements, $expected): void
-    {
-        $this->assertSame($expected, Utils::replacePaths($pattern, $paths, $replacements));
     }
 
     public static function replacePathsProvider(): array
@@ -107,5 +92,20 @@ final class UtilsTest extends TestCase
                 'onlyslash'
             ],
         ];
+    }
+    /**
+     * @dataProvider getUriProvider
+     */
+    public function testGetUri(string $input, string $expected): void
+    {
+        $this->assertSame($expected, Utils::getUri($input));
+    }
+
+    /**
+     * @dataProvider replacePathsProvider
+     */
+    public function testReplacePaths($pattern, $paths, $replacements, $expected): void
+    {
+        $this->assertSame($expected, Utils::replacePaths($pattern, $paths, $replacements));
     }
 }

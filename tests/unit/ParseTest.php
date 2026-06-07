@@ -19,65 +19,38 @@ use PHPUnit\Framework\TestCase;
 
 final class ParseTest extends TestCase
 {
-    /**
-     * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: parse()
-     *
-     * @author       Phalcon Team <team@phalcon.io>
-     * @since        2017-01-15
-     *
-     * @dataProvider getVoltParse
-     */
-    public function testMvcViewEngineVoltCompilerParse(
-        string $param,
-        int $count
-    ): void {
-        $compiler   = new Compiler();
-        $actual = $compiler->parse($param);
-
-        $this->assertTrue(is_array($actual));
-        $this->assertCount($count, $actual);
-    }
 
     /**
-     * /**
-     * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: parse() - syntax error
-     *
-     * @author       Phalcon Team <team@phalcon.io>
-     * @since        2017-01-15
-     *
-     * @dataProvider getVoltSyntaxErrors
+     * @return array[]
      */
-    public function testParseSyntaxError(
-        string $code,
-        string $message
-    ): void {
-        $compiler = new Compiler();
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage($message);
-
-        $compiler->parse($code);
-    }
-
-    /**
-     * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: parse() - extends with
-     * error
-     *
-     * @author       Phalcon Team <team@phalcon.io>
-     * @since        2017-01-15
-     *
-     * @dataProvider getVoltExtendsError
-     */
-    public function testParseExtendsWithError(
-        string $code,
-        string $message
-    ): void {
-        $compiler = new Compiler();
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage($message);
-
-        $compiler->parse($code);
+    public static function getVoltExtendsError(): array
+    {
+        return [
+            [
+                '{{ "hello"}}{% extends "some/file.volt" %}',
+                'Extends statement must be placed at the first line in the template in eval code on line 1',
+            ],
+            [
+                '<div>{% extends "some/file.volt" %}{% set a = 1 %}</div>',
+                'Extends statement must be placed at the first line in the template in eval code on line 1',
+            ],
+            [
+                '{% extends "some/file.volt" %}{{ "hello"}}',
+                'Child templates only may contain blocks in eval code on line 1',
+            ],
+            [
+                '{% extends "some/file.volt" %}{{% if true %}} {%endif%}',
+                'Child templates only may contain blocks in eval code on line 1',
+            ],
+            [
+                '{% extends "some/file.volt" %}{{% set a = 1 %}',
+                'Child templates only may contain blocks in eval code on line 1',
+            ],
+            [
+                '{% extends "some/file.volt" %}{{% set a = 1 %}',
+                'Child templates only may contain blocks in eval code on line 1',
+            ],
+        ];
     }
 
     /**
@@ -297,37 +270,64 @@ final class ParseTest extends TestCase
             ],
         ];
     }
+    /**
+     * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: parse()
+     *
+     * @author       Phalcon Team <team@phalcon.io>
+     * @since        2017-01-15
+     *
+     * @dataProvider getVoltParse
+     */
+    public function testMvcViewEngineVoltCompilerParse(
+        string $param,
+        int $count
+    ): void {
+        $compiler   = new Compiler();
+        $actual = $compiler->parse($param);
+
+        $this->assertTrue(is_array($actual));
+        $this->assertCount($count, $actual);
+    }
 
     /**
-     * @return array[]
+     * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: parse() - extends with
+     * error
+     *
+     * @author       Phalcon Team <team@phalcon.io>
+     * @since        2017-01-15
+     *
+     * @dataProvider getVoltExtendsError
      */
-    public static function getVoltExtendsError(): array
-    {
-        return [
-            [
-                '{{ "hello"}}{% extends "some/file.volt" %}',
-                'Extends statement must be placed at the first line in the template in eval code on line 1',
-            ],
-            [
-                '<div>{% extends "some/file.volt" %}{% set a = 1 %}</div>',
-                'Extends statement must be placed at the first line in the template in eval code on line 1',
-            ],
-            [
-                '{% extends "some/file.volt" %}{{ "hello"}}',
-                'Child templates only may contain blocks in eval code on line 1',
-            ],
-            [
-                '{% extends "some/file.volt" %}{{% if true %}} {%endif%}',
-                'Child templates only may contain blocks in eval code on line 1',
-            ],
-            [
-                '{% extends "some/file.volt" %}{{% set a = 1 %}',
-                'Child templates only may contain blocks in eval code on line 1',
-            ],
-            [
-                '{% extends "some/file.volt" %}{{% set a = 1 %}',
-                'Child templates only may contain blocks in eval code on line 1',
-            ],
-        ];
+    public function testParseExtendsWithError(
+        string $code,
+        string $message
+    ): void {
+        $compiler = new Compiler();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage($message);
+
+        $compiler->parse($code);
+    }
+
+    /**
+     * /**
+     * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: parse() - syntax error
+     *
+     * @author       Phalcon Team <team@phalcon.io>
+     * @since        2017-01-15
+     *
+     * @dataProvider getVoltSyntaxErrors
+     */
+    public function testParseSyntaxError(
+        string $code,
+        string $message
+    ): void {
+        $compiler = new Compiler();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage($message);
+
+        $compiler->parse($code);
     }
 }

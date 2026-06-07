@@ -31,40 +31,6 @@ final class IfTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserIfSimple(): void
-    {
-        $source   = '{% if active %}Yes{% endif %}';
-        $expected = [
-            [
-                'type' => 300,
-                'expr' => [
-                    'type' => 265,
-                    'value' => 'active',
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'true_statements' => [
-                    [
-                        'type' => 357,
-                        'value' => 'Yes',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
     public function testMvcViewEngineVoltParserIfElse(): void
     {
         $source   = '{% if active %}Yes{% else %}No{% endif %}';
@@ -272,6 +238,40 @@ final class IfTest extends TestCase
                     'value' => 'condition',
                     'file' => 'eval code',
                     'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserIfSimple(): void
+    {
+        $source   = '{% if active %}Yes{% endif %}';
+        $expected = [
+            [
+                'type' => 300,
+                'expr' => [
+                    'type' => 265,
+                    'value' => 'active',
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'true_statements' => [
+                    [
+                        'type' => 357,
+                        'value' => 'Yes',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
                 ],
                 'file' => 'eval code',
                 'line' => 1,

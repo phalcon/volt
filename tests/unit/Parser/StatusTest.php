@@ -20,6 +20,12 @@ use PHPUnit\Framework\TestCase;
 
 final class StatusTest extends TestCase
 {
+
+    public function testConstants(): void
+    {
+        $this->assertSame(0, Status::PHVOLT_PARSING_FAILED);
+        $this->assertSame(1, Status::PHVOLT_PARSING_OK);
+    }
     public function testDefaultStatus(): void
     {
         $state  = new State('test');
@@ -58,11 +64,5 @@ final class StatusTest extends TestCase
 
         $status->setToken($token);
         $this->assertSame($token, $status->getToken());
-    }
-
-    public function testConstants(): void
-    {
-        $this->assertSame(0, Status::PHVOLT_PARSING_FAILED);
-        $this->assertSame(1, Status::PHVOLT_PARSING_OK);
     }
 }

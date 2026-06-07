@@ -31,9 +31,9 @@ final class ForTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserForSimple(): void
+    public function testMvcViewEngineVoltParserForElsefor(): void
     {
-        $source   = '{% for item in items %}{{ item }}{% endfor %}';
+        $source   = '{% for item in items %}{{ item }}{% elsefor %}No items{% endfor %}';
         $expected = [
             [
                 'type' => 304,
@@ -53,6 +53,17 @@ final class ForTest extends TestCase
                             'file' => 'eval code',
                             'line' => 1,
                         ],
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    [
+                        'type' => 321,
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    [
+                        'type' => 357,
+                        'value' => 'No items',
                         'file' => 'eval code',
                         'line' => 1,
                     ],
@@ -255,9 +266,9 @@ final class ForTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserForElsefor(): void
+    public function testMvcViewEngineVoltParserForSimple(): void
     {
-        $source   = '{% for item in items %}{{ item }}{% elsefor %}No items{% endfor %}';
+        $source   = '{% for item in items %}{{ item }}{% endfor %}';
         $expected = [
             [
                 'type' => 304,
@@ -277,17 +288,6 @@ final class ForTest extends TestCase
                             'file' => 'eval code',
                             'line' => 1,
                         ],
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    [
-                        'type' => 321,
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    [
-                        'type' => 357,
-                        'value' => 'No items',
                         'file' => 'eval code',
                         'line' => 1,
                     ],

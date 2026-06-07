@@ -18,13 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class ScannerStatusTest extends TestCase
 {
-    public function testValues(): void
-    {
-        $this->assertSame(-1, ScannerStatus::EOF->value);
-        $this->assertSame(-2, ScannerStatus::ERR->value);
-        $this->assertSame(-3, ScannerStatus::IMPOSSIBLE->value);
-        $this->assertSame(0, ScannerStatus::OK->value);
-    }
 
     public function testFrom(): void
     {
@@ -38,5 +31,12 @@ final class ScannerStatusTest extends TestCase
     {
         $this->assertNull(ScannerStatus::tryFrom(99));
         $this->assertNull(ScannerStatus::tryFrom(-99));
+    }
+    public function testValues(): void
+    {
+        $this->assertSame(-1, ScannerStatus::EOF->value);
+        $this->assertSame(-2, ScannerStatus::ERR->value);
+        $this->assertSame(-3, ScannerStatus::IMPOSSIBLE->value);
+        $this->assertSame(0, ScannerStatus::OK->value);
     }
 }

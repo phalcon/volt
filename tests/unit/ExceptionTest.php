@@ -26,18 +26,18 @@ final class ExceptionTest extends TestCase
         $this->assertSame('error', $ex->getMessage());
     }
 
+    public function testExtendsBaseException(): void
+    {
+        $ex = new Exception('test');
+
+        $this->assertInstanceOf(\Exception::class, $ex);
+    }
+
     public function testWithStatement(): void
     {
         $statement = ['type' => 306, 'file' => 'test.volt', 'line' => 12];
         $ex        = new Exception('error', $statement, 0);
 
         $this->assertSame($statement, $ex->getStatement());
-    }
-
-    public function testExtendsBaseException(): void
-    {
-        $ex = new Exception('test');
-
-        $this->assertInstanceOf(\Exception::class, $ex);
     }
 }

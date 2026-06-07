@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Phalcon\Tests\Unit\Scanner;
 
-use PHPUnit\Framework\TestCase;
 use Phalcon\Volt\Scanner\Opcode;
+use PHPUnit\Framework\TestCase;
 
 final class OpcodeTest extends TestCase
 {

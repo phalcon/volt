@@ -93,8 +93,6 @@ enum Opcode: int
     case MUL             = 42;
     case MUL_ASSIGN      = 283;
     case NOT             = 33;
-    case NOTEQUALS       = 273;
-    case NOTIDENTICAL    = 275;
     case NOT_IN          = 367;
     case NOT_ISEMPTY     = 392;
     case NOT_ISEVEN      = 393;
@@ -103,6 +101,8 @@ enum Opcode: int
     case NOT_ISODD       = 394;
     case NOT_ISSCALAR    = 396;
     case NOT_ISSET       = 362;
+    case NOTEQUALS       = 273;
+    case NOTIDENTICAL    = 275;
     case NULL            = 261;
     case NUMERIC         = 383;
     case ODD             = 382;

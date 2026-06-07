@@ -18,6 +18,37 @@ use PHPUnit\Framework\TestCase;
 
 final class AddFunctionTest extends TestCase
 {
+
+    public static function getVoltAddFunction(): array
+    {
+        return [
+            [
+                'random',
+                'mt_rand',
+                '{{ random() }}',
+                '<?= mt_rand() ?>',
+            ],
+
+            [
+                'strtotime',
+                'strtotime',
+                '{{ strtotime("now") }}',
+                '<?= strtotime(\'now\') ?>',
+            ],
+        ];
+    }
+
+    public static function getVoltAddFunctionClosure(): array
+    {
+        return [
+            [
+                'shuffle',
+                'str_shuffle',
+                '{{ shuffle("hello") }}',
+                '<?= str_shuffle(\'hello\') ?>',
+            ],
+        ];
+    }
     /**
      * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: addFunction()
      *
@@ -65,36 +96,5 @@ final class AddFunctionTest extends TestCase
 
         $actual = $compiler->compileString($voltName);
         $this->assertSame($expected, $actual);
-    }
-
-    public static function getVoltAddFunction(): array
-    {
-        return [
-            [
-                'random',
-                'mt_rand',
-                '{{ random() }}',
-                '<?= mt_rand() ?>',
-            ],
-
-            [
-                'strtotime',
-                'strtotime',
-                '{{ strtotime("now") }}',
-                '<?= strtotime(\'now\') ?>',
-            ],
-        ];
-    }
-
-    public static function getVoltAddFunctionClosure(): array
-    {
-        return [
-            [
-                'shuffle',
-                'str_shuffle',
-                '{{ shuffle("hello") }}',
-                '<?= str_shuffle(\'hello\') ?>',
-            ],
-        ];
     }
 }

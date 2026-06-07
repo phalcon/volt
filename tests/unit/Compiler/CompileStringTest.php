@@ -19,39 +19,6 @@ use PHPUnit\Framework\TestCase;
 
 final class CompileStringTest extends TestCase
 {
-    /**
-     * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: compileString()
-     *
-     * @author       Phalcon Team <team@phalcon.io>
-     * @since        2017-01-17
-     *
-     * @dataProvider getVoltCompileString
-     */
-    public function testCompileString(string $param, string $expected): void
-    {
-        $volt = new Compiler();
-
-        $actual = $volt->compileString($param);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: compileString() - syntax
-     * error
-     *
-     * @author       Phalcon Team <team@phalcon.io>
-     * @since        2017-01-17
-     *
-     * @dataProvider getVoltCompileStringErrors
-     */
-    public function testSyntaxError(string $code, string $message): void
-    {
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage($message);
-
-        $volt = new Compiler();
-        $volt->compileString($code);
-    }
 
     public static function getVoltCompileString(): array
     {
@@ -551,5 +518,38 @@ final class CompileStringTest extends TestCase
                 'Unknown filter type in eval code on line 1',
             ],
         ];
+    }
+    /**
+     * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: compileString()
+     *
+     * @author       Phalcon Team <team@phalcon.io>
+     * @since        2017-01-17
+     *
+     * @dataProvider getVoltCompileString
+     */
+    public function testCompileString(string $param, string $expected): void
+    {
+        $volt = new Compiler();
+
+        $actual = $volt->compileString($param);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: compileString() - syntax
+     * error
+     *
+     * @author       Phalcon Team <team@phalcon.io>
+     * @since        2017-01-17
+     *
+     * @dataProvider getVoltCompileStringErrors
+     */
+    public function testSyntaxError(string $code, string $message): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage($message);
+
+        $volt = new Compiler();
+        $volt->compileString($code);
     }
 }

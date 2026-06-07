@@ -68,17 +68,153 @@ final class ArithmeticTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserExprSub(): void
+    public function testMvcViewEngineVoltParserExprDecr(): void
     {
-        $source   = '{{ 5 - 3 }}';
+        $source   = '{{ value-- }}';
         $expected = [
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 45,
+                    'type' => 280,
+                    'left' => [
+                        'type' => 265,
+                        'value' => 'value',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserExprDiv(): void
+    {
+        $source   = '{{ 10 / 2 }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 47,
                     'left' => [
                         'type' => 258,
-                        'value' => '5',
+                        'value' => '10',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'right' => [
+                        'type' => 258,
+                        'value' => '2',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserExprIncr(): void
+    {
+        $source   = '{{ value++ }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 279,
+                    'left' => [
+                        'type' => 265,
+                        'value' => 'value',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserExprIntDiv(): void
+    {
+        $source   = '{{ 10 / / 3 }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 37,
+                    'left' => [
+                        'type' => 258,
+                        'value' => '10',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'right' => [
+                        'type' => 258,
+                        'value' => '3',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserExprMod(): void
+    {
+        $source   = '{{ 10 % 3 }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 37,
+                    'left' => [
+                        'type' => 258,
+                        'value' => '10',
                         'file' => 'eval code',
                         'line' => 1,
                     ],
@@ -142,80 +278,6 @@ final class ArithmeticTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserExprDiv(): void
-    {
-        $source   = '{{ 10 / 2 }}';
-        $expected = [
-            [
-                'type' => 359,
-                'expr' => [
-                    'type' => 47,
-                    'left' => [
-                        'type' => 258,
-                        'value' => '10',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'right' => [
-                        'type' => 258,
-                        'value' => '2',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
-    public function testMvcViewEngineVoltParserExprMod(): void
-    {
-        $source   = '{{ 10 % 3 }}';
-        $expected = [
-            [
-                'type' => 359,
-                'expr' => [
-                    'type' => 37,
-                    'left' => [
-                        'type' => 258,
-                        'value' => '10',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'right' => [
-                        'type' => 258,
-                        'value' => '3',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
     public function testMvcViewEngineVoltParserExprPow(): void
     {
         $source   = '{{ 2 * * 8 }}';
@@ -253,17 +315,17 @@ final class ArithmeticTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserExprIntDiv(): void
+    public function testMvcViewEngineVoltParserExprSub(): void
     {
-        $source   = '{{ 10 / / 3 }}';
+        $source   = '{{ 5 - 3 }}';
         $expected = [
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 37,
+                    'type' => 45,
                     'left' => [
                         'type' => 258,
-                        'value' => '10',
+                        'value' => '5',
                         'file' => 'eval code',
                         'line' => 1,
                     ],
@@ -330,68 +392,6 @@ final class ArithmeticTest extends TestCase
                 'expr' => [
                     'type' => 369,
                     'right' => [
-                        'type' => 265,
-                        'value' => 'value',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
-    public function testMvcViewEngineVoltParserExprIncr(): void
-    {
-        $source   = '{{ value++ }}';
-        $expected = [
-            [
-                'type' => 359,
-                'expr' => [
-                    'type' => 279,
-                    'left' => [
-                        'type' => 265,
-                        'value' => 'value',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
-    public function testMvcViewEngineVoltParserExprDecr(): void
-    {
-        $source   = '{{ value-- }}';
-        $expected = [
-            [
-                'type' => 359,
-                'expr' => [
-                    'type' => 280,
-                    'left' => [
                         'type' => 265,
                         'value' => 'value',
                         'file' => 'eval code',

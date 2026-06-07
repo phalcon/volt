@@ -31,91 +31,6 @@ final class AccessTest extends TestCase
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
-    public function testMvcViewEngineVoltParserExprDot(): void
-    {
-        $source   = '{{ user.name }}';
-        $expected = [
-            [
-                'type' => 359,
-                'expr' => [
-                    'type' => 46,
-                    'left' => [
-                        'type' => 265,
-                        'value' => 'user',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'right' => [
-                        'type' => 265,
-                        'value' => 'name',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
-    public function testMvcViewEngineVoltParserExprDotNested(): void
-    {
-        $source   = '{{ user.address.city }}';
-        $expected = [
-            [
-                'type' => 359,
-                'expr' => [
-                    'type' => 46,
-                    'left' => [
-                        'type' => 46,
-                        'left' => [
-                            'type' => 265,
-                            'value' => 'user',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'right' => [
-                            'type' => 265,
-                            'value' => 'address',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'right' => [
-                        'type' => 265,
-                        'value' => 'city',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
     public function testMvcViewEngineVoltParserExprArrayAccess(): void
     {
         $source   = '{{ items[0] }}';
@@ -207,6 +122,91 @@ final class AccessTest extends TestCase
                     'right' => [
                         'type' => 265,
                         'value' => 'index',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserExprDot(): void
+    {
+        $source   = '{{ user.name }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 46,
+                    'left' => [
+                        'type' => 265,
+                        'value' => 'user',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'right' => [
+                        'type' => 265,
+                        'value' => 'name',
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserExprDotNested(): void
+    {
+        $source   = '{{ user.address.city }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 46,
+                    'left' => [
+                        'type' => 46,
+                        'left' => [
+                            'type' => 265,
+                            'value' => 'user',
+                            'file' => 'eval code',
+                            'line' => 1,
+                        ],
+                        'right' => [
+                            'type' => 265,
+                            'value' => 'address',
+                            'file' => 'eval code',
+                            'line' => 1,
+                        ],
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    'right' => [
+                        'type' => 265,
+                        'value' => 'city',
                         'file' => 'eval code',
                         'line' => 1,
                     ],

@@ -17,28 +17,28 @@ use Phalcon\Volt\Scanner\Mode;
 
 class State
 {
+    protected string $activeFile        = 'eval code';
+    protected int $activeLine        = 1;
     protected ?int $activeToken       = null;
     protected int $blockLevel        = 0;
+    protected int $cursor            = 0;
+    protected ?string $end               = null;
     protected int $extendsMode       = 0;
+    protected int $forcedRawState    = 0;
     protected int $forLevel          = 0;
     protected int $ifLevel           = 0;
     protected int $macroLevel        = 0;
     protected ?int $marker            = null;
+    protected int $mode;
     protected int $oldIfLevel        = 0;
     protected string $rawBuffer;
-    protected string $rawFragment       = '';
     protected int $rawBufferCursor   = 0;
+    protected string $rawFragment       = '';
+    protected ?string $start             = null;
     protected int $startLength;
     protected int $statementPosition = 0;
     protected int $switchLevel       = 0;
-    protected int $verbatim          = 0;
     private bool $whitespaceControl = false;
-    protected string $activeFile        = 'eval code';
-    protected int $activeLine        = 1;
-    protected int $cursor            = 0;
-    protected ?string $end               = null;
-    protected int $mode;
-    protected ?string $start             = null;
 
     public function __construct(string $buffer)
     {
@@ -65,6 +65,12 @@ class State
         return $this;
     }
 
+    public function decrementForcedRawState(): self
+    {
+        $this->forcedRawState--;
+
+        return $this;
+    }
 
     public function decrementForLevel(): self
     {
@@ -124,14 +130,14 @@ class State
         return $this->extendsMode;
     }
 
+    public function getForcedRawState(): int
+    {
+        return $this->forcedRawState;
+    }
+
     public function getForLevel(): int
     {
         return $this->forLevel;
-    }
-
-    public function getVerbatim(): int
-    {
-        return $this->verbatim;
     }
 
     public function getIfLevel(): int
@@ -223,6 +229,12 @@ class State
         return $this;
     }
 
+    public function incrementForcedRawState(): self
+    {
+        $this->forcedRawState++;
+
+        return $this;
+    }
 
     public function incrementForLevel(): self
     {
@@ -324,16 +336,16 @@ class State
         return $this;
     }
 
-    public function setForLevel(int $forLevel): self
+    public function setForcedRawState(int $forcedRawState): self
     {
-        $this->forLevel = $forLevel;
+        $this->forcedRawState = $forcedRawState;
 
         return $this;
     }
 
-    public function setVerbatim(int $verbatim): self
+    public function setForLevel(int $forLevel): self
     {
-        $this->verbatim = $verbatim;
+        $this->forLevel = $forLevel;
 
         return $this;
     }

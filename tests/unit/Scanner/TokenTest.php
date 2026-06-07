@@ -18,14 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class TokenTest extends TestCase
 {
-    public function testDefaultValues(): void
-    {
-        $token = new Token();
-
-        $this->assertSame(0, $token->opcode);
-        $this->assertNull($token->value);
-        $this->assertSame(0, $token->length);
-    }
 
     public function testConstructorWithAllArgs(): void
     {
@@ -35,12 +27,13 @@ final class TokenTest extends TestCase
         $this->assertSame('hello', $token->value);
         $this->assertSame(5, $token->length);
     }
-
-    public function testLengthDefaultsToStringLengthWhenValueProvided(): void
+    public function testDefaultValues(): void
     {
-        $token = new Token(1, 'world');
+        $token = new Token();
 
-        $this->assertSame(5, $token->length);
+        $this->assertSame(0, $token->opcode);
+        $this->assertNull($token->value);
+        $this->assertSame(0, $token->length);
     }
 
     public function testIsReadonly(): void
@@ -49,5 +42,12 @@ final class TokenTest extends TestCase
 
         $this->expectException(\Error::class);
         $token->opcode = 2; // @phpstan-ignore-line
+    }
+
+    public function testLengthDefaultsToStringLengthWhenValueProvided(): void
+    {
+        $token = new Token(1, 'world');
+
+        $this->assertSame(5, $token->length);
     }
 }

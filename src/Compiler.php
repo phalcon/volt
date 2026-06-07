@@ -162,8 +162,6 @@ class Compiler
     public const PHVOLT_T_MUL            = 42; //'*';
     public const PHVOLT_T_MUL_ASSIGN     = 283;
     public const PHVOLT_T_NOT            = 33; //'!';
-    public const PHVOLT_T_NOTEQUALS      = 273;
-    public const PHVOLT_T_NOTIDENTICAL   = 275;
     public const PHVOLT_T_NOT_IN         = 367;
     public const PHVOLT_T_NOT_ISEMPTY    = 392;
     public const PHVOLT_T_NOT_ISEVEN     = 393;
@@ -172,6 +170,8 @@ class Compiler
     public const PHVOLT_T_NOT_ISODD      = 394;
     public const PHVOLT_T_NOT_ISSCALAR   = 396;
     public const PHVOLT_T_NOT_ISSET      = 362;
+    public const PHVOLT_T_NOTEQUALS      = 273;
+    public const PHVOLT_T_NOTIDENTICAL   = 275;
     public const PHVOLT_T_NULL           = 261;
     public const PHVOLT_T_NUMERIC        = 383;
     public const PHVOLT_T_ODD            = 382;
@@ -270,13 +270,13 @@ class Compiler
      */
     protected array $filters = [];
     /**
-     * @var array
-     */
-    protected array $forElsePointers = [];
-    /**
      * @var int
      */
     protected int $foreachLevel = 0;
+    /**
+     * @var array
+     */
+    protected array $forElsePointers = [];
     /**
      * @var array
      */
@@ -928,27 +928,6 @@ class Compiler
     }
 
     /**
-     * Generates a 'forelse' PHP code
-     *
-     * @return string
-     */
-    public function compileForElse(): string
-    {
-        $level = $this->foreachLevel;
-
-        if (!isset($this->forElsePointers[$level])) {
-            return '';
-        }
-
-        $prefix = $this->forElsePointers[$level];
-        if (isset($this->loopPointers[$level])) {
-            return '<?php $' . $prefix . 'incr++; } if (!$' . $prefix . 'iterated) { ?>';
-        }
-
-        return '<?php } if (!$' . $prefix . 'iterated) { ?>';
-    }
-
-    /**
      * Compiles a "foreach" intermediate code representation into plain PHP code
      *
      * @throws Exception
@@ -1099,6 +1078,27 @@ class Compiler
         $this->foreachLevel--;
 
         return $compilation;
+    }
+
+    /**
+     * Generates a 'forelse' PHP code
+     *
+     * @return string
+     */
+    public function compileForElse(): string
+    {
+        $level = $this->foreachLevel;
+
+        if (!isset($this->forElsePointers[$level])) {
+            return '';
+        }
+
+        $prefix = $this->forElsePointers[$level];
+        if (isset($this->loopPointers[$level])) {
+            return '<?php $' . $prefix . 'incr++; } if (!$' . $prefix . 'iterated) { ?>';
+        }
+
+        return '<?php } if (!$' . $prefix . 'iterated) { ?>';
     }
 
     /**
