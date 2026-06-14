@@ -631,7 +631,7 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, mixed given\.$#'
+			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Compiler.php
@@ -767,12 +767,6 @@ parameters:
 			identifier: variable.undefined
 			count: 1
 			path: src/Compiler.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: src/Scanner/Scanner.php
 
 		-
 			message: '#^Property Phalcon\\Volt\\Tokens\:\:\$names type has no value type specified in iterable type array\.$#'
