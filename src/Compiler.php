@@ -811,13 +811,13 @@ class Compiler
         $expr     = $statement['expr'];
         $exprCode = $this->expression($expr);
 
-        if ($expr == Opcode::FCALL->value) {
+        if ($expr['type'] == Opcode::FCALL->value) {
             if ($this->isTagFactory($expr)) {
                 $exprCode = $this->expression($expr, true);
             }
 
             $name = $expr['name'];
-            if ($name == Opcode::IDENTIFIER->value) {
+            if ($name['type'] == Opcode::IDENTIFIER->value) {
                 /**
                  * super() is a function however the return of this function
                  * must be output as it is
@@ -832,7 +832,7 @@ class Compiler
          * Echo statement
          */
         if (true === $this->autoescape) {
-            return '<?= $this->escaper->escapeHtml(' . $exprCode . ')';
+            return '<?= $this->escaper->html(' . $exprCode . ') ?>';
         }
 
         return '<?= ' . $exprCode . ' ?>';
@@ -1014,7 +1014,7 @@ class Compiler
          * Generate the loop context for the "foreach"
          */
         if (isset($loopContext[$level])) {
-            $compilation .= '<?php $' . $prefixLevel . 'iterator = ' . $exprCode;
+            $compilation .= '<?php $' . $prefixLevel . 'iterator = ' . $exprCode . '; ';
             $compilation .= '$' . $prefixLevel . 'incr = 0; ';
             $compilation .= '$' . $prefixLevel . 'loop = new \stdClass(); ';
             $compilation .= '$' . $prefixLevel . 'loop->self = &$' . $prefixLevel . 'loop; ';
@@ -1203,10 +1203,10 @@ class Compiler
          * Use partial
          */
         if (!isset($statement['params'])) {
-            return '<?php $this->partial(' . $path . ')';
+            return '<?php $this->partial(' . $path . '); ?>';
         }
 
-        return '<?php $this->partial(' . $pathExpr . ', ' . $this->expression($statement['params']) . ')';
+        return '<?php $this->partial(' . $path . ', ' . $this->expression($statement['params']) . '); ?>';
     }
 
     /**
@@ -1235,7 +1235,7 @@ class Compiler
          * Register the macro
          */
         $this->macros[$name] = $name;
-        $macroName           = '$this->macros[\'' . $name . '\]';
+        $macroName           = '$this->macros[\'' . $name . '\']';
         $code                = '<?php ';
 
         if (!isset($statement['parameters'])) {
@@ -1263,7 +1263,7 @@ class Compiler
                         . $name . '" was called without parameter ' . $variableName . '\'); ';
                 }
 
-                $code .= ' } ) ';
+                $code .= ' } } ';
             }
 
             $code .= ' ?>';
@@ -1665,7 +1665,7 @@ class Compiler
                     break;
 
                 case Opcode::ARRAY->value:
-                    $exprCode = isset($expr['left']) ? '[' . $leftCode . ']' : [];
+                    $exprCode = isset($expr['left']) ? '[' . $leftCode . ']' : '[]';
                     break;
 
                 case 258:
@@ -1717,19 +1717,19 @@ class Compiler
                     break;
 
                 case 272:
-                    $exprCode = $leftCode .= ' == ' . $rightCode;
+                    $exprCode = $leftCode . ' == ' . $rightCode;
                     break;
 
                 case 273:
-                    $exprCode = $leftCode .= ' != ' . $rightCode;
+                    $exprCode = $leftCode . ' != ' . $rightCode;
                     break;
 
                 case 274:
-                    $exprCode = $leftCode .= ' === ' . $rightCode;
+                    $exprCode = $leftCode . ' === ' . $rightCode;
                     break;
 
                 case 275:
-                    $exprCode = $leftCode .= ' !== ' . $rightCode;
+                    $exprCode = $leftCode . ' !== ' . $rightCode;
                     break;
 
                 case Opcode::RANGE->value:
@@ -2018,15 +2018,27 @@ class Compiler
                 return "''";
             }
 
+            /**
+             * @todo This needs a lot of refactoring and will break a lot of
+             * applications if removed
+             */
+            if ($name === 'preload') {
+                return '$this->preload(' . $arguments . ')';
+            }
+
+            /**
+             * Check if it's a method in Phalcon\Tag
+             * @todo This needs a lot of refactoring and will break a lot of
+             * applications if removed
+             */
             $method = lcfirst(
-            //\Phalcon\Text::camelize($name)
-                ucwords($name)
+                str_replace(['_', '-'], '', ucwords($name, '_-'))
             );
 
             $arrayHelpers = [
                 'link_to'        => true,
                 'image'          => true,
-                'form'           => true,
+                'form_legacy'    => true,
                 'submit_button'  => true,
                 'radio_field'    => true,
                 'check_field'    => true,
@@ -2042,15 +2054,32 @@ class Compiler
                 "image_input"    => true,
             ];
 
-            /**
-             * Check if it's a method in Phalcon\Tag
-             */
             if (method_exists('Phalcon\\Tag', $method)) {
                 if (isset($arrayHelpers[$name])) {
-                    return '$this->tag->' . $method . '([' . $arguments . '])';
+                    return '\\Phalcon\\Tag::' . $method . '([' . $arguments . '])';
                 }
 
-                return '$this->tag->' . $method . '(' . $arguments . ')';
+                return '\\Phalcon\\Tag::' . $method . '(' . $arguments . ')';
+            }
+
+            /**
+             * These are for the TagFactory
+             */
+            if ($this->container !== null && true === $this->container->has('tag')) {
+                $tagService = $this->container->get('tag');
+                if (true === $tagService->has($name)) {
+                    /**
+                     * recalculate the arguments because we need them double
+                     * quoted
+                     */
+                    if (isset($expr['arguments'])) {
+                        $arguments = $this->expression($expr['arguments'], true);
+                    } else {
+                        $arguments = '';
+                    }
+
+                    return '$this->tag->' . $name . '(' . $arguments . ')';
+                }
             }
 
             /**
@@ -2080,11 +2109,11 @@ class Compiler
             }
 
             if ($name === 'version') {
-                return 'Phalcon\\Version::get()';
+                return '(new Phalcon\\Support\\Version)->get()';
             }
 
             if ($name === 'version_id') {
-                return 'Phalcon\\Version::getId()';
+                return '(new Phalcon\\Support\\Version)->getId()';
             }
 
             /**
@@ -2349,9 +2378,8 @@ class Compiler
         $viewsDirs = $this->view->getViewsDir();
         if (is_array($viewsDirs)) {
             foreach ($viewsDirs as $viewsDir) {
-                $path = $viewsDir . $path;
-                if (true === file_exists($path)) {
-                    return $path;
+                if (true === file_exists($viewsDir . $path)) {
+                    return $viewsDir . $path;
                 }
             }
 
@@ -2752,7 +2780,9 @@ class Compiler
              */
             switch ($type) {
                 case Opcode::RAW_FRAGMENT->value:
-                    $compilation .= $statement["value"];
+                    if (isset($statement['value'])) {
+                        $compilation .= $statement['value'];
+                    }
                     break;
 
                 case Opcode::IF->value:

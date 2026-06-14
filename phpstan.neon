@@ -2,6 +2,10 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
+    # Pin the analyzed PHP version so the CI matrix (8.1-8.5) produces
+    # identical results regardless of the runtime PHP; keeps one baseline valid
+    # on every leg.
+    phpVersion: 80100
     bootstrapFiles:
         - phpunit.php
     paths:
