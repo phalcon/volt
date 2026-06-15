@@ -34,6 +34,64 @@ class Scanner
 
     public function scanForToken(): ScannerStatus
     {
+        $status = $this->scan();
+
+        /**
+         * "verbatim" / "endverbatim" are reserved words. The generated DFA
+         * matches them as plain identifiers, so they are reclassified here at
+         * the single scanner exit point - this emits the exact token stream
+         * cphalcon produces without rebuilding the generated state machine.
+         */
+        if (
+            $status === ScannerStatus::OK
+            && $this->state->getMode() === Mode::CODE->value
+            && $this->token->opcode === Opcode::IDENTIFIER->value
+        ) {
+            $keyword = strtolower((string) $this->token->value);
+
+            if ($keyword === 'verbatim') {
+                $this->state->incrementStatementPosition()->setVerbatim(1);
+                $this->token = new Token(Opcode::VERBATIM->value);
+            } elseif ($keyword === 'endverbatim') {
+                $this->state->incrementStatementPosition();
+                $this->token = new Token(Opcode::ENDVERBATIM->value);
+            }
+        }
+
+        return $status;
+    }
+
+    /**
+     * Looks ahead from a "{%" sequence inside a verbatim block to decide
+     * whether it opens the closing "{% endverbatim %}" tag. Mirrors the
+     * peek logic in cphalcon's scanner: optional "-" marker, surrounding
+     * whitespace, case-insensitive "endverbatim" as a whole word.
+     */
+    private function isEndVerbatimAhead(): bool
+    {
+        $buffer = $this->state->getRawBuffer();
+        // The cursor is on "{" and the next character is "%".
+        $peek = $this->state->getCursor() + 2;
+
+        if (($buffer[$peek] ?? '') === '-') {
+            $peek++;
+        }
+
+        while (in_array($buffer[$peek] ?? '', [' ', "\t", "\r", "\n"], true)) {
+            $peek++;
+        }
+
+        if (strtolower(substr($buffer, $peek, 11)) !== 'endverbatim') {
+            return false;
+        }
+
+        $after = $buffer[$peek + 11] ?? '';
+
+        return $after === '' || (!ctype_alnum($after) && $after !== '_');
+    }
+
+    private function scan(): ScannerStatus
+    {
         $start = $this->state->getCursor();
         $status = ScannerStatus::IMPOSSIBLE;
         /** @phpstan-ignore identical.alwaysTrue */
@@ -86,6 +144,63 @@ class Scanner
                     return ScannerStatus::OK;
                 }
 
+                $this->state->appendToRawFragment($cursor);
+                $this->state->incrementStart();
+            } elseif ($mode === Mode::VERBATIM->value) {
+                if ($cursor === "\n") {
+                    $this->state->incrementActiveLine();
+                }
+
+                /**
+                 * End of input while still inside a verbatim block. Flush
+                 * whatever has been captured so far; the parser then reports
+                 * the missing {% endverbatim %}.
+                 */
+                if ($cursor === null) {
+                    $this->state->setMode(Mode::CODE->value);
+
+                    if ($this->state->getRawFragment() !== '') {
+                        $this->token = new Token(
+                            Opcode::RAW_FRAGMENT->value,
+                            $this->state->getRawFragment()
+                        );
+                        $this->state->setRawFragment('');
+
+                        return ScannerStatus::OK;
+                    }
+
+                    return ScannerStatus::EOF;
+                }
+
+                /**
+                 * Detect the closing "{% endverbatim %}" tag, allowing the
+                 * optional "-" whitespace-control marker and surrounding
+                 * spaces. Everything else - including other "{{", "{%" and
+                 * "{#" sequences - is captured as literal content.
+                 */
+                if ($cursor === '{' && $this->state->getNext() === '%' && $this->isEndVerbatimAhead()) {
+                    $this->state->setMode(Mode::CODE->value);
+
+                    if ($this->state->getRawFragment() !== '') {
+                        $this->token = new Token(
+                            Opcode::RAW_FRAGMENT->value,
+                            $this->state->getRawFragment()
+                        );
+                        $this->state->setRawFragment('');
+                    } else {
+                        $this->token = new Token(Opcode::IGNORE->value);
+                    }
+
+                    /**
+                     * Leave the cursor on "{%" so the {% endverbatim %} tag
+                     * is tokenized on the next scan.
+                     */
+                    return ScannerStatus::OK;
+                }
+
+                /**
+                 * Literal content: buffer the current character and advance.
+                 */
                 $this->state->appendToRawFragment($cursor);
                 $this->state->incrementStart();
             } else {
@@ -915,7 +1030,12 @@ class Scanner
                 }
                 vv85:
                 $this->state->incrementStart();
-                $this->state->setMode(Mode::RAW->value);
+                if ($this->state->getVerbatim() === 1) {
+                    $this->state->setMode(Mode::VERBATIM->value);
+                    $this->state->setVerbatim(0);
+                } else {
+                    $this->state->setMode(Mode::RAW->value);
+                }
                 $this->token = new Token(Opcode::CLOSE_DELIMITER->value);
                 return ScannerStatus::OK;
                 vv87:
@@ -1789,6 +1909,7 @@ class Scanner
                 vv156:
                 $this->state->incrementStart();
                 $this->state->setMode(Mode::RAW->value);
+                $this->state->setVerbatim(0);
                 $this->token = new Token(Opcode::CLOSE_EDELIMITER->value);
                 return ScannerStatus::OK;
                 vv158:
@@ -1798,7 +1919,12 @@ class Scanner
 
                 vv160:
                 $this->state->incrementStart();
-                $this->state->setMode(Mode::RAW->value);
+                if ($this->state->getVerbatim() === 1) {
+                    $this->state->setMode(Mode::VERBATIM->value);
+                    $this->state->setVerbatim(0);
+                } else {
+                    $this->state->setMode(Mode::RAW->value);
+                }
                 $this->state->setWhitespaceControl(true);
                 $this->token = new Token(Opcode::CLOSE_DELIMITER->value);
                 return ScannerStatus::OK;
@@ -1807,6 +1933,7 @@ class Scanner
                 $this->state->incrementStart();
                 $this->state->setMode(Mode::RAW->value);
                 $this->state->setWhitespaceControl(true);
+                $this->state->setVerbatim(0);
                 $this->token = new Token(Opcode::CLOSE_EDELIMITER->value);
                 return ScannerStatus::OK;
                 vv164:
@@ -2423,11 +2550,11 @@ class Scanner
                         goto vv198;
                 }
                 vv198:
-                {
-                    $this->state->incrementStatementPosition();
-                    $this->token = new Token(Opcode::RAW->value);
-                    return ScannerStatus::OK;
-                }
+                $this->token = new Token(
+                    Opcode::IDENTIFIER->value,
+                    substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
+                );
+                return ScannerStatus::OK;
                 vv199:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
@@ -4413,11 +4540,11 @@ class Scanner
                         goto vv304;
                 }
                 vv304:
-                {
-                    $this->state->incrementStatementPosition();
-                    $this->token = new Token(Opcode::ENDRAW->value);
-                    return ScannerStatus::OK;
-                }
+                $this->token = new Token(
+                    Opcode::IDENTIFIER->value,
+                    substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
+                );
+                return ScannerStatus::OK;
                 vv305:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {

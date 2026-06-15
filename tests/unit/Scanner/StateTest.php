@@ -30,7 +30,6 @@ final class StateTest extends TestCase
         $this->assertSame(0, $state->getBlockLevel());
         $this->assertSame(0, $state->getExtendsMode());
         $this->assertSame(0, $state->getForLevel());
-        $this->assertSame(0, $state->getForcedRawState());
         $this->assertSame(0, $state->getIfLevel());
         $this->assertSame(0, $state->getMacroLevel());
         $this->assertSame(0, $state->getOldIfLevel());
@@ -55,8 +54,8 @@ final class StateTest extends TestCase
         $state->setForLevel(3);
         $this->assertSame(3, $state->getForLevel());
 
-        $state->setForcedRawState(1);
-        $this->assertSame(1, $state->getForcedRawState());
+        $state->setVerbatim(1);
+        $this->assertSame(1, $state->getVerbatim());
 
         $state->setIfLevel(1);
         $this->assertSame(1, $state->getIfLevel());
@@ -122,12 +121,6 @@ final class StateTest extends TestCase
 
         $state->incrementStatementPosition();
         $this->assertSame(1, $state->getStatementPosition());
-
-        $state->incrementForcedRawState();
-        $this->assertSame(1, $state->getForcedRawState());
-
-        $state->decrementForcedRawState();
-        $this->assertSame(0, $state->getForcedRawState());
     }
 
     public function testGetPrevious(): void

@@ -51,8 +51,8 @@ enum Opcode: int
     case ENDFOR            = 39;
     case ENDIF             = 33;
     case ENDMACRO          = 53;
-    case ENDRAW            = 69;
     case ENDSWITCH         = 41;
+    case ENDVERBATIM       = 69;
     case EQUALS            = 10;
     case EVEN              = 82;
     case EXTENDS           = 70;
@@ -90,7 +90,6 @@ enum Opcode: int
     case PLUS              = 21;
     case QUESTION          = 3;
     case RANGE             = 5;
-    case RAW               = 68;
     case RAW_FRAGMENT      = 79;
     case RETURN            = 74;
     case SBRACKET_CLOSE    = 50;
@@ -102,6 +101,7 @@ enum Opcode: int
     case SWITCH            = 40;
     case TIMES             = 19;
     case TRUE              = 59;
+    case VERBATIM          = 68;
     case WITH              = 72;
 
     public function label(): string

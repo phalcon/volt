@@ -135,8 +135,8 @@ final class OpcodeTest extends TestCase
         $this->assertSame(395, Opcode::NOT_ISNUMERIC->value);
         $this->assertSame(396, Opcode::NOT_ISSCALAR->value);
         $this->assertSame(397, Opcode::NOT_ISITERABLE->value);
-        $this->assertSame(400, Opcode::RAW->value);
-        $this->assertSame(401, Opcode::ENDRAW->value);
+        $this->assertSame(402, Opcode::VERBATIM->value);
+        $this->assertSame(403, Opcode::ENDVERBATIM->value);
         $this->assertSame(411, Opcode::SWITCH->value);
         $this->assertSame(412, Opcode::CASE->value);
         $this->assertSame(413, Opcode::DEFAULT->value);

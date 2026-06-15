@@ -21,7 +21,6 @@ class State
     protected int $blockLevel        = 0;
     protected int $extendsMode       = 0;
     protected int $forLevel          = 0;
-    protected int $forcedRawState    = 0;
     protected int $ifLevel           = 0;
     protected int $macroLevel        = 0;
     protected ?int $marker            = null;
@@ -32,6 +31,7 @@ class State
     protected int $startLength;
     protected int $statementPosition = 0;
     protected int $switchLevel       = 0;
+    protected int $verbatim          = 0;
     private bool $whitespaceControl = false;
     protected string $activeFile        = 'eval code';
     protected int $activeLine        = 1;
@@ -65,12 +65,6 @@ class State
         return $this;
     }
 
-    public function decrementForcedRawState(): self
-    {
-        $this->forcedRawState--;
-
-        return $this;
-    }
 
     public function decrementForLevel(): self
     {
@@ -135,9 +129,9 @@ class State
         return $this->forLevel;
     }
 
-    public function getForcedRawState(): int
+    public function getVerbatim(): int
     {
-        return $this->forcedRawState;
+        return $this->verbatim;
     }
 
     public function getIfLevel(): int
@@ -229,12 +223,6 @@ class State
         return $this;
     }
 
-    public function incrementForcedRawState(): self
-    {
-        $this->forcedRawState++;
-
-        return $this;
-    }
 
     public function incrementForLevel(): self
     {
@@ -343,9 +331,9 @@ class State
         return $this;
     }
 
-    public function setForcedRawState(int $forcedRawState): self
+    public function setVerbatim(int $verbatim): self
     {
-        $this->forcedRawState = $forcedRawState;
+        $this->verbatim = $verbatim;
 
         return $this;
     }

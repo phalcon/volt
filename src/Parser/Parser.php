@@ -158,8 +158,8 @@ class Parser
                 CompilerOpcode::ENDCALL->value           => $parser->phvolt_(Opcode::ENDCALL->value),
                 CompilerOpcode::CACHE->value             => $parser->phvolt_(Opcode::CACHE->value),
                 CompilerOpcode::ENDCACHE->value          => $parser->phvolt_(Opcode::ENDCACHE->value),
-                CompilerOpcode::RAW->value               => $this->handleRaw($parser, $state),
-                CompilerOpcode::ENDRAW->value            => $this->handleEndraw($parser, $state),
+                CompilerOpcode::VERBATIM->value          => $parser->phvolt_(Opcode::VERBATIM->value),
+                CompilerOpcode::ENDVERBATIM->value       => $parser->phvolt_(Opcode::ENDVERBATIM->value),
                 CompilerOpcode::INCLUDE->value           => $parser->phvolt_(Opcode::INCLUDE->value),
                 CompilerOpcode::WITH->value              => $parser->phvolt_(Opcode::WITH->value),
                 CompilerOpcode::DEFINED->value           => $parser->phvolt_(Opcode::DEFINED->value),
@@ -356,12 +356,6 @@ class Parser
         $parser->phvolt_(Opcode::ENDMACRO->value);
     }
 
-    private function handleEndraw(phvolt_Parser $parser, State $state): void
-    {
-        $parser->phvolt_(Opcode::ENDRAW->value);
-        $state->decrementForcedRawState();
-    }
-
     private function handleEndswitch(phvolt_Parser $parser, Status $parserStatus, State $state): void
     {
         if ($state->getSwitchLevel() === 0) {
@@ -445,12 +439,6 @@ class Parser
         }
 
         $parser->phvolt_(Opcode::OPEN_EDELIMITER->value);
-    }
-
-    private function handleRaw(phvolt_Parser $parser, State $state): void
-    {
-        $parser->phvolt_(Opcode::RAW->value);
-        $state->incrementForcedRawState();
     }
 
     private function handleRawFragment(

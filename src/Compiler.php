@@ -117,8 +117,8 @@ class Compiler
     public const PHVOLT_T_ENDFOR           = 305;
     public const PHVOLT_T_ENDIF            = 303;
     public const PHVOLT_T_ENDMACRO         = 323;
-    public const PHVOLT_T_ENDRAW           = 401;
     public const PHVOLT_T_ENDSWITCH        = 414;
+    public const PHVOLT_T_ENDVERBATIM      = 403;
     public const PHVOLT_T_EQUALS           = 272;
     public const PHVOLT_T_EVEN             = 381;
     public const PHVOLT_T_EXPR             = 354;
@@ -189,7 +189,6 @@ class Compiler
     public const PHVOLT_T_QUALIFIED         = 355;
     public const PHVOLT_T_QUESTION          = 63; //'?';
     public const PHVOLT_T_RANGE             = 276;
-    public const PHVOLT_T_RAW               = 400;
     public const PHVOLT_T_RAW_FRAGMENT      = 357;
     public const PHVOLT_T_RESOLVED_EXPR     = 364;
     public const PHVOLT_T_RETURN            = 327;
@@ -207,6 +206,7 @@ class Compiler
     public const PHVOLT_T_SWITCH  = 411;
     public const PHVOLT_T_TERNARY = 366;
     public const PHVOLT_T_TRUE    = 263;
+    public const PHVOLT_T_VERBATIM = 402;
     public const PHVOLT_T_WITH    = 324;
 
     /**
@@ -794,7 +794,7 @@ class Compiler
     }
 
     /**
-     * Compiles a {% raw %}`{{` `}}`{% endraw %} statement returning PHP code
+     * Compiles a `{{` `}}` statement returning PHP code
      */
     public function compileEcho(array $statement): string
     {
@@ -1457,7 +1457,7 @@ class Compiler
      * Compiles a template into a string
      *
      *```php
-     * echo $compiler->compileString({% raw %}'{{ "hello world" }}'{% endraw %});
+     * echo $compiler->compileString('{{ "hello world" }}');
      *```
      *
      * @throws Exception
@@ -2240,7 +2240,7 @@ class Compiler
      *
      *```php
      * print_r(
-     *     $compiler->parse("{% raw %}{{ 3 + 2 }}{% endraw %}")
+     *     $compiler->parse("{{ 3 + 2 }}")
      * );
      *```
      * @throws Exception

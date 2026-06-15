@@ -15,7 +15,8 @@ namespace Phalcon\Volt\Scanner;
 
 enum Mode: int
 {
-    case CODE    = 1;
-    case COMMENT = 2;
-    case RAW     = 0;
+    case CODE     = 1;
+    case COMMENT  = 2;
+    case RAW      = 0;
+    case VERBATIM = 3;
 }
