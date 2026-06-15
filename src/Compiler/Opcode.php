@@ -57,8 +57,8 @@ enum Opcode: int
     case ENDFOR          = 305;
     case ENDIF           = 303;
     case ENDMACRO        = 323;
-    case ENDRAW          = 401;
     case ENDSWITCH       = 414;
+    case ENDVERBATIM     = 403;
     case EQUALS          = 272;
     case EVEN            = 381;
     case EXPR            = 354;
@@ -117,7 +117,6 @@ enum Opcode: int
     case QUALIFIED       = 355;
     case QUESTION        = 63;
     case RANGE           = 276;
-    case RAW             = 400;
     case RAW_FRAGMENT    = 357;
     case RESOLVED_EXPR   = 364;
     case RETURN          = 327;
@@ -132,5 +131,6 @@ enum Opcode: int
     case SWITCH          = 411;
     case TERNARY         = 366;
     case TRUE            = 263;
+    case VERBATIM        = 402;
     case WITH            = 324;
 }

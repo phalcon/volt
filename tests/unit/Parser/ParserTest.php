@@ -286,14 +286,15 @@ final class ParserTest extends TestCase
         $this->assertSame(325, $result[0]['type']); // PHVOLT_T_CALL
     }
 
-    public function testRawAndEndraw(): void
+    public function testVerbatimAndEndverbatim(): void
     {
         $parser = new Parser();
-        $result = $parser->parse('{% raw %}{{ not_evaluated }}{% endraw %}', 'test.volt');
+        $result = $parser->parse('{% verbatim %}{{ not_evaluated }}{% endverbatim %}', 'test.volt');
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
-        $this->assertSame(400, $result[0]['type']); // PHVOLT_T_RAW
+        $this->assertSame(357, $result[0]['type']); // PHVOLT_T_RAW_FRAGMENT
+        $this->assertSame('{{ not_evaluated }}', $result[0]['value']);
     }
 
     public function testIncludeWith(): void
