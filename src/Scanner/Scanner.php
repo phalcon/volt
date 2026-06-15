@@ -885,7 +885,7 @@ class Scanner
                 }
 
                 vv81:
-                $this->state->setCursor($this->state->getMarker());
+                $this->state->setCursor((int) $this->state->getMarker());
                 switch ($vvaccept) {
                     case 0:
                         goto vv5;

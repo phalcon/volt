@@ -63,6 +63,7 @@ class Parser
 
         $state        = $parserStatus->getState();
         $scannerStatus = ScannerStatus::OK;
+        $prevToken     = 0;
 
         while (($scannerStatus = $scanner->scanForToken()) === ScannerStatus::OK) {
             $token = $scanner->getToken();
@@ -131,7 +132,8 @@ class Parser
                     $parser,
                     $parserStatus,
                     $token,
-                    $state
+                    $state,
+                    $prevToken
                 ),
                 CompilerOpcode::ENDSWITCH->value         => $this->handleEndswitch($parser, $parserStatus, $state),
                 CompilerOpcode::RAW_FRAGMENT->value      => $this->handleRawFragment(
@@ -179,6 +181,11 @@ class Parser
 
             if ($parserStatus->getStatus() !== Status::PHVOLT_PARSING_OK) {
                 break;
+            }
+
+            // whitespace inside delimiters arrives as IGNORE; skip it
+            if ($opcode !== CompilerOpcode::IGNORE->value) {
+                $prevToken = $opcode;
             }
 
             $state->setEnd($state->getStart());
@@ -285,13 +292,22 @@ class Parser
         $parser->phvolt_(Opcode::CASE->value);
     }
 
+    /**
+     * "default" is the {% default %} clause only when it is inside a switch
+     * and directly follows the opening delimiter; anywhere else (e.g. the
+     * |default() filter) it is a plain identifier.
+     */
     private function handleDefault(
         phvolt_Parser $parser,
         Status $parserStatus,
         Token $token,
-        State $state
+        State $state,
+        int $prevToken
     ): void {
-        if ($state->getSwitchLevel() !== 0) {
+        if (
+            $state->getSwitchLevel() !== 0 &&
+            $prevToken === CompilerOpcode::OPEN_DELIMITER->value
+        ) {
             $parser->phvolt_(Opcode::DEFAULT->value);
 
             return;
