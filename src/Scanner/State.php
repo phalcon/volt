@@ -38,6 +38,7 @@ class State
     protected int $startLength;
     protected int $statementPosition = 0;
     protected int $switchLevel       = 0;
+    protected int $verbatim          = 0;
     private bool $whitespaceControl = false;
 
     public function __construct(string $buffer)
@@ -208,6 +209,11 @@ class State
     public function getSwitchLevel(): int
     {
         return $this->switchLevel;
+    }
+
+    public function getVerbatim(): int
+    {
+        return $this->verbatim;
     }
 
     public function getWhitespaceControl(): bool
@@ -437,6 +443,13 @@ class State
     public function setSwitchLevel(int $switchLevel): self
     {
         $this->switchLevel = $switchLevel;
+
+        return $this;
+    }
+
+    public function setVerbatim(int $verbatim): self
+    {
+        $this->verbatim = $verbatim;
 
         return $this;
     }

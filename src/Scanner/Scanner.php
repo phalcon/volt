@@ -1042,7 +1042,7 @@ class Scanner
                 $vvch = $this->state->incrementStart()->getStart();
                 vv88:
                 switch ($vvch) {
-                    case 0x00:
+                    case null:
                         goto vv81;
                     case '\'':
                         goto vv82;
