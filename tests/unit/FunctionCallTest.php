@@ -18,7 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class FunctionCallTest extends TestCase
 {
-
     public static function getExamples(): array
     {
         return [

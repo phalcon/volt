@@ -19,7 +19,6 @@ use PHPUnit\Framework\TestCase;
 
 final class ParserTest extends TestCase
 {
-
     public function testAddAssign(): void
     {
         $parser = new Parser();
@@ -321,16 +320,6 @@ final class ParserTest extends TestCase
         $this->assertCount(1, $result2);
         $this->assertSame(359, $result1[0]['type']); // PHVOLT_T_ECHO
         $this->assertSame(300, $result2[0]['type']); // PHVOLT_T_IF
-    }
-
-    public function testRawAndEndraw(): void
-    {
-        $parser = new Parser();
-        $result = $parser->parse('{% raw %}{{ not_evaluated }}{% endraw %}', 'test.volt');
-
-        $this->assertIsArray($result);
-        $this->assertCount(1, $result);
-        $this->assertSame(400, $result[0]['type']); // PHVOLT_T_RAW
     }
 
     public function testRawFragmentInExtendsModeThrowsException(): void

@@ -392,6 +392,43 @@ final class SetTest extends TestCase
      * @return void
      *
      * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-06-30
+     */
+    public function testMvcViewEngineVoltParserSetStringWithMarkup(): void
+    {
+        $source   = '{% set icon = \'<svg viewBox="0 0 18 18"></svg>\' %}';
+        $expected = [
+            [
+                'type' => 306,
+                'assignments' => [
+                    [
+                        'variable' => [
+                            'type' => 265,
+                            'value' => 'icon',
+                            'file' => 'eval code',
+                            'line' => 1,
+                        ],
+                        'op' => 61,
+                        'expr' => [
+                            'type' => 260,
+                            'value' => '<svg viewBox="0 0 18 18"></svg>',
+                            'file' => 'eval code',
+                            'line' => 1,
+                        ],
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                ],
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
     public function testMvcViewEngineVoltParserSetSubAssign(): void

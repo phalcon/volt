@@ -19,7 +19,6 @@ use PHPUnit\Framework\TestCase;
 
 final class CompileStringTest extends TestCase
 {
-
     public static function getVoltCompileString(): array
     {
         return [

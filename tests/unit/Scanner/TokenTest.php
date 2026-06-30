@@ -18,7 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class TokenTest extends TestCase
 {
-
     public function testConstructorWithAllArgs(): void
     {
         $token = new Token(42, 'hello', 5);

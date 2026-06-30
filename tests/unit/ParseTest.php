@@ -19,7 +19,6 @@ use PHPUnit\Framework\TestCase;
 
 final class ParseTest extends TestCase
 {
-
     /**
      * @return array[]
      */

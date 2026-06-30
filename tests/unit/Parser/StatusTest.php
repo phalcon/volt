@@ -20,7 +20,6 @@ use PHPUnit\Framework\TestCase;
 
 final class StatusTest extends TestCase
 {
-
     public function testConstants(): void
     {
         $this->assertSame(0, Status::PHVOLT_PARSING_FAILED);

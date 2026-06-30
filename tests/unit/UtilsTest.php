@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 
 final class UtilsTest extends TestCase
 {
-
     public static function getUriProvider(): array
     {
         return [

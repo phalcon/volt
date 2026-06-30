@@ -157,6 +157,32 @@ final class EchoTest extends TestCase
      * @return void
      *
      * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-06-30
+     */
+    public function testMvcViewEngineVoltParserEchoStringDoubleEscapedQuote(): void
+    {
+        $source   = '{{ "say \"hi\"" }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 260,
+                    'value' => 'say \"hi\"',
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
     public function testMvcViewEngineVoltParserEchoStringSingle(): void
@@ -168,6 +194,32 @@ final class EchoTest extends TestCase
                 'expr' => [
                     'type' => 260,
                     'value' => 'Hello',
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @return void
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-06-30
+     */
+    public function testMvcViewEngineVoltParserEchoStringSingleEscapedQuote(): void
+    {
+        $source   = '{{ \'Let\\\'s Encrypt\' }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type' => 260,
+                    'value' => 'Let\\\'s Encrypt',
                     'file' => 'eval code',
                     'line' => 1,
                 ],

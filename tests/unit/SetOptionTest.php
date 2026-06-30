@@ -18,7 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class SetOptionTest extends TestCase
 {
-
     public static function getVoltSetOptionAutoescape(): array
     {
         return [

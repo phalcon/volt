@@ -18,7 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class AddFunctionTest extends TestCase
 {
-
     public static function getVoltAddFunction(): array
     {
         return [

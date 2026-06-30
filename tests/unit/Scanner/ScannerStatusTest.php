@@ -18,7 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class ScannerStatusTest extends TestCase
 {
-
     public function testFrom(): void
     {
         $this->assertSame(ScannerStatus::EOF, ScannerStatus::from(-1));
