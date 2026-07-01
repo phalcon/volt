@@ -1,5 +1,5 @@
 [![PDS Skeleton](https://img.shields.io/badge/pds-skeleton-blue.svg?style=flat-square)](https://github.com/php-pds/skeleton)
-[![Phalcon Volt CI](https://github.com/phalcon/volt/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/phalcon/volt/actions/workflows/continuous-integration.yml)
+[![Phalcon Volt CI](https://github.com/phalcon/volt/actions/workflows/main.yml/badge.svg)](https://github.com/phalcon/volt/actions/workflows/main.yml)
 
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=phalcon_volt&metric=coverage)](https://sonarcloud.io/summary/new_code?id=phalcon_volt)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=phalcon_volt&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=phalcon_volt)
