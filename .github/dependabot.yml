@@ -10,7 +10,11 @@ updates:
     schedule:
       interval: "weekly"
 
+  # Keep the SHA-pinned GitHub Actions current. Dependabot opens reviewable
+  # pull requests that bump both the commit SHA and the trailing "# version"
+  # comment; it never merges on its own.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    open-pull-requests-limit: 10
