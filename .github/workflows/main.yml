@@ -99,7 +99,7 @@ jobs:
           composer-options: "--prefer-dist"
 
       - name: Run tests
-        run: composer test
+        run: composer test-unit
 
   coverage:
     name: Code Coverage
@@ -128,7 +128,7 @@ jobs:
           composer-options: "--prefer-dist"
 
       - name: Run tests with coverage
-        run: composer test-coverage
+        run: composer test-unit-coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0

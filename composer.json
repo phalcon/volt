@@ -44,6 +44,7 @@
         "friendsofphp/php-cs-fixer": "^3.95",
         "pds/skeleton": "^1.0",
         "phalcon/ide-stubs": "^5.8",
+        "phalcon/talon": "^0.6.0",
         "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^10.5",
         "squizlabs/php_codesniffer": "^4.0"
@@ -75,8 +76,9 @@
         "cs-fix": "vendor/bin/phpcbf --standard=resources/phpcs.xml",
         "cs-fixer": "vendor/bin/php-cs-fixer fix --config=resources/php-cs-fixer.php --dry-run --diff",
         "cs-fixer-fix": "vendor/bin/php-cs-fixer fix --config=resources/php-cs-fixer.php",
-        "test": "vendor/bin/phpunit -c resources/phpunit.xml",
-        "test-coverage": "vendor/bin/phpunit -c resources/phpunit.xml --coverage-clover tests/_output/coverage.xml",
-        "test-coverage-html": "vendor/bin/phpunit -c resources/phpunit.xml --coverage-html tests/_output/"
+        "test-unit": "talon run unit",
+        "test-unit-coverage": "talon run unit -- --coverage-clover tests/_output/coverage.xml --coverage-php tests/_output/coverage.cov",
+        "test-unit-coverage-html": "talon run unit -- --coverage-html tests/_output/coverage/",
+        "test-all": "talon run all"
     }
 }
