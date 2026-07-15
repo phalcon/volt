@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1d28611c6b838197721be15892098f04",
+    "content-hash": "b057d38780b19ef6e7010dadc80c89f6",
     "packages": [],
     "packages-dev": [
         {
@@ -942,16 +942,16 @@
         },
         {
             "name": "phalcon/talon",
-            "version": "v0.6.0",
+            "version": "v0.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phalcon/talon.git",
-                "reference": "93018138c2c50f7225d5994bc506b35069b2de36"
+                "reference": "7e5da75bf6fe1e2ff4d861282f562a8f49c6525d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phalcon/talon/zipball/93018138c2c50f7225d5994bc506b35069b2de36",
-                "reference": "93018138c2c50f7225d5994bc506b35069b2de36",
+                "url": "https://api.github.com/repos/phalcon/talon/zipball/7e5da75bf6fe1e2ff4d861282f562a8f49c6525d",
+                "reference": "7e5da75bf6fe1e2ff4d861282f562a8f49c6525d",
                 "shasum": ""
             },
             "require": {
@@ -1002,7 +1002,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phalcon/talon/issues",
-                "source": "https://github.com/phalcon/talon/tree/v0.6.0"
+                "source": "https://github.com/phalcon/talon/tree/v0.7.0"
             },
             "funding": [
                 {
@@ -1014,7 +1014,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2026-07-02T20:38:17+00:00"
+            "time": "2026-07-10T12:07:59+00:00"
         },
         {
             "name": "phar-io/manifest",
