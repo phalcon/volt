@@ -44,7 +44,7 @@
         "friendsofphp/php-cs-fixer": "^3.95",
         "pds/skeleton": "^1.0",
         "phalcon/ide-stubs": "^5.8",
-        "phalcon/talon": "^0.6.0 || ^0.8.0",
+        "phalcon/talon": "^0.6.0 || ^0.8.0 || ^0.9.0",
         "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^10.5",
         "squizlabs/php_codesniffer": "^4.0"
