@@ -873,16 +873,16 @@
         },
         {
             "name": "phalcon/ide-stubs",
-            "version": "v5.18.1",
+            "version": "v5.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phalcon/ide-stubs.git",
-                "reference": "c06e5e4304d5c38e009dbe2f03a7b70cd44fa804"
+                "reference": "771147b738a34a6c72a103f021a512014a0fb5dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phalcon/ide-stubs/zipball/c06e5e4304d5c38e009dbe2f03a7b70cd44fa804",
-                "reference": "c06e5e4304d5c38e009dbe2f03a7b70cd44fa804",
+                "url": "https://api.github.com/repos/phalcon/ide-stubs/zipball/771147b738a34a6c72a103f021a512014a0fb5dc",
+                "reference": "771147b738a34a6c72a103f021a512014a0fb5dc",
                 "shasum": ""
             },
             "require": {
@@ -938,7 +938,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2026-08-03T14:12:56+00:00"
+            "time": "2026-08-23T02:38:27+00:00"
         },
         {
             "name": "phalcon/talon",
