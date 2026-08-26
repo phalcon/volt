@@ -367,6 +367,28 @@ final class ParserTest extends TestCase
         );
     }
 
+    /**
+     * A backslash as the last byte of a quoted string is a scanning error,
+     * not an escape that reads past the end of the input.
+     */
+    public function testScannerErrorTrailingBackslash(): void
+    {
+        $parser = new Parser();
+
+        foreach (['{{ "abc\\', "{{ 'abc\\"] as $template) {
+            $caught = null;
+
+            try {
+                $parser->parse($template);
+            } catch (Exception $ex) {
+                $caught = $ex;
+            }
+
+            $this->assertNotNull($caught, $template);
+            $this->assertStringContainsString('Scanning error', $caught->getMessage());
+        }
+    }
+
     public function testSetInExtendsModeThrowsException(): void
     {
         $this->expectException(Exception::class);
