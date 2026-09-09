@@ -651,7 +651,7 @@ parameters:
 		-
 			message: '#^Parameter \$view of method Phalcon\\Volt\\Compiler\:\:__construct\(\) has invalid type Phalcon\\Mvc\\ViewBaseInterface\.$#'
 			identifier: class.notFound
-			count: 2
+			count: 1
 			path: ../src/Compiler.php
 
 		-
@@ -669,7 +669,7 @@ parameters:
 		-
 			message: '#^Property Phalcon\\Volt\\Compiler\:\:\$container has unknown class Phalcon\\Di\\DiInterface as its type\.$#'
 			identifier: class.notFound
-			count: 2
+			count: 1
 			path: ../src/Compiler.php
 
 		-
@@ -741,7 +741,7 @@ parameters:
 		-
 			message: '#^Property Phalcon\\Volt\\Compiler\:\:\$view has unknown class Phalcon\\Mvc\\ViewBaseInterface as its type\.$#'
 			identifier: class.notFound
-			count: 2
+			count: 1
 			path: ../src/Compiler.php
 
 		-
