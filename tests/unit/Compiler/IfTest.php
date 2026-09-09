@@ -26,8 +26,6 @@ final class IfTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -38,25 +36,25 @@ final class IfTest extends TestCase
             [
                 'type' => 300,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'active',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'true_statements' => [
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => 'Yes',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                 ],
                 'false_statements' => [
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => 'No',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                 ],
                 'file' => 'eval code',
@@ -68,8 +66,6 @@ final class IfTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -82,42 +78,42 @@ final class IfTest extends TestCase
                 'expr' => [
                     'type' => 272,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'status',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '1',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
                 ],
                 'true_statements' => [
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => 'Active',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     [
                         'type' => 302,
                         'expr' => [
                             'type' => 272,
                             'left' => [
-                                'type' => 265,
+                                'type'  => 265,
                                 'value' => 'status',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'right' => [
-                                'type' => 258,
+                                'type'  => 258,
                                 'value' => '0',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'file' => 'eval code',
                             'line' => 1,
@@ -126,10 +122,10 @@ final class IfTest extends TestCase
                         'line' => 1,
                     ],
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => 'Inactive',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                 ],
                 'file' => 'eval code',
@@ -141,8 +137,6 @@ final class IfTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -155,42 +149,42 @@ final class IfTest extends TestCase
                 'expr' => [
                     'type' => 272,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'status',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '1',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
                 ],
                 'true_statements' => [
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => 'Active',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     [
                         'type' => 302,
                         'expr' => [
                             'type' => 272,
                             'left' => [
-                                'type' => 265,
+                                'type'  => 265,
                                 'value' => 'status',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'right' => [
-                                'type' => 258,
+                                'type'  => 258,
                                 'value' => '2',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'file' => 'eval code',
                             'line' => 1,
@@ -199,18 +193,18 @@ final class IfTest extends TestCase
                         'line' => 1,
                     ],
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => 'Pending',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                 ],
                 'false_statements' => [
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => 'Unknown',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                 ],
                 'file' => 'eval code',
@@ -222,8 +216,6 @@ final class IfTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -234,10 +226,10 @@ final class IfTest extends TestCase
             [
                 'type' => 300,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'condition',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -248,8 +240,6 @@ final class IfTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -260,17 +250,17 @@ final class IfTest extends TestCase
             [
                 'type' => 300,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'active',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'true_statements' => [
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => 'Yes',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                 ],
                 'file' => 'eval code',

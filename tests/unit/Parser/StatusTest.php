@@ -25,6 +25,7 @@ final class StatusTest extends TestCase
         $this->assertSame(0, Status::PHVOLT_PARSING_FAILED);
         $this->assertSame(1, Status::PHVOLT_PARSING_OK);
     }
+
     public function testDefaultStatus(): void
     {
         $state  = new State('test');

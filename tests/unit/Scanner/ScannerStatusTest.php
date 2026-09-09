@@ -31,6 +31,7 @@ final class ScannerStatusTest extends TestCase
         $this->assertNull(ScannerStatus::tryFrom(99));
         $this->assertNull(ScannerStatus::tryFrom(-99));
     }
+
     public function testValues(): void
     {
         $this->assertSame(-1, ScannerStatus::EOF->value);

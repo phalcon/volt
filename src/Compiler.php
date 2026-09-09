@@ -64,6 +64,7 @@ use const E_USER_DEPRECATED;
 class Compiler
 {
     public const PHVOLT_MODE_CODE    = 1;
+
     public const PHVOLT_MODE_COMMENT = 2;
 
     // TODO: add trait InjectionAwareTrait
@@ -76,147 +77,258 @@ class Compiler
      * Operators
      */
     public const PHVOLT_T_ADD              = 43; //'+';
+
     public const PHVOLT_T_ADD_ASSIGN       = 281;
+
     public const PHVOLT_T_AND              = 266;
+
     public const PHVOLT_T_ARRAY            = 360;
+
     public const PHVOLT_T_ARRAYACCESS      = 361;
+
     public const PHVOLT_T_ASSIGN           = 61; //'=';
+
     public const PHVOLT_T_AUTOESCAPE       = 317;
+
     public const PHVOLT_T_BLOCK            = 307;
+
     public const PHVOLT_T_BREAK            = 320;
+
     public const PHVOLT_T_CACHE            = 314;
+
     public const PHVOLT_T_CALL             = 325;
+
     public const PHVOLT_T_CASE             = 412;
+
     public const PHVOLT_T_CBRACKET_CLOSE   = 125; //'}';
+
     public const PHVOLT_T_CBRACKET_OPEN    = 123; //'{';
+
     public const PHVOLT_T_CLOSE_DELIMITER  = 331;
+
     public const PHVOLT_T_CLOSE_EDELIMITER = 333;
+
     public const PHVOLT_T_COLON            = 277;
+
     public const PHVOLT_T_COMMA            = 269;
+
     public const PHVOLT_T_CONCAT           = 126; //'~';
+
     public const PHVOLT_T_CONTINUE         = 319;
+
     public const PHVOLT_T_DECR             = 280;
+
     public const PHVOLT_T_DEFAULT          = 413;
+
     public const PHVOLT_T_DEFINED          = 312;
+
     public const PHVOLT_T_DIV              = 47; //'/';
+
     public const PHVOLT_T_DIV_ASSIGN       = 284;
+
     public const PHVOLT_T_DO               = 316;
+
     public const PHVOLT_T_DOT              = 46; //'.';
+
     public const PHVOLT_T_DOUBLE           = 259;
+
     public const PHVOLT_T_ECHO             = 359;
+
     public const PHVOLT_T_ELSE             = 301;
+
     public const PHVOLT_T_ELSEFOR          = 321;
+
     public const PHVOLT_T_ELSEIF           = 302;
+
     public const PHVOLT_T_EMPTY            = 380;
+
     public const PHVOLT_T_EMPTY_STATEMENT  = 358;
+
     public const PHVOLT_T_ENCLOSED         = 356;
+
     public const PHVOLT_T_ENDAUTOESCAPE    = 318;
+
     public const PHVOLT_T_ENDBLOCK         = 308;
+
     public const PHVOLT_T_ENDCACHE         = 315;
+
     public const PHVOLT_T_ENDCALL          = 326;
+
     public const PHVOLT_T_ENDFOR           = 305;
+
     public const PHVOLT_T_ENDIF            = 303;
+
     public const PHVOLT_T_ENDMACRO         = 323;
+
     public const PHVOLT_T_ENDSWITCH        = 414;
+
     public const PHVOLT_T_ENDVERBATIM      = 403;
+
     public const PHVOLT_T_EQUALS           = 272;
+
     public const PHVOLT_T_EVEN             = 381;
+
     public const PHVOLT_T_EXPR             = 354;
+
     public const PHVOLT_T_EXTENDS          = 310;
+
     public const PHVOLT_T_FALSE            = 262;
+
     /**
      * Special Tokens
      */
     public const PHVOLT_T_FCALL        = 350;
+
     public const PHVOLT_T_FOR          = 304;
+
     public const PHVOLT_T_GREATER      = 62; //'>';
+
     public const PHVOLT_T_GREATEREQUAL = 271;
+
     public const PHVOLT_T_IDENTICAL    = 274;
+
     public const PHVOLT_T_IDENTIFIER   = 265;
+
     /**
      * Reserved words
      */
     public const PHVOLT_T_IF      = 300;
+
     public const PHVOLT_T_IGNORE  = 257;
+
     public const PHVOLT_T_IN      = 309;
+
     public const PHVOLT_T_INCLUDE = 313;
+
     public const PHVOLT_T_INCR    = 279;
+
     /**
      * Literals & Identifiers
      */
     public const PHVOLT_T_INTEGER        = 258;
+
     public const PHVOLT_T_IS             = 311;
+
     public const PHVOLT_T_ISEMPTY        = 386;
+
     public const PHVOLT_T_ISEVEN         = 387;
+
     public const PHVOLT_T_ISITERABLE     = 391;
+
     public const PHVOLT_T_ISNUMERIC      = 389;
+
     public const PHVOLT_T_ISODD          = 388;
+
     public const PHVOLT_T_ISSCALAR       = 390;
+
     public const PHVOLT_T_ISSET          = 363;
+
     public const PHVOLT_T_ITERABLE       = 385;
+
     public const PHVOLT_T_LESS           = 60; //'<';
+
     public const PHVOLT_T_LESSEQUAL      = 270;
+
     public const PHVOLT_T_MACRO          = 322;
+
     public const PHVOLT_T_MINUS          = 368;
+
     public const PHVOLT_T_MOD            = 37; //'%';
+
     public const PHVOLT_T_MUL            = 42; //'*';
+
     public const PHVOLT_T_MUL_ASSIGN     = 283;
+
     public const PHVOLT_T_NOT            = 33; //'!';
+
     public const PHVOLT_T_NOT_IN         = 367;
+
     public const PHVOLT_T_NOT_ISEMPTY    = 392;
+
     public const PHVOLT_T_NOT_ISEVEN     = 393;
+
     public const PHVOLT_T_NOT_ISITERABLE = 397;
+
     public const PHVOLT_T_NOT_ISNUMERIC  = 395;
+
     public const PHVOLT_T_NOT_ISODD      = 394;
+
     public const PHVOLT_T_NOT_ISSCALAR   = 396;
+
     public const PHVOLT_T_NOT_ISSET      = 362;
+
     public const PHVOLT_T_NOTEQUALS      = 273;
+
     public const PHVOLT_T_NOTIDENTICAL   = 275;
+
     public const PHVOLT_T_NULL           = 261;
+
     public const PHVOLT_T_NUMERIC        = 383;
+
     public const PHVOLT_T_ODD            = 382;
+
     /**
      * Delimiters
      */
     public const PHVOLT_T_OPEN_DELIMITER    = 330;
+
     public const PHVOLT_T_OPEN_EDELIMITER   = 332;
+
     public const PHVOLT_T_OR                = 267;
+
     public const PHVOLT_T_PARENTHESES_CLOSE = 41; //')';
+
     public const PHVOLT_T_PARENTHESES_OPEN  = 40; //'(';
+
     public const PHVOLT_T_PIPE              = 124; //'|';
+
     public const PHVOLT_T_PLUS              = 369;
+
     public const PHVOLT_T_POW               = 278;
+
     public const PHVOLT_T_QUALIFIED         = 355;
+
     public const PHVOLT_T_QUESTION          = 63; //'?';
+
     public const PHVOLT_T_RANGE             = 276;
+
     public const PHVOLT_T_RAW_FRAGMENT      = 357;
+
     public const PHVOLT_T_RESOLVED_EXPR     = 364;
+
     public const PHVOLT_T_RETURN            = 327;
+
     public const PHVOLT_T_SBRACKET_CLOSE    = 93; //']';
+
     public const PHVOLT_T_SBRACKET_OPEN     = 91; //'[';
+
     public const PHVOLT_T_SCALAR            = 384;
+
     public const PHVOLT_T_SET               = 306;
+
     public const PHVOLT_T_SLICE             = 365;
+
     public const PHVOLT_T_STRING            = 260;
+
     public const PHVOLT_T_SUB               = 45; //'-';
+
     public const PHVOLT_T_SUB_ASSIGN        = 282;
+
     /**
      * switch-case statement
      */
     public const PHVOLT_T_SWITCH  = 411;
+
     public const PHVOLT_T_TERNARY = 366;
+
     public const PHVOLT_T_TRUE    = 263;
+
     public const PHVOLT_T_VERBATIM = 402;
+
     public const PHVOLT_T_WITH    = 324;
 
-    /**
-     * @var bool
-     */
     protected bool $autoescape   = false;
 
-    /**
-     * @var int
-     */
     protected int $blockLevel   = 0;
 
     /**
@@ -226,90 +338,45 @@ class Compiler
      */
     protected ?array $blocks = null;
 
-    /**
-     * @var string|null
-     */
     protected ?string $compiledTemplatePath;
 
-    /**
-     * @var DiInterface|null
-     */
     protected ?DiInterface $container = null;
 
-    /**
-     * @var string|null
-     */
     protected ?string $currentBlock = null;
 
-    /**
-     * @var string|null
-     */
     protected ?string $currentPath = null;
 
-    /**
-     * @var int
-     */
     protected int $exprLevel = 0;
 
-    /**
-     * @var bool
-     */
     protected bool $extended = false;
+
     /**
      * @var array|bool
      *
      * TODO: Make it always array
      */
     protected array | bool $extendedBlocks;
-    /**
-     * @var array
-     */
+
     protected array $extensions = [];
-    /**
-     * @var array
-     */
+
     protected array $filters = [];
-    /**
-     * @var int
-     */
+
     protected int $foreachLevel = 0;
-    /**
-     * @var array
-     */
+
     protected array $forElsePointers = [];
-    /**
-     * @var array
-     */
+
     protected array $functions = [];
 
-    /**
-     * @var int
-     */
     protected int $level = 0;
 
-    /**
-     * @var array
-     */
     protected array $loopPointers = [];
 
-    /**
-     * @var array
-     */
     protected array $macros = [];
 
-    /**
-     * @var array
-     */
     protected array $options = [];
 
-    /**
-     * @var string
-     */
     protected string $prefix = "";
 
-    /**
-     * @param ViewBaseInterface|null $view
-     */
     public function __construct(
         protected ?ViewBaseInterface $view = null
     ) {
@@ -317,10 +384,6 @@ class Compiler
 
     /**
      * Registers a Volt's extension
-     *
-     * @param object $extension
-     *
-     * @return Compiler
      */
     public function addExtension(object $extension): Compiler
     {
@@ -338,11 +401,6 @@ class Compiler
 
     /**
      * Register a new filter in the compiler
-     *
-     * @param string $name
-     * @param        $definition
-     *
-     * @return Compiler
      */
     public function addFilter(string $name, $definition): Compiler
     {
@@ -353,11 +411,6 @@ class Compiler
 
     /**
      * Register a new function in the compiler
-     *
-     * @param string $name
-     * @param        $definition
-     *
-     * @return Compiler
      */
     public function addFunction(string $name, $definition): Compiler
     {
@@ -422,9 +475,6 @@ class Compiler
      *
      * require $compiler->getCompiledTemplatePath();
      *```
-     *
-     * @param string $templatePath
-     * @param bool   $extendsMode
      *
      * @return array|mixed|string|null
      * @throws BaseException
@@ -651,10 +701,6 @@ class Compiler
     /**
      * Compiles a "autoescape" statement returning PHP code
      *
-     * @param array $statement
-     * @param bool  $extendsMode
-     *
-     * @return string
      * @throws Exception
      */
     public function compileAutoEscape(array $statement, bool $extendsMode): string
@@ -679,10 +725,6 @@ class Compiler
     }
 
     /**
-     * @param array $statement
-     * @param bool  $extendsMode
-     *
-     * @return string
      * @throws Exception
      */
     public function compileCache(array $statement, bool $extendsMode = false): string
@@ -747,11 +789,6 @@ class Compiler
 
     /**
      * Compiles calls to macros
-     *
-     * @param array $statement
-     * @param bool  $extendsMode
-     *
-     * @return string
      */
     public function compileCall(array $statement, bool $extendsMode): string
     {
@@ -853,9 +890,6 @@ class Compiler
     /**
      * Compiles a "elseif" statement returning PHP code
      *
-     * @param array $statement
-     *
-     * @return string
      * @throws BaseException
      */
     public function compileElseIf(array $statement): string
@@ -883,11 +917,7 @@ class Compiler
      * );
      *```
      *
-     * @param string $path
-     * @param string $compiledPath
-     * @param bool   $extendsMode
-     *
-     * @return string|array
+     * @return array|string
      * @throws Exception
      */
     public function compileFile(string $path, string $compiledPath, bool $extendsMode = false)
@@ -1094,8 +1124,6 @@ class Compiler
 
     /**
      * Generates a 'forelse' PHP code
-     *
-     * @return string
      */
     public function compileForElse(): string
     {
@@ -1385,7 +1413,7 @@ class Compiler
      *
      * @throws Exception
      */
-    public function compileSource(string $viewCode, bool $extendsMode = false): string|array
+    public function compileSource(string $viewCode, bool $extendsMode = false): array | string
     {
         /**
          * Enable autoescape globally
@@ -1867,9 +1895,6 @@ class Compiler
 
     /**
      * Fires an event to registered extensions
-     *
-     * @param string     $name
-     * @param array|null $arguments
      *
      * @return string|void
      */
@@ -3072,11 +3097,6 @@ class Compiler
 
     /**
      * Implementation of zephir_prepare_virtual_path()
-     *
-     * @param string|null $path
-     * @param string|null $virtualSeparator
-     *
-     * @return string
      */
     private function prepareVirtualPath(?string $path = null, ?string $virtualSeparator = null): string
     {
@@ -3116,10 +3136,6 @@ class Compiler
 
     /**
      * Implementation of zephir_unique_path_key()
-     *
-     * @param string|null $path
-     *
-     * @return string|null
      */
     private function uniquePathKey(?string $path = null): ?string
     {
@@ -3153,16 +3169,22 @@ class Compiler
         switch ($nKeyLength) {
             case 7:
                 $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
+                // no break
             case 6:
                 $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
+                // no break
             case 5:
                 $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
+                // no break
             case 4:
                 $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
+                // no break
             case 3:
                 $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
+                // no break
             case 2:
                 $hash = (($hash << 5) + $hash) + ord($arKey[$i++]); /* fallthrough... */
+                // no break
             case 1:
                 $hash = (($hash << 5) + $hash) + ord($arKey[$i] ?? '');
                 break;

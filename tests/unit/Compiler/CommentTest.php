@@ -26,8 +26,6 @@ final class CommentTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -40,8 +38,6 @@ final class CommentTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -50,10 +46,10 @@ final class CommentTest extends TestCase
         $source   = 'Hello {# greeting comment #} World';
         $expected = [
             [
-                'type' => 357,
+                'type'  => 357,
                 'value' => 'Hello  World',
-                'file' => 'eval code',
-                'line' => 1,
+                'file'  => 'eval code',
+                'line'  => 1,
             ],
         ];
         $actual   = $this->compiler->parse($source);

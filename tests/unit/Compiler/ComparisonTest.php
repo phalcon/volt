@@ -26,8 +26,6 @@ final class ComparisonTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -40,16 +38,16 @@ final class ComparisonTest extends TestCase
                 'expr' => [
                     'type' => 272,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'a',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'b',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -63,8 +61,6 @@ final class ComparisonTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -77,16 +73,16 @@ final class ComparisonTest extends TestCase
                 'expr' => [
                     'type' => 62,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'a',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'b',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -100,8 +96,6 @@ final class ComparisonTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -114,16 +108,16 @@ final class ComparisonTest extends TestCase
                 'expr' => [
                     'type' => 271,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'a',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'b',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -137,8 +131,6 @@ final class ComparisonTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -151,16 +143,16 @@ final class ComparisonTest extends TestCase
                 'expr' => [
                     'type' => 274,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'a',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'b',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -174,8 +166,6 @@ final class ComparisonTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -188,16 +178,16 @@ final class ComparisonTest extends TestCase
                 'expr' => [
                     'type' => 60,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'a',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'b',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -211,8 +201,6 @@ final class ComparisonTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -225,16 +213,16 @@ final class ComparisonTest extends TestCase
                 'expr' => [
                     'type' => 270,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'a',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'b',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -248,8 +236,6 @@ final class ComparisonTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -262,16 +248,16 @@ final class ComparisonTest extends TestCase
                 'expr' => [
                     'type' => 273,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'a',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'b',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -285,8 +271,6 @@ final class ComparisonTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -299,16 +283,16 @@ final class ComparisonTest extends TestCase
                 'expr' => [
                     'type' => 273,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'a',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'b',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -322,8 +306,6 @@ final class ComparisonTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -336,16 +318,16 @@ final class ComparisonTest extends TestCase
                 'expr' => [
                     'type' => 275,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'a',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'b',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,

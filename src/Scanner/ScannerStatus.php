@@ -15,8 +15,8 @@ namespace Phalcon\Volt\Scanner;
 
 enum ScannerStatus: int
 {
-    case EOF = -1;
-    case ERR = -2;
+    case EOF        = -1;
+    case ERR        = -2;
     case IMPOSSIBLE = -3;
-    case OK = 0;
+    case OK         = 0;
 }

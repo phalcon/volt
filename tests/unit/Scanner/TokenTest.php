@@ -26,6 +26,7 @@ final class TokenTest extends TestCase
         $this->assertSame('hello', $token->value);
         $this->assertSame(5, $token->length);
     }
+
     public function testDefaultValues(): void
     {
         $token = new Token();

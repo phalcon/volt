@@ -26,8 +26,6 @@ final class CallTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -38,10 +36,10 @@ final class CallTest extends TestCase
             [
                 'type' => 325,
                 'name' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'myMacro',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -52,8 +50,6 @@ final class CallTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -64,18 +60,18 @@ final class CallTest extends TestCase
             [
                 'type' => 325,
                 'name' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'render',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'arguments' => [
                     [
                         'expr' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'item',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
@@ -83,10 +79,10 @@ final class CallTest extends TestCase
                 ],
                 'caller' => [
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => 'block content',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                 ],
                 'file' => 'eval code',

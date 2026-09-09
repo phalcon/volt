@@ -48,6 +48,7 @@ final class AddFunctionTest extends TestCase
             ],
         ];
     }
+
     /**
      * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: addFunction()
      *

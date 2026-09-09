@@ -29,7 +29,7 @@ final class CompileIfTest extends TestCase
         $compiler = new Compiler();
 
         $expected = '<?php if ($i == 0) { ?>zero<?php } else { ?>not zero<?php } ?>';
-        $actual = $compiler->compileString(
+        $actual   = $compiler->compileString(
             '{% if i == 0 %}zero{% else %}not zero{% endif %}'
         );
         $this->assertSame($expected, $actual);
@@ -37,8 +37,6 @@ final class CompileIfTest extends TestCase
 
     /**
      * "in" has higher precedence than "and"
-     *
-     * @return void
      *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-07-04

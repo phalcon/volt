@@ -26,8 +26,6 @@ final class InTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -40,16 +38,16 @@ final class InTest extends TestCase
                 'expr' => [
                     'type' => 309,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'item',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'collection',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -63,8 +61,6 @@ final class InTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -77,16 +73,16 @@ final class InTest extends TestCase
                 'expr' => [
                     'type' => 367,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'item',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'collection',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,

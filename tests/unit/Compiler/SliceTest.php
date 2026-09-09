@@ -26,8 +26,6 @@ final class SliceTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -40,22 +38,22 @@ final class SliceTest extends TestCase
                 'expr' => [
                     'type' => 365,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'items',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'start' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '1',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'end' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '3',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -69,8 +67,6 @@ final class SliceTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -83,16 +79,16 @@ final class SliceTest extends TestCase
                 'expr' => [
                     'type' => 365,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'items',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'start' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '2',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -106,8 +102,6 @@ final class SliceTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -120,16 +114,16 @@ final class SliceTest extends TestCase
                 'expr' => [
                     'type' => 365,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'items',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'end' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '4',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,

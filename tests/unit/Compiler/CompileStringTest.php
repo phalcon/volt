@@ -518,6 +518,7 @@ final class CompileStringTest extends TestCase
             ],
         ];
     }
+
     /**
      * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: compileString()
      *

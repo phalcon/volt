@@ -26,8 +26,6 @@ final class LoopControlTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -36,13 +34,13 @@ final class LoopControlTest extends TestCase
         $source   = '{% for item in items %}{% if item.skip %}{% break %}{% endif %}{{ item }}{% endfor %}';
         $expected = [
             [
-                'type' => 304,
+                'type'     => 304,
                 'variable' => 'item',
-                'expr' => [
-                    'type' => 265,
+                'expr'     => [
+                    'type'  => 265,
                     'value' => 'items',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'block_statements' => [
                     [
@@ -50,16 +48,16 @@ final class LoopControlTest extends TestCase
                         'expr' => [
                             'type' => 46,
                             'left' => [
-                                'type' => 265,
+                                'type'  => 265,
                                 'value' => 'item',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'right' => [
-                                'type' => 265,
+                                'type'  => 265,
                                 'value' => 'skip',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'file' => 'eval code',
                             'line' => 1,
@@ -77,10 +75,10 @@ final class LoopControlTest extends TestCase
                     [
                         'type' => 359,
                         'expr' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'item',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
@@ -95,8 +93,6 @@ final class LoopControlTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -105,13 +101,13 @@ final class LoopControlTest extends TestCase
         $source   = '{% for item in items %}{% if item.skip %}{% continue %}{% endif %}{{ item }}{% endfor %}';
         $expected = [
             [
-                'type' => 304,
+                'type'     => 304,
                 'variable' => 'item',
-                'expr' => [
-                    'type' => 265,
+                'expr'     => [
+                    'type'  => 265,
                     'value' => 'items',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'block_statements' => [
                     [
@@ -119,16 +115,16 @@ final class LoopControlTest extends TestCase
                         'expr' => [
                             'type' => 46,
                             'left' => [
-                                'type' => 265,
+                                'type'  => 265,
                                 'value' => 'item',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'right' => [
-                                'type' => 265,
+                                'type'  => 265,
                                 'value' => 'skip',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'file' => 'eval code',
                             'line' => 1,
@@ -146,10 +142,10 @@ final class LoopControlTest extends TestCase
                     [
                         'type' => 359,
                         'expr' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'item',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,

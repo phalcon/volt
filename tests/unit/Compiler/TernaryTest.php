@@ -26,8 +26,6 @@ final class TernaryTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -38,67 +36,24 @@ final class TernaryTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 366,
+                    'type'    => 366,
                     'ternary' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'condition',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'left' => [
-                        'type' => 260,
+                        'type'  => 260,
                         'value' => 'yes',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 260,
+                        'type'  => 260,
                         'value' => 'no',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'file' => 'eval code',
-                    'line' => 1,
-                ],
-                'file' => 'eval code',
-                'line' => 1,
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
-    public function testMvcViewEngineVoltParserExprTernaryVar(): void
-    {
-        $source   = '{{ active ? activeLabel : inactiveLabel }}';
-        $expected = [
-            [
-                'type' => 359,
-                'expr' => [
-                    'type' => 366,
-                    'ternary' => [
-                        'type' => 265,
-                        'value' => 'active',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'left' => [
-                        'type' => 265,
-                        'value' => 'activeLabel',
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    'right' => [
-                        'type' => 265,
-                        'value' => 'inactiveLabel',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -114,8 +69,6 @@ final class TernaryTest extends TestCase
     /**
      * Use with {{ }} ("is defined" test as the ternary condition)
      *
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-07-04
      *
@@ -128,29 +81,70 @@ final class TernaryTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 366,
+                    'type'    => 366,
                     'ternary' => [
                         'type' => 363,
                         'left' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'someVar',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
                     ],
                     'left' => [
-                        'type' => 260,
+                        'type'  => 260,
                         'value' => 'yes',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 260,
+                        'type'  => 260,
                         'value' => 'no',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
+                    ],
+                    'file' => 'eval code',
+                    'line' => 1,
+                ],
+                'file' => 'eval code',
+                'line' => 1,
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserExprTernaryVar(): void
+    {
+        $source   = '{{ active ? activeLabel : inactiveLabel }}';
+        $expected = [
+            [
+                'type' => 359,
+                'expr' => [
+                    'type'    => 366,
+                    'ternary' => [
+                        'type'  => 265,
+                        'value' => 'active',
+                        'file'  => 'eval code',
+                        'line'  => 1,
+                    ],
+                    'left' => [
+                        'type'  => 265,
+                        'value' => 'activeLabel',
+                        'file'  => 'eval code',
+                        'line'  => 1,
+                    ],
+                    'right' => [
+                        'type'  => 265,
+                        'value' => 'inactiveLabel',
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,

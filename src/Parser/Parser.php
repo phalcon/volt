@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Phalcon\Volt\Parser;
 
-use Phalcon\Volt\Compiler;
 use Phalcon\Volt\Compiler\Opcode as CompilerOpcode;
 use Phalcon\Volt\Exception;
 use Phalcon\Volt\Scanner\Opcode;
@@ -35,9 +34,6 @@ class Parser
     private string $debugFile = 'volt.txt';
 
     /**
-     * @param string $code
-     * @param string $templatePath
-     *
      * @return array<mixed>
      * @throws Exception
      */
@@ -61,7 +57,7 @@ class Parser
         $parser = new phvolt_Parser($parserStatus);
         $parser->phvolt_Trace($debugHandle);
 
-        $state        = $parserStatus->getState();
+        $state         = $parserStatus->getState();
         $scannerStatus = ScannerStatus::OK;
         $prevToken     = 0;
 

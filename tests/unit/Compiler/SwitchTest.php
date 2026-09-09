@@ -28,8 +28,36 @@ final class SwitchTest extends TestCase
     }
 
     /**
-     * @return void
-     *
+     * @return array<string, array{0: string, 1: string}>
+     */
+    public static function getSwitchExceptions(): array
+    {
+        return [
+            'lack of endswitch' => [
+                '{% switch foo %}',
+                "Syntax error, unexpected EOF in eval code, there is a 'switch' block without 'endswitch'",
+            ],
+            'lack of switch' => [
+                '{% case foo %}',
+                'Unexpected CASE in eval code on line 1',
+            ],
+            'stray default' => [
+                '{% default %}',
+                'Syntax error, unexpected token DEFAULT(default) in eval code on line 1',
+            ],
+            'nested switch' => [
+                "{% switch foo %}\n  {% switch %}\n  {% endswitch %}\n{% endswitch %}",
+                'A nested switch detected. There is no nested switch-case '
+                . 'statements support in eval code on line 2',
+            ],
+            'empty switch expression' => [
+                "{% switch %}\n  {% case foo %}\n  {% break %}\n{% endswitch %}",
+                'Syntax error, unexpected token %} in eval code on line 1',
+            ],
+        ];
+    }
+
+    /**
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -40,45 +68,45 @@ final class SwitchTest extends TestCase
             [
                 'type' => 411,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'status',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'case_clauses' => [
                     [
                         'type' => 412,
                         'expr' => [
-                            'type' => 258,
+                            'type'  => 258,
                             'value' => '1',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
                     ],
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => 'Active',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     [
                         'type' => 412,
                         'expr' => [
-                            'type' => 258,
+                            'type'  => 258,
                             'value' => '2',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
                     ],
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => 'Pending',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     [
                         'type' => 413,
@@ -86,10 +114,10 @@ final class SwitchTest extends TestCase
                         'line' => 1,
                     ],
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => 'Unknown',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                 ],
                 'file' => 'eval code',
@@ -102,8 +130,6 @@ final class SwitchTest extends TestCase
 
     /**
      * Tests the "default" filter inside a case block of a switch
-     *
-     * @return void
      *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-06-10
@@ -118,19 +144,19 @@ final class SwitchTest extends TestCase
             [
                 'type' => 411,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'x',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'case_clauses' => [
                     [
                         'type' => 412,
                         'expr' => [
-                            'type' => 258,
+                            'type'  => 258,
                             'value' => '1',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
@@ -147,18 +173,18 @@ final class SwitchTest extends TestCase
                             'right' => [
                                 'type' => 350,
                                 'name' => [
-                                    'type' => 265,
+                                    'type'  => 265,
                                     'value' => 'default',
-                                    'file' => 'eval code',
-                                    'line' => 1,
+                                    'file'  => 'eval code',
+                                    'line'  => 1,
                                 ],
                                 'arguments' => [
                                     [
                                         'expr' => [
-                                            'type' => 260,
+                                            'type'  => 260,
                                             'value' => 'simple text',
-                                            'file' => 'eval code',
-                                            'line' => 1,
+                                            'file'  => 'eval code',
+                                            'line'  => 1,
                                         ],
                                         'file' => 'eval code',
                                         'line' => 1,
@@ -190,8 +216,6 @@ final class SwitchTest extends TestCase
     /**
      * Tests the "default" filter inside the {% default %} clause itself
      *
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-06-10
      *
@@ -205,10 +229,10 @@ final class SwitchTest extends TestCase
             [
                 'type' => 411,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'x',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'case_clauses' => [
                     [
@@ -221,26 +245,26 @@ final class SwitchTest extends TestCase
                         'expr' => [
                             'type' => 124,
                             'left' => [
-                                'type' => 265,
+                                'type'  => 265,
                                 'value' => 'value',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'right' => [
                                 'type' => 350,
                                 'name' => [
-                                    'type' => 265,
+                                    'type'  => 265,
                                     'value' => 'default',
-                                    'file' => 'eval code',
-                                    'line' => 1,
+                                    'file'  => 'eval code',
+                                    'line'  => 1,
                                 ],
                                 'arguments' => [
                                     [
                                         'expr' => [
-                                            'type' => 260,
+                                            'type'  => 260,
                                             'value' => 'unknown',
-                                            'file' => 'eval code',
-                                            'line' => 1,
+                                            'file'  => 'eval code',
+                                            'line'  => 1,
                                         ],
                                         'file' => 'eval code',
                                         'line' => 1,
@@ -265,8 +289,6 @@ final class SwitchTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -277,10 +299,10 @@ final class SwitchTest extends TestCase
             [
                 'type' => 411,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'status',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -293,8 +315,6 @@ final class SwitchTest extends TestCase
     /**
      * Tests recognize empty case clause
      *
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-07-04
      */
@@ -305,34 +325,34 @@ final class SwitchTest extends TestCase
             [
                 'type' => 411,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'foo',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'case_clauses' => [
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => ' ',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     [
                         'type' => 412,
                         'expr' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'foo',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
                     ],
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => ' ',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                 ],
                 'file' => 'eval code',
@@ -346,8 +366,6 @@ final class SwitchTest extends TestCase
     /**
      * Tests recognize empty case clause with empty default clause
      *
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-07-04
      */
@@ -358,34 +376,34 @@ final class SwitchTest extends TestCase
             [
                 'type' => 411,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'foo',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'case_clauses' => [
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => ' ',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     [
                         'type' => 412,
                         'expr' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'foo',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
                     ],
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => ' ',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     [
                         'type' => 413,
@@ -393,10 +411,10 @@ final class SwitchTest extends TestCase
                         'line' => 1,
                     ],
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => ' ',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                 ],
                 'file' => 'eval code',
@@ -408,9 +426,25 @@ final class SwitchTest extends TestCase
     }
 
     /**
-     * Tests recognize a multi-line switch with cases, break and default clause
+     * Tests switch-case parser exceptions: missing endswitch, missing switch,
+     * stray default, nested switch and empty switch expression
      *
-     * @return void
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-07-04
+     */
+    #[DataProvider('getSwitchExceptions')]
+    public function testMvcViewEngineVoltParserSwitchException(
+        string $source,
+        string $message
+    ): void {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage($message);
+
+        $this->compiler->parse($source);
+    }
+
+    /**
+     * Tests recognize a multi-line switch with cases, break and default clause
      *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-07-04
@@ -432,68 +466,68 @@ VOLT;
             [
                 'type' => 411,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'username',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'case_clauses' => [
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => "\n    ",
-                        'file' => 'eval code',
-                        'line' => 2,
+                        'file'  => 'eval code',
+                        'line'  => 2,
                     ],
                     [
                         'type' => 412,
                         'expr' => [
-                            'type' => 260,
+                            'type'  => 260,
                             'value' => 'Jim',
-                            'file' => 'eval code',
-                            'line' => 2,
+                            'file'  => 'eval code',
+                            'line'  => 2,
                         ],
                         'file' => 'eval code',
                         'line' => 4,
                     ],
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => "\n        Hello username\n    ",
-                        'file' => 'eval code',
-                        'line' => 4,
+                        'file'  => 'eval code',
+                        'line'  => 4,
                     ],
                     [
                         'type' => 412,
                         'expr' => [
-                            'type' => 260,
+                            'type'  => 260,
                             'value' => 'Nik',
-                            'file' => 'eval code',
-                            'line' => 4,
+                            'file'  => 'eval code',
+                            'line'  => 4,
                         ],
                         'file' => 'eval code',
                         'line' => 5,
                     ],
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => "\n        ",
-                        'file' => 'eval code',
-                        'line' => 5,
+                        'file'  => 'eval code',
+                        'line'  => 5,
                     ],
                     [
                         'type' => 359,
                         'expr' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'username',
-                            'file' => 'eval code',
-                            'line' => 5,
+                            'file'  => 'eval code',
+                            'line'  => 5,
                         ],
                         'file' => 'eval code',
                         'line' => 6,
                     ],
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => "!\n        ",
-                        'file' => 'eval code',
-                        'line' => 6,
+                        'file'  => 'eval code',
+                        'line'  => 6,
                     ],
                     [
                         'type' => 320,
@@ -501,10 +535,10 @@ VOLT;
                         'line' => 7,
                     ],
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => "\n    ",
-                        'file' => 'eval code',
-                        'line' => 7,
+                        'file'  => 'eval code',
+                        'line'  => 7,
                     ],
                     [
                         'type' => 413,
@@ -512,10 +546,10 @@ VOLT;
                         'line' => 9,
                     ],
                     [
-                        'type' => 357,
+                        'type'  => 357,
                         'value' => "\n        Who are you?\n",
-                        'file' => 'eval code',
-                        'line' => 9,
+                        'file'  => 'eval code',
+                        'line'  => 9,
                     ],
                 ],
                 'file' => 'eval code',
@@ -524,55 +558,5 @@ VOLT;
         ];
         $actual   = $this->compiler->parse($source);
         $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return array<string, array{0: string, 1: string}>
-     */
-    public static function getSwitchExceptions(): array
-    {
-        return [
-            'lack of endswitch' => [
-                '{% switch foo %}',
-                "Syntax error, unexpected EOF in eval code, there is a 'switch' block without 'endswitch'",
-            ],
-            'lack of switch' => [
-                '{% case foo %}',
-                'Unexpected CASE in eval code on line 1',
-            ],
-            'stray default' => [
-                '{% default %}',
-                'Syntax error, unexpected token DEFAULT(default) in eval code on line 1',
-            ],
-            'nested switch' => [
-                "{% switch foo %}\n  {% switch %}\n  {% endswitch %}\n{% endswitch %}",
-                'A nested switch detected. There is no nested switch-case '
-                . 'statements support in eval code on line 2',
-            ],
-            'empty switch expression' => [
-                "{% switch %}\n  {% case foo %}\n  {% break %}\n{% endswitch %}",
-                'Syntax error, unexpected token %} in eval code on line 1',
-            ],
-        ];
-    }
-
-    /**
-     * Tests switch-case parser exceptions: missing endswitch, missing switch,
-     * stray default, nested switch and empty switch expression
-     *
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-07-04
-     */
-    #[DataProvider('getSwitchExceptions')]
-    public function testMvcViewEngineVoltParserSwitchException(
-        string $source,
-        string $message
-    ): void {
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage($message);
-
-        $this->compiler->parse($source);
     }
 }

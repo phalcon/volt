@@ -26,8 +26,6 @@ final class ArithmeticTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -40,16 +38,16 @@ final class ArithmeticTest extends TestCase
                 'expr' => [
                     'type' => 43,
                     'left' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '1',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '2',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -63,8 +61,6 @@ final class ArithmeticTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -77,10 +73,10 @@ final class ArithmeticTest extends TestCase
                 'expr' => [
                     'type' => 280,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'value',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -94,8 +90,6 @@ final class ArithmeticTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -108,16 +102,16 @@ final class ArithmeticTest extends TestCase
                 'expr' => [
                     'type' => 47,
                     'left' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '10',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '2',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -131,8 +125,6 @@ final class ArithmeticTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -145,10 +137,10 @@ final class ArithmeticTest extends TestCase
                 'expr' => [
                     'type' => 279,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'value',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -162,8 +154,6 @@ final class ArithmeticTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -176,16 +166,16 @@ final class ArithmeticTest extends TestCase
                 'expr' => [
                     'type' => 37,
                     'left' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '10',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '3',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -199,8 +189,6 @@ final class ArithmeticTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -213,16 +201,16 @@ final class ArithmeticTest extends TestCase
                 'expr' => [
                     'type' => 37,
                     'left' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '10',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '3',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -236,8 +224,6 @@ final class ArithmeticTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -250,16 +236,16 @@ final class ArithmeticTest extends TestCase
                 'expr' => [
                     'type' => 42,
                     'left' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '4',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '3',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -273,8 +259,6 @@ final class ArithmeticTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -287,16 +271,16 @@ final class ArithmeticTest extends TestCase
                 'expr' => [
                     'type' => 278,
                     'left' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '2',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '8',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -310,8 +294,6 @@ final class ArithmeticTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -324,16 +306,16 @@ final class ArithmeticTest extends TestCase
                 'expr' => [
                     'type' => 45,
                     'left' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '5',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '3',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -347,8 +329,6 @@ final class ArithmeticTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -359,12 +339,12 @@ final class ArithmeticTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 368,
+                    'type'  => 368,
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'value',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -378,8 +358,6 @@ final class ArithmeticTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -390,12 +368,12 @@ final class ArithmeticTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 369,
+                    'type'  => 369,
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'value',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,

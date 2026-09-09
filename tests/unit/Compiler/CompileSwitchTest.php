@@ -28,8 +28,6 @@ final class CompileSwitchTest extends TestCase
     /**
      * Tests the "default" filter inside a case block of a switch
      *
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-06-10
      *
@@ -61,8 +59,6 @@ final class CompileSwitchTest extends TestCase
     /**
      * Tests the {% default %} clause surrounded by extra whitespace
      *
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-06-10
      *
@@ -80,8 +76,6 @@ final class CompileSwitchTest extends TestCase
     /**
      * Tests the {% default %} clause with whitespace control markers
      *
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-06-10
      *
@@ -98,8 +92,6 @@ final class CompileSwitchTest extends TestCase
 
     /**
      * Tests the "default" filter inside the {% default %} clause itself
-     *
-     * @return void
      *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-06-10
@@ -123,8 +115,6 @@ final class CompileSwitchTest extends TestCase
     /**
      * Tests the "default" filter outside a switch (issue #13242 regression)
      *
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-06-10
      *
@@ -144,8 +134,6 @@ final class CompileSwitchTest extends TestCase
 
     /**
      * Tests "default" used as a plain identifier inside a switch
-     *
-     * @return void
      *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-06-10

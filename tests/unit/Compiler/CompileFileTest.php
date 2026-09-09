@@ -72,7 +72,7 @@ Clearly, the song is: <?= $this->getContent() ?>.
     ): void {
         $this->markTestSkipped('Compiler.php must be updated from phalcon/phalcon.');
 
-        $viewFile = sprintf('tests/_data/views/filters/%s.volt', $view);
+        $viewFile     = sprintf('tests/_data/views/filters/%s.volt', $view);
         $compiledFile = $viewFile . '.php';
 
         $volt = new Compiler();

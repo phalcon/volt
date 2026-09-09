@@ -13,10 +13,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Volt\Scanner;
 
-use Phalcon\Volt\Compiler;
 use Phalcon\Volt\Compiler\Opcode;
-use Phalcon\Volt\Scanner\Mode;
-use Phalcon\Volt\Scanner\ScannerStatus;
 
 class Scanner
 {
@@ -92,12 +89,12 @@ class Scanner
 
     private function scan(): ScannerStatus
     {
-        $start = $this->state->getCursor();
+        $start  = $this->state->getCursor();
         $status = ScannerStatus::IMPOSSIBLE;
         /** @phpstan-ignore identical.alwaysTrue */
         while (ScannerStatus::IMPOSSIBLE === $status) {
             $cursor = $this->state->getStart();
-            $mode = $this->state->getMode();
+            $mode   = $this->state->getMode();
             if ($mode === Mode::RAW->value || $mode === Mode::COMMENT->value) {
                 $next       = $this->state->getNext();
                 $doubleNext = $this->state->getNext(2);
@@ -951,8 +948,8 @@ class Scanner
                 }
                 vv71:
                     $this->state->incrementStart();
-                    $this->token = new Token(Opcode::PIPE->value);
-                    return ScannerStatus::OK;
+                $this->token = new Token(Opcode::PIPE->value);
+                return ScannerStatus::OK;
                 vv73:
                 $vvch = $this->state->incrementStart()->getStart();
                 switch ($vvch) {
@@ -2655,7 +2652,7 @@ class Scanner
                     $this->token = new Token(Opcode::SET->value);
                 }
 
-                return ScannerStatus::OK;
+                    return ScannerStatus::OK;
                 }
                 vv203:
                 $vvch = $this->state->incrementStart()->getStart();

@@ -26,8 +26,6 @@ final class AutoescapeTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -36,16 +34,16 @@ final class AutoescapeTest extends TestCase
         $source   = '{% autoescape false %}{{ html }}{% endautoescape %}';
         $expected = [
             [
-                'type' => 317,
-                'enable' => 0,
+                'type'             => 317,
+                'enable'           => 0,
                 'block_statements' => [
                     [
                         'type' => 359,
                         'expr' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'html',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
@@ -60,8 +58,6 @@ final class AutoescapeTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -70,16 +66,16 @@ final class AutoescapeTest extends TestCase
         $source   = '{% autoescape true %}{{ name }}{% endautoescape %}';
         $expected = [
             [
-                'type' => 317,
-                'enable' => 1,
+                'type'             => 317,
+                'enable'           => 1,
                 'block_statements' => [
                     [
                         'type' => 359,
                         'expr' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'name',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,

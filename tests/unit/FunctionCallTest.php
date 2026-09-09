@@ -433,6 +433,7 @@ final class FunctionCallTest extends TestCase
             ],*/
         ];
     }
+
     /**
      * @dataProvider getExamples
      * @author       Phalcon Team <team@phalcon.io>

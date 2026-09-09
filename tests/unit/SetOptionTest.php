@@ -32,6 +32,7 @@ final class SetOptionTest extends TestCase
             ],
         ];
     }
+
     /**
      * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: setOption() - autoescape
      *

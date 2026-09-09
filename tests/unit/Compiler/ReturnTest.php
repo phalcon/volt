@@ -26,8 +26,6 @@ final class ReturnTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -38,10 +36,10 @@ final class ReturnTest extends TestCase
             [
                 'type' => 327,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'value',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -52,8 +50,6 @@ final class ReturnTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -66,16 +62,16 @@ final class ReturnTest extends TestCase
                 'expr' => [
                     'type' => 43,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'a',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'b',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,

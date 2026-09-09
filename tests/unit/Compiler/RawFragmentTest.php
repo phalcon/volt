@@ -26,8 +26,6 @@ final class RawFragmentTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -36,10 +34,10 @@ final class RawFragmentTest extends TestCase
         $source   = 'Hello World';
         $expected = [
             [
-                'type' => 357,
+                'type'  => 357,
                 'value' => 'Hello World',
-                'file' => 'eval code',
-                'line' => 1,
+                'file'  => 'eval code',
+                'line'  => 1,
             ],
         ];
         $actual   = $this->compiler->parse($source);
@@ -47,8 +45,6 @@ final class RawFragmentTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -58,7 +54,7 @@ final class RawFragmentTest extends TestCase
 Line two";
         $expected = [
             [
-                'type' => 357,
+                'type'  => 357,
                 'value' => "Line one
 Line two",
                 'file' => 'eval code',

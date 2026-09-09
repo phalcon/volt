@@ -32,20 +32,20 @@ final class ExpressionTest extends TestCase
         $source   = [
             [
                 'expr' => [
-                    'type' => 260,
+                    'type'  => 260,
                     'value' => "\t",
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
             ],
             [
                 'expr' => [
-                    'type' => 260,
+                    'type'  => 260,
                     'value' => "\n\n",
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,

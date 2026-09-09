@@ -13,32 +13,52 @@ declare(strict_types=1);
 
 namespace Phalcon\Volt\Scanner;
 
-use Phalcon\Volt\Scanner\Mode;
-
 class State
 {
     protected string $activeFile        = 'eval code';
+
     protected int $activeLine        = 1;
+
     protected ?int $activeToken       = null;
+
     protected int $blockLevel        = 0;
+
     protected int $cursor            = 0;
+
     protected ?string $end               = null;
+
     protected int $extendsMode       = 0;
+
     protected int $forcedRawState    = 0;
+
     protected int $forLevel          = 0;
+
     protected int $ifLevel           = 0;
+
     protected int $macroLevel        = 0;
+
     protected ?int $marker            = null;
+
     protected int $mode;
+
     protected int $oldIfLevel        = 0;
+
     protected string $rawBuffer;
+
     protected int $rawBufferCursor   = 0;
+
     protected string $rawFragment       = '';
+
     protected ?string $start             = null;
+
     protected int $startLength;
+
     protected int $statementPosition = 0;
+
     protected int $switchLevel       = 0;
+
     protected int $verbatim          = 0;
+
     private bool $whitespaceControl = false;
 
     public function __construct(string $buffer)

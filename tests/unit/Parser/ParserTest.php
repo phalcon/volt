@@ -82,7 +82,7 @@ final class ParserTest extends TestCase
 
     public function testDebugMode(): void
     {
-        $testsDir = dirname(__FILE__, 3);
+        $testsDir  = dirname(__FILE__, 3);
         $debugFile = $testsDir . '/_output/volt_debug_test.txt';
         $parser    = new Parser();
         $parser->setDebug(true)->setDebugFile($debugFile);
@@ -180,6 +180,7 @@ final class ParserTest extends TestCase
         $parser = new Parser();
         $parser->parse('{% elseif x %}', 'test.volt');
     }
+
     public function testEmptyTemplateReturnsEmptyArray(): void
     {
         $parser = new Parser();

@@ -26,8 +26,6 @@ final class SetTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -36,21 +34,21 @@ final class SetTest extends TestCase
         $source   = '{% set counter += 1 %}';
         $expected = [
             [
-                'type' => 306,
+                'type'        => 306,
                 'assignments' => [
                     [
                         'variable' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'counter',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
-                        'op' => 281,
+                        'op'   => 281,
                         'expr' => [
-                            'type' => 258,
+                            'type'  => 258,
                             'value' => '1',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
@@ -63,8 +61,6 @@ final class SetTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -73,32 +69,32 @@ final class SetTest extends TestCase
         $source   = '{% set items[0] = \'first\' %}';
         $expected = [
             [
-                'type' => 306,
+                'type'        => 306,
                 'assignments' => [
                     [
                         'variable' => [
                             'type' => 361,
                             'left' => [
-                                'type' => 265,
+                                'type'  => 265,
                                 'value' => 'items',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'right' => [
-                                'type' => 258,
+                                'type'  => 258,
                                 'value' => '0',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'file' => 'eval code',
                             'line' => 1,
                         ],
-                        'op' => 61,
+                        'op'   => 61,
                         'expr' => [
-                            'type' => 260,
+                            'type'  => 260,
                             'value' => 'first',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
@@ -111,8 +107,6 @@ final class SetTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -121,21 +115,21 @@ final class SetTest extends TestCase
         $source   = '{% set name = \'John\' %}';
         $expected = [
             [
-                'type' => 306,
+                'type'        => 306,
                 'assignments' => [
                     [
                         'variable' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'name',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
-                        'op' => 61,
+                        'op'   => 61,
                         'expr' => [
-                            'type' => 260,
+                            'type'  => 260,
                             'value' => 'John',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
@@ -148,8 +142,6 @@ final class SetTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -158,29 +150,29 @@ final class SetTest extends TestCase
         $source   = '{% set total = price * qty %}';
         $expected = [
             [
-                'type' => 306,
+                'type'        => 306,
                 'assignments' => [
                     [
                         'variable' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'total',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
-                        'op' => 61,
+                        'op'   => 61,
                         'expr' => [
                             'type' => 42,
                             'left' => [
-                                'type' => 265,
+                                'type'  => 265,
                                 'value' => 'price',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'right' => [
-                                'type' => 265,
+                                'type'  => 265,
                                 'value' => 'qty',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'file' => 'eval code',
                             'line' => 1,
@@ -196,8 +188,6 @@ final class SetTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -206,21 +196,21 @@ final class SetTest extends TestCase
         $source   = '{% set value /= 2 %}';
         $expected = [
             [
-                'type' => 306,
+                'type'        => 306,
                 'assignments' => [
                     [
                         'variable' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'value',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
-                        'op' => 284,
+                        'op'   => 284,
                         'expr' => [
-                            'type' => 258,
+                            'type'  => 258,
                             'value' => '2',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
@@ -233,8 +223,6 @@ final class SetTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -243,253 +231,32 @@ final class SetTest extends TestCase
         $source   = '{% set user.name = \'John\' %}';
         $expected = [
             [
-                'type' => 306,
+                'type'        => 306,
                 'assignments' => [
                     [
                         'variable' => [
                             'type' => 46,
                             'left' => [
-                                'type' => 265,
+                                'type'  => 265,
                                 'value' => 'user',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'right' => [
-                                'type' => 265,
+                                'type'  => 265,
                                 'value' => 'name',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'file' => 'eval code',
                             'line' => 1,
                         ],
-                        'op' => 61,
+                        'op'   => 61,
                         'expr' => [
-                            'type' => 260,
+                            'type'  => 260,
                             'value' => 'John',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                ],
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
-    public function testMvcViewEngineVoltParserSetMulAssign(): void
-    {
-        $source   = '{% set value *= 2 %}';
-        $expected = [
-            [
-                'type' => 306,
-                'assignments' => [
-                    [
-                        'variable' => [
-                            'type' => 265,
-                            'value' => 'value',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'op' => 283,
-                        'expr' => [
-                            'type' => 258,
-                            'value' => '2',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                ],
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
-    public function testMvcViewEngineVoltParserSetMulti(): void
-    {
-        $source   = '{% set a = 1, b = 2, c = 3 %}';
-        $expected = [
-            [
-                'type' => 306,
-                'assignments' => [
-                    [
-                        'variable' => [
-                            'type' => 265,
-                            'value' => 'a',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'op' => 61,
-                        'expr' => [
-                            'type' => 258,
-                            'value' => '1',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    [
-                        'variable' => [
-                            'type' => 265,
-                            'value' => 'b',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'op' => 61,
-                        'expr' => [
-                            'type' => 258,
-                            'value' => '2',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                    [
-                        'variable' => [
-                            'type' => 265,
-                            'value' => 'c',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'op' => 61,
-                        'expr' => [
-                            'type' => 258,
-                            'value' => '3',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                ],
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-06-30
-     */
-    public function testMvcViewEngineVoltParserSetStringWithMarkup(): void
-    {
-        $source   = '{% set icon = \'<svg viewBox="0 0 18 18"></svg>\' %}';
-        $expected = [
-            [
-                'type' => 306,
-                'assignments' => [
-                    [
-                        'variable' => [
-                            'type' => 265,
-                            'value' => 'icon',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'op' => 61,
-                        'expr' => [
-                            'type' => 260,
-                            'value' => '<svg viewBox="0 0 18 18"></svg>',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                ],
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-04-10
-     */
-    public function testMvcViewEngineVoltParserSetSubAssign(): void
-    {
-        $source   = '{% set counter -= 1 %}';
-        $expected = [
-            [
-                'type' => 306,
-                'assignments' => [
-                    [
-                        'variable' => [
-                            'type' => 265,
-                            'value' => 'counter',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'op' => 282,
-                        'expr' => [
-                            'type' => 258,
-                            'value' => '1',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'file' => 'eval code',
-                        'line' => 1,
-                    ],
-                ],
-            ],
-        ];
-        $actual   = $this->compiler->parse($source);
-        $this->assertSame($expected, $actual);
-    }
-
-    /**
-     * Setting a value with whitespace-control delimiters ({%- ... -%})
-     *
-     * @return void
-     *
-     * @author Phalcon Team <team@phalcon.io>
-     * @since  2026-07-04
-     */
-    public function testMvcViewEngineVoltParserSetWhitespaceControl(): void
-    {
-        $source   = '{%- set defaultClass = \'form-control \' -%}';
-        $expected = [
-            [
-                'type' => 306,
-                'assignments' => [
-                    [
-                        'variable' => [
-                            'type' => 265,
-                            'value' => 'defaultClass',
-                            'file' => 'eval code',
-                            'line' => 1,
-                        ],
-                        'op' => 61,
-                        'expr' => [
-                            'type' => 260,
-                            'value' => 'form-control ',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,
@@ -504,8 +271,6 @@ final class SetTest extends TestCase
     /**
      * Using "is" and the ternary operator in the assigned expression
      *
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-07-04
      *
@@ -516,43 +281,254 @@ final class SetTest extends TestCase
         $source   = '{% set myVar = someVar is defined ? \'yes\' : \'no\' %}';
         $expected = [
             [
-                'type' => 306,
+                'type'        => 306,
                 'assignments' => [
                     [
                         'variable' => [
-                            'type' => 265,
+                            'type'  => 265,
                             'value' => 'myVar',
-                            'file' => 'eval code',
-                            'line' => 1,
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
-                        'op' => 61,
+                        'op'   => 61,
                         'expr' => [
-                            'type' => 366,
+                            'type'    => 366,
                             'ternary' => [
                                 'type' => 363,
                                 'left' => [
-                                    'type' => 265,
+                                    'type'  => 265,
                                     'value' => 'someVar',
-                                    'file' => 'eval code',
-                                    'line' => 1,
+                                    'file'  => 'eval code',
+                                    'line'  => 1,
                                 ],
                                 'file' => 'eval code',
                                 'line' => 1,
                             ],
                             'left' => [
-                                'type' => 260,
+                                'type'  => 260,
                                 'value' => 'yes',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'right' => [
-                                'type' => 260,
+                                'type'  => 260,
                                 'value' => 'no',
-                                'file' => 'eval code',
-                                'line' => 1,
+                                'file'  => 'eval code',
+                                'line'  => 1,
                             ],
                             'file' => 'eval code',
                             'line' => 1,
+                        ],
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                ],
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserSetMulAssign(): void
+    {
+        $source   = '{% set value *= 2 %}';
+        $expected = [
+            [
+                'type'        => 306,
+                'assignments' => [
+                    [
+                        'variable' => [
+                            'type'  => 265,
+                            'value' => 'value',
+                            'file'  => 'eval code',
+                            'line'  => 1,
+                        ],
+                        'op'   => 283,
+                        'expr' => [
+                            'type'  => 258,
+                            'value' => '2',
+                            'file'  => 'eval code',
+                            'line'  => 1,
+                        ],
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                ],
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserSetMulti(): void
+    {
+        $source   = '{% set a = 1, b = 2, c = 3 %}';
+        $expected = [
+            [
+                'type'        => 306,
+                'assignments' => [
+                    [
+                        'variable' => [
+                            'type'  => 265,
+                            'value' => 'a',
+                            'file'  => 'eval code',
+                            'line'  => 1,
+                        ],
+                        'op'   => 61,
+                        'expr' => [
+                            'type'  => 258,
+                            'value' => '1',
+                            'file'  => 'eval code',
+                            'line'  => 1,
+                        ],
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    [
+                        'variable' => [
+                            'type'  => 265,
+                            'value' => 'b',
+                            'file'  => 'eval code',
+                            'line'  => 1,
+                        ],
+                        'op'   => 61,
+                        'expr' => [
+                            'type'  => 258,
+                            'value' => '2',
+                            'file'  => 'eval code',
+                            'line'  => 1,
+                        ],
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                    [
+                        'variable' => [
+                            'type'  => 265,
+                            'value' => 'c',
+                            'file'  => 'eval code',
+                            'line'  => 1,
+                        ],
+                        'op'   => 61,
+                        'expr' => [
+                            'type'  => 258,
+                            'value' => '3',
+                            'file'  => 'eval code',
+                            'line'  => 1,
+                        ],
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                ],
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-06-30
+     */
+    public function testMvcViewEngineVoltParserSetStringWithMarkup(): void
+    {
+        $source   = '{% set icon = \'<svg viewBox="0 0 18 18"></svg>\' %}';
+        $expected = [
+            [
+                'type'        => 306,
+                'assignments' => [
+                    [
+                        'variable' => [
+                            'type'  => 265,
+                            'value' => 'icon',
+                            'file'  => 'eval code',
+                            'line'  => 1,
+                        ],
+                        'op'   => 61,
+                        'expr' => [
+                            'type'  => 260,
+                            'value' => '<svg viewBox="0 0 18 18"></svg>',
+                            'file'  => 'eval code',
+                            'line'  => 1,
+                        ],
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                ],
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-04-10
+     */
+    public function testMvcViewEngineVoltParserSetSubAssign(): void
+    {
+        $source   = '{% set counter -= 1 %}';
+        $expected = [
+            [
+                'type'        => 306,
+                'assignments' => [
+                    [
+                        'variable' => [
+                            'type'  => 265,
+                            'value' => 'counter',
+                            'file'  => 'eval code',
+                            'line'  => 1,
+                        ],
+                        'op'   => 282,
+                        'expr' => [
+                            'type'  => 258,
+                            'value' => '1',
+                            'file'  => 'eval code',
+                            'line'  => 1,
+                        ],
+                        'file' => 'eval code',
+                        'line' => 1,
+                    ],
+                ],
+            ],
+        ];
+        $actual   = $this->compiler->parse($source);
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * Setting a value with whitespace-control delimiters ({%- ... -%})
+     *
+     * @author Phalcon Team <team@phalcon.io>
+     * @since  2026-07-04
+     */
+    public function testMvcViewEngineVoltParserSetWhitespaceControl(): void
+    {
+        $source   = '{%- set defaultClass = \'form-control \' -%}';
+        $expected = [
+            [
+                'type'        => 306,
+                'assignments' => [
+                    [
+                        'variable' => [
+                            'type'  => 265,
+                            'value' => 'defaultClass',
+                            'file'  => 'eval code',
+                            'line'  => 1,
+                        ],
+                        'op'   => 61,
+                        'expr' => [
+                            'type'  => 260,
+                            'value' => 'form-control ',
+                            'file'  => 'eval code',
+                            'line'  => 1,
                         ],
                         'file' => 'eval code',
                         'line' => 1,

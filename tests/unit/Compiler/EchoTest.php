@@ -26,8 +26,6 @@ final class EchoTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -38,10 +36,10 @@ final class EchoTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 259,
+                    'type'  => 259,
                     'value' => '3.14',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -52,8 +50,6 @@ final class EchoTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -77,8 +73,6 @@ final class EchoTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -89,10 +83,10 @@ final class EchoTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 258,
+                    'type'  => 258,
                     'value' => '42',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -103,8 +97,6 @@ final class EchoTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -128,8 +120,6 @@ final class EchoTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -140,10 +130,10 @@ final class EchoTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 260,
+                    'type'  => 260,
                     'value' => 'Hello',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -154,8 +144,6 @@ final class EchoTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-06-30
      */
@@ -166,10 +154,10 @@ final class EchoTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 260,
+                    'type'  => 260,
                     'value' => 'say \"hi\"',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -180,8 +168,6 @@ final class EchoTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -192,10 +178,10 @@ final class EchoTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 260,
+                    'type'  => 260,
                     'value' => 'Hello',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -206,8 +192,6 @@ final class EchoTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-06-30
      */
@@ -218,10 +202,10 @@ final class EchoTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 260,
+                    'type'  => 260,
                     'value' => 'Let\\\'s Encrypt',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -232,8 +216,6 @@ final class EchoTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -244,10 +226,10 @@ final class EchoTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'name',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -258,8 +240,6 @@ final class EchoTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -270,10 +250,10 @@ final class EchoTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'name',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -284,8 +264,6 @@ final class EchoTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -296,10 +274,10 @@ final class EchoTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'name',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -310,8 +288,6 @@ final class EchoTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -335,8 +311,6 @@ final class EchoTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -347,10 +321,10 @@ final class EchoTest extends TestCase
             [
                 'type' => 359,
                 'expr' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'name',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,

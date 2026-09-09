@@ -92,6 +92,7 @@ final class UtilsTest extends TestCase
             ],
         ];
     }
+
     /**
      * @dataProvider getUriProvider
      */

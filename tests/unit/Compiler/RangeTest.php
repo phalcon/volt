@@ -26,8 +26,6 @@ final class RangeTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -40,16 +38,16 @@ final class RangeTest extends TestCase
                 'expr' => [
                     'type' => 276,
                     'left' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '1',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 258,
+                        'type'  => 258,
                         'value' => '10',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,
@@ -63,8 +61,6 @@ final class RangeTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -77,16 +73,16 @@ final class RangeTest extends TestCase
                 'expr' => [
                     'type' => 276,
                     'left' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'start',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'right' => [
-                        'type' => 265,
+                        'type'  => 265,
                         'value' => 'end',
-                        'file' => 'eval code',
-                        'line' => 1,
+                        'file'  => 'eval code',
+                        'line'  => 1,
                     ],
                     'file' => 'eval code',
                     'line' => 1,

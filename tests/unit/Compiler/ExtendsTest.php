@@ -26,8 +26,6 @@ final class ExtendsTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -38,10 +36,10 @@ final class ExtendsTest extends TestCase
             [
                 'type' => 310,
                 'path' => [
-                    'type' => 260,
+                    'type'  => 260,
                     'value' => 'base.volt',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,
@@ -52,8 +50,6 @@ final class ExtendsTest extends TestCase
     }
 
     /**
-     * @return void
-     *
      * @author Phalcon Team <team@phalcon.io>
      * @since  2026-04-10
      */
@@ -64,10 +60,10 @@ final class ExtendsTest extends TestCase
             [
                 'type' => 310,
                 'path' => [
-                    'type' => 265,
+                    'type'  => 265,
                     'value' => 'layout',
-                    'file' => 'eval code',
-                    'line' => 1,
+                    'file'  => 'eval code',
+                    'line'  => 1,
                 ],
                 'file' => 'eval code',
                 'line' => 1,

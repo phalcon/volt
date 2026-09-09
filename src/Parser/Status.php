@@ -19,10 +19,13 @@ use Phalcon\Volt\Scanner\Token;
 class Status
 {
     public const PHVOLT_PARSING_FAILED = 0;
+
     public const PHVOLT_PARSING_OK     = 1;
 
     private ?string $lastTokenValue = null;
+
     private ?string $syntaxError    = null;
+
     private ?Token $token           = null;
 
     public function __construct(

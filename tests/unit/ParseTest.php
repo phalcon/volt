@@ -52,9 +52,6 @@ final class ParseTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
     public static function getVoltParse(): array
     {
         return [
@@ -269,6 +266,7 @@ final class ParseTest extends TestCase
             ],
         ];
     }
+
     /**
      * Tests Phalcon\Mvc\View\Engine\Volt\Compiler :: parse()
      *
@@ -282,7 +280,7 @@ final class ParseTest extends TestCase
         int $count
     ): void {
         $compiler   = new Compiler();
-        $actual = $compiler->parse($param);
+        $actual     = $compiler->parse($param);
 
         $this->assertTrue(is_array($actual));
         $this->assertCount($count, $actual);

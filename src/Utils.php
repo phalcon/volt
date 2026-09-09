@@ -73,12 +73,12 @@ final class Utils
     /**
      * Port of phalcon_replace_paths().
      *
-     * @param mixed $pattern
-     * @param mixed $paths
-     * @param mixed $replacements
-     * @return string|false|null
+     * @param  mixed             $pattern
+     * @param  mixed             $paths
+     * @param  mixed             $replacements
+     * @return false|string|null
      */
-    public static function replacePaths(string $pattern, array $paths, array $replacements): bool|string|null
+    public static function replacePaths(string $pattern, array $paths, array $replacements): bool | string | null
     {
         if ($pattern === '') {
             return false;
@@ -117,14 +117,14 @@ final class Utils
             if ($parenthesesCount === 0 && !$lookingPlaceholder) {
                 if ($ch === '{') {
                     if ($bracketCount === 0) {
-                        $marker = $i;
+                        $marker       = $i;
                         $intermediate = 0;
                     }
                     $bracketCount++;
                 } elseif ($ch === '}') {
                     $bracketCount--;
                     if ($intermediate > 0 && $bracketCount === 0) {
-                        $inner = substr($pattern, $marker + 1, $i - $marker - 1);
+                        $inner   = substr($pattern, $marker + 1, $i - $marker - 1);
                         $replace = self::replaceMarker(true, $paths, $replacements, $position, $inner);
                         if ($replace !== null) {
                             $out .= $replace;
@@ -139,14 +139,14 @@ final class Utils
             if ($bracketCount === 0 && !$lookingPlaceholder) {
                 if ($ch === '(') {
                     if ($parenthesesCount === 0) {
-                        $marker = $i;
+                        $marker       = $i;
                         $intermediate = 0;
                     }
                     $parenthesesCount++;
                 } elseif ($ch === ')') {
                     $parenthesesCount--;
                     if ($intermediate > 0 && $parenthesesCount === 0) {
-                        $inner = substr($pattern, $marker + 1, $i - $marker - 1);
+                        $inner   = substr($pattern, $marker + 1, $i - $marker - 1);
                         $replace = self::replaceMarker(false, $paths, $replacements, $position, $inner);
                         if ($replace !== null) {
                             $out .= $replace;
@@ -173,8 +173,8 @@ final class Utils
                 } else {
                     if ($ch === ':') {
                         $lookingPlaceholder = true;
-                        $marker = $i;
-                        $intermediate = 0;
+                        $marker             = $i;
+                        $intermediate       = 0;
                     }
                 }
             }
@@ -199,12 +199,8 @@ final class Utils
      * - Whether replacement is found or not, if the placeholder was valid, $position++
      *   happens exactly once per encountered placeholder.
      *
-     * @param bool  $named
-     * @param array $paths
-     * @param array $replacements
-     * @param int   $position (by reference; 1-based)
-     * @param string $raw The inner text (for named and (...) cases). For :placeholder it is unused.
-     * @return string|null
+     * @param int    $position (by reference; 1-based)
+     * @param string $raw      The inner text (for named and (...) cases). For :placeholder it is unused.
      */
     private static function replaceMarker(
         bool $named,
@@ -217,7 +213,7 @@ final class Utils
         $item     = null; // variable name to use (for named)
 
         if ($named) {
-            $item = $raw;
+            $item   = $raw;
             $length = strlen($item);
 
             if ($length === 0) {
