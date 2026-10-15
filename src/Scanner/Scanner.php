@@ -2643,14 +2643,14 @@ class Scanner
                 }
                 vv202:
                 {
-                if ($this->state->getActiveToken() === Opcode::DOT->value) {
-                    $this->token = new Token(
-                        Opcode::IDENTIFIER->value,
-                        substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
-                    );
-                } else {
-                    $this->token = new Token(Opcode::SET->value);
-                }
+                    if ($this->state->getActiveToken() === Opcode::DOT->value) {
+                        $this->token = new Token(
+                            Opcode::IDENTIFIER->value,
+                            substr($this->state->getRawBuffer(), $start, $this->state->getCursor() - $start)
+                        );
+                    } else {
+                        $this->token = new Token(Opcode::SET->value);
+                    }
 
                     return ScannerStatus::OK;
                 }
