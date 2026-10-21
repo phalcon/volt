@@ -76,8 +76,6 @@ class Tokens
         '--'            => Compiler::PHVOLT_T_DECR,
         'BLOCK'         => Compiler::PHVOLT_T_BLOCK,
         'ENDBLOCK'      => Compiler::PHVOLT_T_ENDBLOCK,
-        'CACHE'         => Compiler::PHVOLT_T_CACHE,
-        'ENDCACHE'      => Compiler::PHVOLT_T_ENDCACHE,
         'EXTENDS'       => Compiler::PHVOLT_T_EXTENDS,
         'IS'            => Compiler::PHVOLT_T_IS,
         'DEFINED'       => Compiler::PHVOLT_T_DEFINED,

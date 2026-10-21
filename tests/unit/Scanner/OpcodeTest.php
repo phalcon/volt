@@ -34,7 +34,7 @@ final class OpcodeTest extends TestCase
         $this->assertSame(54, Opcode::INTEGER->value);
         $this->assertSame(55, Opcode::STRING->value);
         $this->assertSame(56, Opcode::DOUBLE->value);
-        $this->assertSame(79, Opcode::RAW_FRAGMENT->value);
+        $this->assertSame(77, Opcode::RAW_FRAGMENT->value);
     }
 
     public function testLabelFallsBackToName(): void

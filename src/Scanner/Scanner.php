@@ -3718,13 +3718,7 @@ class Scanner
                     case 'z':
                         goto vv53;
                     default:
-                        goto vv259;
-                }
-                vv259:
-                {
-                    $this->state->incrementStatementPosition();
-                    $this->token = new Token(Opcode::CACHE->value);
-                    return ScannerStatus::OK;
+                        goto vv47;
                 }
                 vv260:
                 $vvch = $this->state->incrementStart()->getStart();
@@ -5687,12 +5681,7 @@ class Scanner
                     case 'z':
                         goto vv53;
                     default:
-                        goto vv350;
-                }
-                vv350:
-                {
-                    $this->token = new Token(Opcode::ENDCACHE->value);
-                    return ScannerStatus::OK;
+                        goto vv47;
                 }
                 vv351:
                 $vvch = $this->state->incrementStart()->getStart();

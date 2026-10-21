@@ -24,7 +24,6 @@ enum Opcode: int
     case AUTOESCAPE         = 317;
     case BLOCK              = 307;
     case BREAK              = 320;
-    case CACHE              = 314;
     case CALL               = 325;
     case CASE               = 412;
     case CBRACKET_CLOSE     = 125;
@@ -52,7 +51,6 @@ enum Opcode: int
     case ENCLOSED           = 356;
     case ENDAUTOESCAPE      = 318;
     case ENDBLOCK           = 308;
-    case ENDCACHE           = 315;
     case ENDCALL            = 326;
     case ENDFOR             = 305;
     case ENDIF              = 303;

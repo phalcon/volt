@@ -82,8 +82,6 @@ final class OpcodeTest extends TestCase
         $this->assertSame(311, Opcode::IS->value);
         $this->assertSame(312, Opcode::DEFINED->value);
         $this->assertSame(313, Opcode::INCLUDE->value);
-        $this->assertSame(314, Opcode::CACHE->value);
-        $this->assertSame(315, Opcode::ENDCACHE->value);
         $this->assertSame(316, Opcode::DO->value);
         $this->assertSame(317, Opcode::AUTOESCAPE->value);
         $this->assertSame(318, Opcode::ENDAUTOESCAPE->value);

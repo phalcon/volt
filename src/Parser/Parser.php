@@ -152,8 +152,6 @@ class Parser
                 CompilerOpcode::ENDMACRO->value          => $this->handleEndmacro($parser, $state),
                 CompilerOpcode::CALL->value              => $parser->phvolt_(Opcode::CALL->value),
                 CompilerOpcode::ENDCALL->value           => $parser->phvolt_(Opcode::ENDCALL->value),
-                CompilerOpcode::CACHE->value             => $parser->phvolt_(Opcode::CACHE->value),
-                CompilerOpcode::ENDCACHE->value          => $parser->phvolt_(Opcode::ENDCACHE->value),
                 CompilerOpcode::VERBATIM->value          => $parser->phvolt_(Opcode::VERBATIM->value),
                 CompilerOpcode::ENDVERBATIM->value       => $parser->phvolt_(Opcode::ENDVERBATIM->value),
                 CompilerOpcode::INCLUDE->value           => $parser->phvolt_(Opcode::INCLUDE->value),

@@ -94,8 +94,6 @@ class Compiler
 
     public const PHVOLT_T_BREAK            = 320;
 
-    public const PHVOLT_T_CACHE            = 314;
-
     public const PHVOLT_T_CALL             = 325;
 
     public const PHVOLT_T_CASE             = 412;
@@ -149,8 +147,6 @@ class Compiler
     public const PHVOLT_T_ENDAUTOESCAPE    = 318;
 
     public const PHVOLT_T_ENDBLOCK         = 308;
-
-    public const PHVOLT_T_ENDCACHE         = 315;
 
     public const PHVOLT_T_ENDCALL          = 326;
 
