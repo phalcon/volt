@@ -13,15 +13,16 @@ declare(strict_types=1);
 
 namespace Phalcon\Volt\Scanner;
 
+/**
+ * One scanned token: its opcode (a Phalcon\Volt\Compiler\Opcode value, or 0
+ * for end of input) and, for identifiers, literals, raw text and the
+ * `default` keyword, its source text.
+ */
 final class Token
 {
-    public readonly int $length;
-
     public function __construct(
         public readonly int $opcode = 0,
         public readonly ?string $value = null,
-        int $length = 0,
     ) {
-        $this->length = ($length === 0 && $value !== null) ? mb_strlen($value) : $length;
     }
 }

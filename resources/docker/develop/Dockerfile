@@ -46,7 +46,14 @@ apt-get install -yq --no-install-recommends \
     zip
 # Dev/test extensions
 install-php-extensions \
+    phalcon-5.23.0 \
     xdebug
+# ext-phalcon is the reference implementation for the parity scripts only
+# (tests/generate-golden.php, tests/differential.php). It is not loaded by
+# default so that the unit suite always exercises the pure-PHP parser. Load it
+# on demand:
+#   php -d extension=phalcon tests/differential.php
+rm -f /usr/local/etc/php/conf.d/docker-php-ext-phalcon.ini
 # Locales
 sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 dpkg-reconfigure --frontend=noninteractive locales
