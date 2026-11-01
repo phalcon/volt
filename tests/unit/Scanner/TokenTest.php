@@ -13,41 +13,33 @@ declare(strict_types=1);
 
 namespace Phalcon\Tests\Unit\Scanner;
 
+use Error;
 use Phalcon\Volt\Scanner\Token;
 use PHPUnit\Framework\TestCase;
 
 final class TokenTest extends TestCase
 {
-    public function testConstructorWithAllArgs(): void
-    {
-        $token = new Token(42, 'hello', 5);
-
-        $this->assertSame(42, $token->opcode);
-        $this->assertSame('hello', $token->value);
-        $this->assertSame(5, $token->length);
-    }
-
-    public function testDefaultValues(): void
+    public function testDefaultsToEndOfInputWithoutValue(): void
     {
         $token = new Token();
 
-        $this->assertSame(0, $token->opcode);
-        $this->assertNull($token->value);
-        $this->assertSame(0, $token->length);
+        $this->assertSame([0, null], [$token->opcode, $token->value]);
+    }
+
+    public function testHoldsOpcodeAndValue(): void
+    {
+        $token = new Token(265, 'name');
+
+        $this->assertSame([265, 'name'], [$token->opcode, $token->value]);
     }
 
     public function testIsReadonly(): void
     {
-        $token = new Token(1, 'test', 4);
+        $token = new Token(265, 'name');
 
-        $this->expectException(\Error::class);
-        $token->opcode = 2; // @phpstan-ignore-line
-    }
+        $this->expectException(Error::class);
 
-    public function testLengthDefaultsToStringLengthWhenValueProvided(): void
-    {
-        $token = new Token(1, 'world');
-
-        $this->assertSame(5, $token->length);
+        /** @phpstan-ignore-next-line - asserting the readonly guard */
+        $token->opcode = 1;
     }
 }

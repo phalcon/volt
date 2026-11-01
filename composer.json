@@ -62,14 +62,12 @@
     "autoload": {
         "psr-4": {
             "Phalcon\\Volt\\": "src/"
-        },
-        "files": [
-            "resources/files/parser.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
-            "Phalcon\\Tests\\Unit\\": "tests/unit/"
+            "Phalcon\\Tests\\Unit\\": "tests/unit/",
+            "Phalcon\\Tests\\Support\\": "tests/support/"
         }
     },
     "scripts": {

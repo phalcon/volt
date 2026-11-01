@@ -13,197 +13,74 @@ declare(strict_types=1);
 
 namespace Phalcon\Volt\Parser;
 
-use Phalcon\Volt\Compiler\Opcode as CompilerOpcode;
+use Phalcon\Volt\Compiler\Opcode;
 use Phalcon\Volt\Exception;
-use Phalcon\Volt\Scanner\Opcode;
-use Phalcon\Volt\Scanner\Scanner;
-use Phalcon\Volt\Scanner\ScannerStatus;
-use Phalcon\Volt\Scanner\State;
-use Phalcon\Volt\Scanner\Token;
-use phvolt_Parser;
 
+use function fclose;
 use function fopen;
-use function sprintf;
-use function strlen;
-use function substr;
 
+/**
+ * Parses Volt templates into cphalcon's intermediate representation.
+ *
+ * A hand-written replacement for the Lemon parser that cphalcon generates from
+ * ext/phalcon/mvc/view/engine/volt/parser.php.lemon, producing the same output
+ * for every input: the same AST (key order and types included), the same line
+ * numbers, the same error messages on the same tokens, and the same "nested
+ * too deeply" failure at the same depth. Behaviour is pinned against
+ * ext-phalcon by the parity goldens in tests/fixtures/parity.
+ *
+ * Statements are parsed here by recursive descent - one method per grammar
+ * rule group, each quoting its productions - and expressions by
+ * ExpressionParser. Every method mirrors the LALR parser exactly: it shifts
+ * the terminals Lemon shifts and reduces each rule once, with its
+ * right-hand-side length, when the rule's node is built (see Cursor).
+ *
+ * The one deliberate difference from cphalcon is the removed
+ * `{% cache %}` statement: `cache` and `endcache` are plain identifiers.
+ */
 class Parser
 {
+    private Ast $ast;
+
+    private Cursor $cursor;
+
     private bool $debug = false;
 
     private string $debugFile = 'volt.txt';
 
+    private ExpressionParser $expressions;
+
     /**
-     * @return array<mixed>
+     * @return array<int, array<string, mixed>>
+     *
      * @throws Exception
      */
     public function parse(string $code, string $templatePath = 'eval code'): array
     {
-        if (strlen($code) === 0) {
+        if ($code === '') {
             return [];
         }
 
-        $debugHandle = null;
-        if ($this->debug) {
-            $debugHandle = fopen($this->debugFile, 'w+');
-        }
+        $trace = $this->debug ? fopen($this->debugFile, 'w+') : null;
 
-        $codeLength  = strlen($code);
-        $parserState = new State($code);
-        $parserState->setActiveFile($templatePath);
-        $parserStatus = new Status($parserState);
-        $scanner      = new Scanner($parserStatus->getState());
+        try {
+            $this->ast         = new Ast($templatePath);
+            $this->cursor      = new Cursor(new TokenStream($code, $templatePath), $trace ?: null);
+            $this->expressions = new ExpressionParser($this->cursor, $this->ast);
 
-        $parser = new phvolt_Parser($parserStatus);
-        $parser->phvolt_Trace($debugHandle);
-
-        $state         = $parserStatus->getState();
-        $scannerStatus = ScannerStatus::OK;
-        $prevToken     = 0;
-
-        while (($scannerStatus = $scanner->scanForToken()) === ScannerStatus::OK) {
-            $token = $scanner->getToken();
-            $parserStatus->setToken($token);
-            $state->setStartLength($codeLength - $state->getCursor());
-
-            $opcode = $token->opcode;
-            $state->setActiveToken($opcode);
-
-            match ($opcode) {
-                CompilerOpcode::IGNORE->value            => null,
-                CompilerOpcode::ADD->value               => $parser->phvolt_(Opcode::PLUS->value),
-                CompilerOpcode::SUB->value               => $parser->phvolt_(Opcode::MINUS->value),
-                CompilerOpcode::MUL->value               => $parser->phvolt_(Opcode::TIMES->value),
-                CompilerOpcode::DIV->value               => $parser->phvolt_(Opcode::DIVIDE->value),
-                CompilerOpcode::MOD->value               => $parser->phvolt_(Opcode::MOD->value),
-                CompilerOpcode::AND->value               => $parser->phvolt_(Opcode::AND->value),
-                CompilerOpcode::OR->value                => $parser->phvolt_(Opcode::OR->value),
-                CompilerOpcode::IS->value                => $parser->phvolt_(Opcode::IS->value),
-                CompilerOpcode::EQUALS->value            => $parser->phvolt_(Opcode::EQUALS->value),
-                CompilerOpcode::NOTEQUALS->value         => $parser->phvolt_(Opcode::NOTEQUALS->value),
-                CompilerOpcode::LESS->value              => $parser->phvolt_(Opcode::LESS->value),
-                CompilerOpcode::GREATER->value           => $parser->phvolt_(Opcode::GREATER->value),
-                CompilerOpcode::GREATEREQUAL->value      => $parser->phvolt_(Opcode::GREATEREQUAL->value),
-                CompilerOpcode::LESSEQUAL->value         => $parser->phvolt_(Opcode::LESSEQUAL->value),
-                CompilerOpcode::IDENTICAL->value         => $parser->phvolt_(Opcode::IDENTICAL->value),
-                CompilerOpcode::NOTIDENTICAL->value      => $parser->phvolt_(Opcode::NOTIDENTICAL->value),
-                CompilerOpcode::NOT->value               => $parser->phvolt_(Opcode::NOT->value),
-                CompilerOpcode::DOT->value               => $parser->phvolt_(Opcode::DOT->value),
-                CompilerOpcode::CONCAT->value            => $parser->phvolt_(Opcode::CONCAT->value),
-                CompilerOpcode::RANGE->value             => $parser->phvolt_(Opcode::RANGE->value),
-                CompilerOpcode::PIPE->value              => $parser->phvolt_(Opcode::PIPE->value),
-                CompilerOpcode::COMMA->value             => $parser->phvolt_(Opcode::COMMA->value),
-                CompilerOpcode::COLON->value             => $parser->phvolt_(Opcode::COLON->value),
-                CompilerOpcode::QUESTION->value          => $parser->phvolt_(Opcode::QUESTION->value),
-                CompilerOpcode::PARENTHESES_OPEN->value  => $parser->phvolt_(Opcode::PARENTHESES_OPEN->value),
-                CompilerOpcode::PARENTHESES_CLOSE->value => $parser->phvolt_(Opcode::PARENTHESES_CLOSE->value),
-                CompilerOpcode::SBRACKET_OPEN->value     => $parser->phvolt_(Opcode::SBRACKET_OPEN->value),
-                CompilerOpcode::SBRACKET_CLOSE->value    => $parser->phvolt_(Opcode::SBRACKET_CLOSE->value),
-                CompilerOpcode::CBRACKET_OPEN->value     => $parser->phvolt_(Opcode::CBRACKET_OPEN->value),
-                CompilerOpcode::CBRACKET_CLOSE->value    => $parser->phvolt_(Opcode::CBRACKET_CLOSE->value),
-                CompilerOpcode::OPEN_DELIMITER->value    => $parser->phvolt_(Opcode::OPEN_DELIMITER->value),
-                CompilerOpcode::CLOSE_DELIMITER->value   => $parser->phvolt_(Opcode::CLOSE_DELIMITER->value),
-                CompilerOpcode::OPEN_EDELIMITER->value   => $this->handleOpenEdelimiter($parser, $parserStatus, $state),
-                CompilerOpcode::CLOSE_EDELIMITER->value  => $parser->phvolt_(Opcode::CLOSE_EDELIMITER->value),
-                CompilerOpcode::NULL->value              => $parser->phvolt_(Opcode::NULL->value),
-                CompilerOpcode::TRUE->value              => $parser->phvolt_(Opcode::TRUE->value),
-                CompilerOpcode::FALSE->value             => $parser->phvolt_(Opcode::FALSE->value),
-                CompilerOpcode::INTEGER->value           => $this->parseWithToken($parser, $token, Opcode::INTEGER),
-                CompilerOpcode::DOUBLE->value            => $this->parseWithToken($parser, $token, Opcode::DOUBLE),
-                CompilerOpcode::STRING->value            => $this->parseWithToken($parser, $token, Opcode::STRING),
-                CompilerOpcode::IDENTIFIER->value        => $this->parseWithToken($parser, $token, Opcode::IDENTIFIER),
-                CompilerOpcode::IF->value                => $this->handleIf($parser, $parserStatus, $state),
-                CompilerOpcode::ELSE->value              => $state->getIfLevel() === 0 && $state->getForLevel() > 0
-                    ? $parser->phvolt_(Opcode::ELSEFOR->value)
-                    : $parser->phvolt_(Opcode::ELSE->value),
-                CompilerOpcode::ELSEFOR->value           => $parser->phvolt_(Opcode::ELSEFOR->value),
-                CompilerOpcode::ELSEIF->value            => $this->handleElseif($parser, $parserStatus, $state),
-                CompilerOpcode::ENDIF->value             => $this->handleEndif($parser, $state),
-                CompilerOpcode::FOR->value               => $this->handleFor($parser, $parserStatus, $state),
-                CompilerOpcode::IN->value                => $parser->phvolt_(Opcode::IN->value),
-                CompilerOpcode::ENDFOR->value            => $this->handleEndfor($parser, $state),
-                CompilerOpcode::SWITCH->value            => $this->handleSwitch($parser, $parserStatus, $state),
-                CompilerOpcode::CASE->value              => $this->handleCase($parser, $parserStatus),
-                CompilerOpcode::DEFAULT->value           => $this->handleDefault(
-                    $parser,
-                    $parserStatus,
-                    $token,
-                    $state,
-                    $prevToken
-                ),
-                CompilerOpcode::ENDSWITCH->value         => $this->handleEndswitch($parser, $parserStatus, $state),
-                CompilerOpcode::RAW_FRAGMENT->value      => $this->handleRawFragment(
-                    $parser,
-                    $parserStatus,
-                    $token,
-                    $state
-                ),
-                CompilerOpcode::SET->value               => $this->handleSet($parser, $parserStatus, $state),
-                CompilerOpcode::ASSIGN->value            => $parser->phvolt_(Opcode::ASSIGN->value),
-                CompilerOpcode::ADD_ASSIGN->value        => $parser->phvolt_(Opcode::ADD_ASSIGN->value),
-                CompilerOpcode::SUB_ASSIGN->value        => $parser->phvolt_(Opcode::SUB_ASSIGN->value),
-                CompilerOpcode::MUL_ASSIGN->value        => $parser->phvolt_(Opcode::MUL_ASSIGN->value),
-                CompilerOpcode::DIV_ASSIGN->value        => $parser->phvolt_(Opcode::DIV_ASSIGN->value),
-                CompilerOpcode::INCR->value              => $parser->phvolt_(Opcode::INCR->value),
-                CompilerOpcode::DECR->value              => $parser->phvolt_(Opcode::DECR->value),
-                CompilerOpcode::BLOCK->value             => $this->handleBlock($parser, $parserStatus, $state),
-                CompilerOpcode::ENDBLOCK->value          => $this->handleEndblock($parser, $state),
-                CompilerOpcode::MACRO->value             => $this->handleMacro($parser, $parserStatus, $state),
-                CompilerOpcode::ENDMACRO->value          => $this->handleEndmacro($parser, $state),
-                CompilerOpcode::CALL->value              => $parser->phvolt_(Opcode::CALL->value),
-                CompilerOpcode::ENDCALL->value           => $parser->phvolt_(Opcode::ENDCALL->value),
-                CompilerOpcode::VERBATIM->value          => $parser->phvolt_(Opcode::VERBATIM->value),
-                CompilerOpcode::ENDVERBATIM->value       => $parser->phvolt_(Opcode::ENDVERBATIM->value),
-                CompilerOpcode::INCLUDE->value           => $parser->phvolt_(Opcode::INCLUDE->value),
-                CompilerOpcode::WITH->value              => $parser->phvolt_(Opcode::WITH->value),
-                CompilerOpcode::DEFINED->value           => $parser->phvolt_(Opcode::DEFINED->value),
-                CompilerOpcode::EMPTY->value             => $parser->phvolt_(Opcode::EMPTY->value),
-                CompilerOpcode::EVEN->value              => $parser->phvolt_(Opcode::EVEN->value),
-                CompilerOpcode::ODD->value               => $parser->phvolt_(Opcode::ODD->value),
-                CompilerOpcode::NUMERIC->value           => $parser->phvolt_(Opcode::NUMERIC->value),
-                CompilerOpcode::SCALAR->value            => $parser->phvolt_(Opcode::SCALAR->value),
-                CompilerOpcode::ITERABLE->value          => $parser->phvolt_(Opcode::ITERABLE->value),
-                CompilerOpcode::DO->value                => $parser->phvolt_(Opcode::DO->value),
-                CompilerOpcode::RETURN->value            => $parser->phvolt_(Opcode::RETURN->value),
-                CompilerOpcode::AUTOESCAPE->value        => $parser->phvolt_(Opcode::AUTOESCAPE->value),
-                CompilerOpcode::ENDAUTOESCAPE->value     => $parser->phvolt_(Opcode::ENDAUTOESCAPE->value),
-                CompilerOpcode::BREAK->value             => $parser->phvolt_(Opcode::BREAK->value),
-                CompilerOpcode::CONTINUE->value          => $parser->phvolt_(Opcode::CONTINUE->value),
-                CompilerOpcode::EXTENDS->value           => $this->handleExtends($parser, $parserStatus, $state),
-                default                                  => $this->handleUnknownOpcode($parserStatus, $opcode),
-            };
-
-            if ($parserStatus->getStatus() !== Status::PHVOLT_PARSING_OK) {
-                break;
+            return $this->parseProgram();
+        } finally {
+            if ($trace) {
+                fclose($trace);
             }
-
-            // whitespace inside delimiters arrives as IGNORE; skip it
-            if ($opcode !== CompilerOpcode::IGNORE->value) {
-                $prevToken = $opcode;
-            }
-
-            $state->setEnd($state->getStart());
         }
-
-        if (
-            $scannerStatus === ScannerStatus::ERR ||
-            $scannerStatus === ScannerStatus::IMPOSSIBLE
-        ) {
-            throw new Exception($this->createScannerErrorMessage($parserStatus));
-        } elseif ($scannerStatus === ScannerStatus::EOF) {
-            $parser->phvolt_(0);
-        }
-
-        $state->setStartLength(0);
-        $state->setActiveToken(null);
-
-        if ($parserStatus->getStatus() !== Status::PHVOLT_PARSING_OK) {
-            throw new Exception($parserStatus->getSyntaxError() ?? '');
-        }
-
-        return $parser->getOutput();
     }
 
+    /**
+     * Writes a shift/reduce trace of the next parse to the debug file.
+     *
+     * @deprecated Kept for backwards compatibility; the trace format is not stable.
+     */
     public function setDebug(bool $debug): static
     {
         $this->debug = $debug;
@@ -211,6 +88,9 @@ class Parser
         return $this;
     }
 
+    /**
+     * @deprecated Kept for backwards compatibility; see setDebug().
+     */
     public function setDebugFile(string $debugFile): static
     {
         $this->debugFile = $debugFile;
@@ -218,310 +98,700 @@ class Parser
         return $this;
     }
 
-    private function createErrorMessage(Status $parserStatus, string $message): void
+    /**
+     * After parseStatementList(): the expected terminator keyword, then `%}`.
+     * When the list stopped at anything else, that token is the syntax error.
+     *
+     * @throws Exception
+     */
+    private function closeList(Opcode $keyword, ?Opcode $terminator): void
     {
-        $length = 128 + strlen($parserStatus->getState()->getActiveFile());
-        $str    = sprintf(
-            "%s in %s on line %d",
-            $message,
-            $parserStatus->getState()->getActiveFile(),
-            $parserStatus->getState()->getActiveLine(),
-        );
-
-        $parserStatus->setSyntaxError(substr($str, 0, $length));
-    }
-
-    private function createScannerErrorMessage(Status $parserStatus): string
-    {
-        $state = $parserStatus->getState();
-
-        if ($state->getStartLength() > 0) {
-            if ($state->getStartLength() > 16) {
-                $part = substr($state->getRawBuffer(), $state->getCursor(), 16);
-
-                return sprintf(
-                    "Scanning error before '%s...' in %s on line %d",
-                    $part,
-                    $state->getActiveFile(),
-                    $state->getActiveLine(),
-                );
-            }
-
-            return sprintf(
-                "Scanning error before '%s' in %s on line %d",
-                $state->getStart(),
-                $state->getActiveFile(),
-                $state->getActiveLine(),
-            );
+        if ($terminator !== $keyword) {
+            throw $this->cursor->unexpected();
         }
 
-        return sprintf(
-            "Scanning error near to EOF in %s",
-            $state->getActiveFile(),
-        );
-    }
-
-    private function handleBlock(phvolt_Parser $parser, Status $parserStatus, State $state): void
-    {
-        if ($state->getBlockLevel() > 0) {
-            $this->createErrorMessage($parserStatus, 'Embedding blocks into other blocks is not supported');
-            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
-
-            return;
-        }
-
-        $state->incrementBlockLevel();
-        $parser->phvolt_(Opcode::BLOCK->value);
-    }
-
-    private function handleCase(phvolt_Parser $parser, Status $parserStatus): void
-    {
-        if ($parserStatus->getState()->getSwitchLevel() === 0) {
-            $this->createErrorMessage($parserStatus, 'Unexpected CASE');
-            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
-
-            return;
-        }
-
-        $parser->phvolt_(Opcode::CASE->value);
+        $this->closeTag();
     }
 
     /**
-     * "default" is the {% default %} clause only when it is inside a switch
-     * and directly follows the opening delimiter; anywhere else (e.g. the
-     * |default() filter) it is a plain identifier.
+     * Shifts the current terminator keyword and the `%}` after it.
+     *
+     * @throws Exception
      */
-    private function handleDefault(
-        phvolt_Parser $parser,
-        Status $parserStatus,
-        Token $token,
-        State $state,
-        int $prevToken
-    ): void {
-        if (
-            $state->getSwitchLevel() !== 0 &&
-            $prevToken === CompilerOpcode::OPEN_DELIMITER->value
-        ) {
-            $parser->phvolt_(Opcode::DEFAULT->value);
+    private function closeTag(): void
+    {
+        $this->cursor->shift();
+        $this->cursor->expect(Opcode::CLOSE_DELIMITER);
+    }
 
-            return;
+    /**
+     * `{% KEYWORD %}` in full, when no statement may come first.
+     *
+     * @throws Exception
+     */
+    private function expectEndTag(Opcode $keyword): void
+    {
+        $this->cursor->expect(Opcode::OPEN_DELIMITER);
+        $this->cursor->expect($keyword);
+        $this->cursor->expect(Opcode::CLOSE_DELIMITER);
+    }
+
+    /**
+     * assignable_expr ::= IDENTIFIER
+     *                   | assignable_expr [ expr ]
+     *                   | assignable_expr . assignable_expr
+     *
+     * `.` (level 15, left) always reduces before a following `[` or `.`, so
+     * its right-hand side is a single identifier: `a.b.c[0]` is
+     * `((a.b).c)[0]`.
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseAssignable(): array
+    {
+        $token    = $this->cursor->expect(Opcode::IDENTIFIER);
+        $variable = $this->ast->literal(Opcode::IDENTIFIER, $token->value, $this->cursor->reduce(1));
+
+        while (true) {
+            if ($this->cursor->is(Opcode::SBRACKET_OPEN)) {
+                $this->cursor->shift();
+                $index = $this->expressions->parse();
+                $this->cursor->expect(Opcode::SBRACKET_CLOSE);
+                $variable = $this->ast->expr(Opcode::ARRAYACCESS, $variable, $index, null, $this->cursor->reduce(4));
+            } elseif ($this->cursor->is(Opcode::DOT)) {
+                $this->cursor->shift();
+                $token    = $this->cursor->expect(Opcode::IDENTIFIER);
+                $property = $this->ast->literal(Opcode::IDENTIFIER, $token->value, $this->cursor->reduce(1));
+                $variable = $this->ast->expr(Opcode::DOT, $variable, $property, null, $this->cursor->reduce(3));
+            } else {
+                return $variable;
+            }
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseAssignment(): array
+    {
+        $variable = $this->parseAssignable();
+
+        $operator = match ($this->cursor->current->opcode) {
+            Opcode::ASSIGN->value     => Opcode::ASSIGN,
+            Opcode::ADD_ASSIGN->value => Opcode::ADD_ASSIGN,
+            Opcode::SUB_ASSIGN->value => Opcode::SUB_ASSIGN,
+            Opcode::MUL_ASSIGN->value => Opcode::MUL_ASSIGN,
+            Opcode::DIV_ASSIGN->value => Opcode::DIV_ASSIGN,
+            default                   => throw $this->cursor->unexpected(),
+        };
+
+        $this->cursor->shift();
+        $expr = $this->expressions->parse();
+
+        return $this->ast->setAssignment($variable, $operator, $expr, $this->cursor->reduce(3));
+    }
+
+    /**
+     * autoescape_statement ::= {% AUTOESCAPE FALSE|TRUE %} statement_list {% ENDAUTOESCAPE %}
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseAutoescape(): array
+    {
+        $this->cursor->shift();
+
+        if (!$this->cursor->is(Opcode::TRUE) && !$this->cursor->is(Opcode::FALSE)) {
+            throw $this->cursor->unexpected();
         }
 
-        $newToken = new Token(CompilerOpcode::IDENTIFIER->value, $token->value);
-        $parser->phvolt_(Opcode::IDENTIFIER->value, $newToken);
+        $enable = $this->cursor->shift()->opcode === Opcode::TRUE->value;
+        $this->cursor->expect(Opcode::CLOSE_DELIMITER);
+        $statements = $this->parseBody(Opcode::ENDAUTOESCAPE);
+
+        return $this->ast->autoescapeStatement($enable, $statements, $this->cursor->reduce(8));
     }
 
-    private function handleElseif(phvolt_Parser $parser, Status $parserStatus, State $state): void
+    /**
+     * break_statement    ::= {% BREAK %}
+     * continue_statement ::= {% CONTINUE %}
+     * elsefor_statement  ::= {% ELSEFOR %}
+     * case_clause        ::= {% DEFAULT %}
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseBare(Opcode $type): array
     {
-        if ($state->getIfLevel() === 0) {
-            $this->createErrorMessage($parserStatus, 'Unexpected ENDIF');
-            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
+        $this->cursor->shift();
+        $this->cursor->expect(Opcode::CLOSE_DELIMITER);
+        $line = $this->cursor->reduce(3);
 
-            return;
+        return $type === Opcode::DEFAULT
+            ? $this->ast->caseClause(null, $line)
+            : $this->ast->bareStatement($type, $line);
+    }
+
+    /**
+     * block_statement ::= {% BLOCK IDENTIFIER %} statement_list {% ENDBLOCK %}
+     *                   | {% BLOCK IDENTIFIER %} {% ENDBLOCK %}
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseBlock(): array
+    {
+        $this->cursor->shift();
+        $name = (string) $this->cursor->expect(Opcode::IDENTIFIER)->value;
+        $this->cursor->expect(Opcode::CLOSE_DELIMITER);
+
+        [$statements, $terminator] = $this->parseStatementList([Opcode::ENDBLOCK], [Opcode::ENDBLOCK]);
+        $this->closeList(Opcode::ENDBLOCK, $terminator);
+
+        return $this->ast->blockStatement($name, $statements, $this->cursor->reduce($statements === null ? 7 : 8));
+    }
+
+    /**
+     * A body that must contain at least one statement, then `{% END... %}`.
+     *
+     * @return list<array<string, mixed>>
+     *
+     * @throws Exception
+     */
+    private function parseBody(Opcode $end): array
+    {
+        [$statements, $terminator] = $this->parseStatementList([], [$end]);
+
+        if ($statements === null) {
+            throw $this->cursor->unexpected();
         }
 
-        $parser->phvolt_(Opcode::ELSEIF->value);
+        $this->closeList($end, $terminator);
+
+        return $statements;
     }
 
-    private function handleEndblock(phvolt_Parser $parser, State $state): void
+    /**
+     * macro_call_statement ::= {% CALL expr ( argument_list ) %} statement_list {% ENDCALL %}
+     *                        | {% CALL expr ( ) %} {% ENDCALL %}
+     *
+     * The call with arguments needs a body and the call without arguments
+     * must not have one - those are the only two rules.
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseCall(): array
     {
-        $state->decrementBlockLevel();
-        $parser->phvolt_(Opcode::ENDBLOCK->value);
-    }
+        $this->cursor->shift();
+        [$name, $arguments] = $this->expressions->parseCallTarget();
+        $this->cursor->expect(Opcode::CLOSE_DELIMITER);
 
-    private function handleEndfor(phvolt_Parser $parser, State $state): void
-    {
-        $state->decrementBlockLevel();
-        $state->decrementForLevel();
-        $state->setIfLevel($state->getOldIfLevel());
-        $parser->phvolt_(Opcode::ENDFOR->value);
-    }
+        if ($arguments === null) {
+            $this->expectEndTag(Opcode::ENDCALL);
 
-    private function handleEndif(phvolt_Parser $parser, State $state): void
-    {
-        $state->decrementBlockLevel();
-        $state->decrementIfLevel();
-        $parser->phvolt_(Opcode::ENDIF->value);
-    }
-
-    private function handleEndmacro(phvolt_Parser $parser, State $state): void
-    {
-        $state->decrementMacroLevel();
-        $parser->phvolt_(Opcode::ENDMACRO->value);
-    }
-
-    private function handleEndswitch(phvolt_Parser $parser, Status $parserStatus, State $state): void
-    {
-        if ($state->getSwitchLevel() === 0) {
-            $this->createErrorMessage($parserStatus, 'Unexpected ENDSWITCH');
-            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
-
-            return;
+            return $this->ast->macroCallStatement($name, null, null, $this->cursor->reduce(9));
         }
 
-        $state->decrementBlockLevel();
-        $state->setSwitchLevel(0);
-        $parser->phvolt_(Opcode::ENDSWITCH->value);
+        $caller = $this->parseBody(Opcode::ENDCALL);
+
+        return $this->ast->macroCallStatement($name, $arguments, $caller, $this->cursor->reduce(11));
     }
 
-    private function handleExtends(phvolt_Parser $parser, Status $parserStatus, State $state): void
+    /**
+     * case_clause ::= {% CASE expr %}
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseCase(): array
     {
-        if ($state->getStatementPosition() !== 1) {
-            $this->createErrorMessage(
-                $parserStatus,
-                'Extends statement must be placed at the first line in the template'
-            );
-            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
+        $expr = $this->parseKeywordExpr();
 
-            return;
-        }
-
-        $state->setExtendsMode(1);
-        $parser->phvolt_(Opcode::EXTENDS->value);
+        return $this->ast->caseClause($expr, $this->cursor->reduce(4));
     }
 
-    private function handleFor(phvolt_Parser $parser, Status $parserStatus, State $state): void
+    /**
+     * echo_statement ::= {{ expr }}
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseEcho(): array
     {
-        if ($state->getExtendsMode() === 1 && $state->getBlockLevel() === 0) {
-            $this->createErrorMessage($parserStatus, 'Child templates only may contain blocks');
-            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
+        $this->cursor->shift();
+        $expr = $this->expressions->parse();
+        $this->cursor->expect(Opcode::CLOSE_EDELIMITER);
 
-            return;
-        }
-
-        $state->setOldIfLevel($state->getIfLevel());
-        $state->setIfLevel(0);
-        $state->incrementForLevel();
-        $state->incrementBlockLevel();
-        $parser->phvolt_(Opcode::FOR->value);
+        return $this->ast->exprStatement(Opcode::ECHO, $expr, $this->cursor->reduce(3));
     }
 
-    private function handleIf(phvolt_Parser $parser, Status $parserStatus, State $state): void
+    /**
+     * elseif_statement ::= {% ELSEIF expr %}
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseElseIf(): array
     {
-        if ($state->getExtendsMode() === 1 && $state->getBlockLevel() === 0) {
-            $this->createErrorMessage($parserStatus, 'Child templates only may contain blocks');
-            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
+        $expr = $this->parseKeywordExpr();
 
-            return;
-        }
-
-        $state->incrementIfLevel();
-        $state->incrementBlockLevel();
-        $parser->phvolt_(Opcode::IF->value);
+        return $this->ast->elseIfStatement($expr, $this->cursor->reduce(4));
     }
 
-    private function handleMacro(phvolt_Parser $parser, Status $parserStatus, State $state): void
+    /**
+     * empty_statement ::= {% %}
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseEmpty(): array
     {
-        if ($state->getMacroLevel() > 0) {
-            $this->createErrorMessage($parserStatus, 'Embedding macros into other macros is not allowed');
-            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
+        $this->cursor->shift();
 
-            return;
-        }
-
-        $state->incrementMacroLevel();
-        $parser->phvolt_(Opcode::MACRO->value);
+        return $this->ast->bareStatement(Opcode::EMPTY_STATEMENT, $this->cursor->reduce(2));
     }
 
-    private function handleOpenEdelimiter(phvolt_Parser $parser, Status $parserStatus, State $state): void
+    /**
+     * do_statement     ::= {% DO expr %}
+     * return_statement ::= {% RETURN expr %}
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseExprStatement(Opcode $type): array
     {
-        if ($state->getExtendsMode() === 1 && $state->getBlockLevel() === 0) {
-            $this->createErrorMessage($parserStatus, 'Child templates only may contain blocks');
-            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
+        $expr = $this->parseKeywordExpr();
 
-            return;
-        }
-
-        $parser->phvolt_(Opcode::OPEN_EDELIMITER->value);
+        return $this->ast->exprStatement($type, $expr, $this->cursor->reduce(4));
     }
 
-    private function handleRawFragment(
-        phvolt_Parser $parser,
-        Status $parserStatus,
-        Token $token,
-        State $state
-    ): void {
-        if ($token->length === 0) {
-            return;
-        }
-
-        $value = trim((string)$token->value);
-
-        if ($value !== '' && $state->getExtendsMode() === 1 && $state->getBlockLevel() === 0) {
-            $this->createErrorMessage($parserStatus, 'Child templates only may contain blocks');
-            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
-
-            return;
-        }
-
-        if (!$this->isBlankString($token)) {
-            $state->incrementStatementPosition();
-        }
-
-        $this->parseWithToken($parser, $token, Opcode::RAW_FRAGMENT);
-    }
-
-    private function handleSet(phvolt_Parser $parser, Status $parserStatus, State $state): void
+    /**
+     * extends_statement ::= {% EXTENDS expr %}
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseExtends(): array
     {
-        if ($state->getExtendsMode() === 1 && $state->getBlockLevel() === 0) {
-            $this->createErrorMessage($parserStatus, 'Child templates only may contain blocks');
-            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
+        $path = $this->parseKeywordExpr();
 
-            return;
-        }
-
-        $parser->phvolt_(Opcode::SET->value);
+        return $this->ast->extendsStatement($path, $this->cursor->reduce(4));
     }
 
-    private function handleSwitch(phvolt_Parser $parser, Status $parserStatus, State $state): void
+    /**
+     * for_statement ::= {% FOR IDENTIFIER IN expr %} statement_list {% ENDFOR %}
+     *                 | {% FOR IDENTIFIER IN expr IF expr %} statement_list {% ENDFOR %}
+     *                 | {% FOR IDENTIFIER , IDENTIFIER IN expr %} statement_list {% ENDFOR %}
+     *                 | {% FOR IDENTIFIER , IDENTIFIER IN expr IF expr %} statement_list {% ENDFOR %}
+     *
+     * In the key/value forms the first identifier is the key.
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseFor(): array
     {
-        if ($state->getExtendsMode() === 1 && $state->getBlockLevel() === 0) {
-            $this->createErrorMessage($parserStatus, 'Child templates only may contain blocks');
-            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
+        $this->cursor->shift();
+        $variable = (string) $this->cursor->expect(Opcode::IDENTIFIER)->value;
+        $key      = null;
+        $length   = 10;
 
-            return;
+        if ($this->cursor->is(Opcode::COMMA)) {
+            $this->cursor->shift();
+            $key      = $variable;
+            $variable = (string) $this->cursor->expect(Opcode::IDENTIFIER)->value;
+            $length  += 2;
         }
 
-        if ($state->getSwitchLevel() > 0) {
-            $this->createErrorMessage(
-                $parserStatus,
-                'A nested switch detected. There is no nested switch-case statements support'
-            );
-            $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
+        $this->cursor->expect(Opcode::IN);
+        $expr   = $this->expressions->parse();
+        $ifExpr = null;
 
-            return;
+        if ($this->cursor->is(Opcode::IF)) {
+            $this->cursor->shift();
+            $ifExpr  = $this->expressions->parse();
+            $length += 2;
         }
 
-        $state->setSwitchLevel(1);
-        $state->incrementBlockLevel();
-        $parser->phvolt_(Opcode::SWITCH->value);
+        $this->cursor->expect(Opcode::CLOSE_DELIMITER);
+        $statements = $this->parseBody(Opcode::ENDFOR);
+
+        return $this->ast->forStatement($variable, $key, $expr, $ifExpr, $statements, $this->cursor->reduce($length));
     }
 
-    private function handleUnknownOpcode(Status $parserStatus, int $opcode): void
+    /**
+     * if_statement ::= {% IF expr %} statement_list {% ENDIF %}
+     *                | {% IF expr %} {% ENDIF %}
+     *                | {% IF expr %} statement_list {% ELSE %} statement_list {% ENDIF %}
+     *                | {% IF expr %} statement_list {% ELSE %} {% ENDIF %}
+     *                | {% IF expr %} {% ELSE %} {% ENDIF %}
+     *
+     * There is no rule for an empty true branch with a non-empty else.
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseIf(): array
     {
-        $this->createErrorMessage($parserStatus, sprintf('Scanner: unknown opcode %d', $opcode));
-        $parserStatus->setStatus(Status::PHVOLT_PARSING_FAILED);
+        $expr = $this->parseKeywordExpr();
+
+        [$true, $terminator] = $this->parseStatementList([Opcode::ENDIF, Opcode::ELSE], [Opcode::ENDIF, Opcode::ELSE]);
+
+        if ($terminator === null) {
+            throw $this->cursor->unexpected();
+        }
+
+        $this->closeTag();
+
+        if ($terminator === Opcode::ENDIF) {
+            return $this->ast->ifStatement($expr, $true, null, $this->cursor->reduce($true === null ? 7 : 8));
+        }
+
+        if ($true === null) {
+            $this->expectEndTag(Opcode::ENDIF);
+
+            return $this->ast->ifStatement($expr, null, null, $this->cursor->reduce(10));
+        }
+
+        [$false, $terminator] = $this->parseStatementList([Opcode::ENDIF], [Opcode::ENDIF]);
+        $this->closeList(Opcode::ENDIF, $terminator);
+
+        return $this->ast->ifStatement($expr, $true, $false, $this->cursor->reduce($false === null ? 11 : 12));
     }
 
-    private function isBlankString(Token $token): bool
+    /**
+     * include_statement ::= {% INCLUDE expr %} | {% INCLUDE expr WITH expr %}
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseInclude(): array
     {
-        $marker = (string)$token->value;
-        $len    = strlen($marker);
+        $this->cursor->shift();
+        $path   = $this->expressions->parse();
+        $params = null;
 
-        for ($i = 0; $i < $len; $i++) {
-            $ch = $marker[$i];
-            if ($ch !== ' ' && $ch !== "\t" && $ch !== "\n" && $ch !== "\r" && $ch !== "\v") {
-                return false;
+        if ($this->cursor->is(Opcode::WITH)) {
+            $this->cursor->shift();
+            $params = $this->expressions->parse();
+        }
+
+        $this->cursor->expect(Opcode::CLOSE_DELIMITER);
+
+        return $this->ast->includeStatement($path, $params, $this->cursor->reduce($params === null ? 4 : 6));
+    }
+
+    /**
+     * Shifts the statement keyword, then parses `expr %}`.
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseKeywordExpr(): array
+    {
+        $this->cursor->shift();
+        $expr = $this->expressions->parse();
+        $this->cursor->expect(Opcode::CLOSE_DELIMITER);
+
+        return $expr;
+    }
+
+    /**
+     * macro_statement  ::= {% MACRO IDENTIFIER ( ) %} statement_list {% ENDMACRO %}
+     *                    | {% MACRO IDENTIFIER ( macro_parameters ) %} statement_list {% ENDMACRO %}
+     * macro_parameters ::= macro_parameters , macro_parameter | macro_parameter
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseMacro(): array
+    {
+        $this->cursor->shift();
+        $name = (string) $this->cursor->expect(Opcode::IDENTIFIER)->value;
+        $this->cursor->expect(Opcode::PARENTHESES_OPEN);
+
+        $parameters = null;
+        if (!$this->cursor->is(Opcode::PARENTHESES_CLOSE)) {
+            $parameters = [$this->parseMacroParameter()];
+            $this->cursor->reduce(1);
+
+            while ($this->cursor->is(Opcode::COMMA)) {
+                $this->cursor->shift();
+                $parameters[] = $this->parseMacroParameter();
+                $this->cursor->reduce(3);
             }
         }
 
-        return true;
+        $this->cursor->expect(Opcode::PARENTHESES_CLOSE);
+        $this->cursor->expect(Opcode::CLOSE_DELIMITER);
+        $statements = $this->parseBody(Opcode::ENDMACRO);
+
+        return $this->ast->macroStatement(
+            $name,
+            $parameters,
+            $statements,
+            $this->cursor->reduce($parameters === null ? 10 : 11)
+        );
     }
 
-    private function parseWithToken(phvolt_Parser $parser, Token $token, Opcode $parserCode): void
+    /**
+     * macro_parameter         ::= IDENTIFIER | IDENTIFIER = macro_parameter_default
+     * macro_parameter_default ::= INTEGER | STRING | DOUBLE | NULL | FALSE | TRUE
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseMacroParameter(): array
     {
-        $newToken = new Token($token->opcode, $token->value);
+        $variable = (string) $this->cursor->expect(Opcode::IDENTIFIER)->value;
 
-        $parser->phvolt_($parserCode->value, $newToken);
+        if (!$this->cursor->is(Opcode::ASSIGN)) {
+            return $this->ast->macroParameter($variable, null, $this->cursor->reduce(1));
+        }
+
+        $this->cursor->shift();
+
+        $type = match ($this->cursor->current->opcode) {
+            Opcode::INTEGER->value => Opcode::INTEGER,
+            Opcode::STRING->value  => Opcode::STRING,
+            Opcode::DOUBLE->value  => Opcode::DOUBLE,
+            Opcode::NULL->value    => Opcode::NULL,
+            Opcode::FALSE->value   => Opcode::FALSE,
+            Opcode::TRUE->value    => Opcode::TRUE,
+            default                => throw $this->cursor->unexpected(),
+        };
+
+        $token   = $this->cursor->shift();
+        $default = $this->ast->literal($type, $token->value, $this->cursor->reduce(1));
+
+        return $this->ast->macroParameter($variable, $default, $this->cursor->reduce(3));
+    }
+
+    /**
+     * program ::= volt_language ::= statement_list
+     *
+     * A template that yields no token at all (only comments, say) is an empty
+     * program, as in cphalcon.
+     *
+     * @return array<int, array<string, mixed>>
+     *
+     * @throws Exception
+     */
+    private function parseProgram(): array
+    {
+        if ($this->cursor->atEnd()) {
+            return [];
+        }
+
+        [$statements] = $this->parseStatementList([], []);
+
+        if ($statements === null || !$this->cursor->atEnd()) {
+            throw $this->cursor->unexpected();
+        }
+
+        return $statements;
+    }
+
+    /**
+     * raw_fragment ::= RAW_FRAGMENT
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseRawFragment(): array
+    {
+        $token = $this->cursor->shift();
+
+        return $this->ast->literal(Opcode::RAW_FRAGMENT, $token->value, $this->cursor->reduce(1));
+    }
+
+    /**
+     * set_statement   ::= {% SET set_assignments %}
+     * set_assignments ::= set_assignments , set_assignment | set_assignment
+     * set_assignment  ::= assignable_expr (= | += | -= | *= | /=) expr
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseSet(): array
+    {
+        $this->cursor->shift();
+
+        $assignments = [$this->parseAssignment()];
+        $this->cursor->reduce(1);
+
+        while ($this->cursor->is(Opcode::COMMA)) {
+            $this->cursor->shift();
+            $assignments[] = $this->parseAssignment();
+            $this->cursor->reduce(3);
+        }
+
+        $this->cursor->expect(Opcode::CLOSE_DELIMITER);
+        $this->cursor->reduce(4);
+
+        return $this->ast->setStatement($assignments);
+    }
+
+    /**
+     * statement_list ::= statement_list statement | statement
+     *
+     * Parses statements until `{%` is followed by one of the terminators of the
+     * enclosing rule; that `{%` has then been shifted and the terminator
+     * keyword is the current token. $whenEmpty / $whenNotEmpty list the
+     * terminators the enclosing rule accepts before and after the first
+     * statement (the grammar has distinct rules for empty bodies).
+     *
+     * Returns at any other token that cannot start a statement, leaving the
+     * caller to report it.
+     *
+     * @param list<Opcode> $whenEmpty
+     * @param list<Opcode> $whenNotEmpty
+     *
+     * Returns the statements (null when there were none) and the terminator.
+     *
+     * @return array{0: list<array<string, mixed>>|null, 1: Opcode|null}
+     *
+     * @throws Exception
+     *
+     * @phpstan-impure
+     */
+    private function parseStatementList(array $whenEmpty, array $whenNotEmpty): array
+    {
+        $statements = null;
+
+        while (true) {
+            if ($this->cursor->is(Opcode::RAW_FRAGMENT)) {
+                $statement = $this->parseRawFragment();
+            } elseif ($this->cursor->is(Opcode::OPEN_EDELIMITER)) {
+                $statement = $this->parseEcho();
+            } elseif ($this->cursor->is(Opcode::OPEN_DELIMITER)) {
+                $this->cursor->shift();
+
+                $terminators = $statements === null ? $whenEmpty : $whenNotEmpty;
+                foreach ($terminators as $terminator) {
+                    if ($this->cursor->is($terminator)) {
+                        return [$statements, $terminator];
+                    }
+                }
+
+                $statement = $this->parseTag();
+            } else {
+                return [$statements, null];
+            }
+
+            if ($statements === null) {
+                $statements = [$statement];
+                $this->cursor->reduce(1);
+            } else {
+                $statements[] = $statement;
+                $this->cursor->reduce(2);
+            }
+        }
+    }
+
+    /**
+     * switch_statement ::= {% SWITCH expr %} statement_list {% ENDSWITCH %}
+     *                    | {% SWITCH expr %} {% ENDSWITCH %}
+     *
+     * Case clauses are ordinary statements of the list.
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseSwitch(): array
+    {
+        $expr = $this->parseKeywordExpr();
+
+        [$clauses, $terminator] = $this->parseStatementList([Opcode::ENDSWITCH], [Opcode::ENDSWITCH]);
+        $this->closeList(Opcode::ENDSWITCH, $terminator);
+
+        return $this->ast->switchStatement($expr, $clauses, $this->cursor->reduce($clauses === null ? 7 : 8));
+    }
+
+    /**
+     * A statement after its `{%` (already shifted).
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseTag(): array
+    {
+        return match ($this->cursor->current->opcode) {
+            Opcode::IF->value              => $this->parseIf(),
+            Opcode::ELSEIF->value          => $this->parseElseIf(),
+            Opcode::ELSEFOR->value         => $this->parseBare(Opcode::ELSEFOR),
+            Opcode::FOR->value             => $this->parseFor(),
+            Opcode::SWITCH->value          => $this->parseSwitch(),
+            Opcode::CASE->value            => $this->parseCase(),
+            Opcode::DEFAULT->value         => $this->parseBare(Opcode::DEFAULT),
+            Opcode::SET->value             => $this->parseSet(),
+            Opcode::BLOCK->value           => $this->parseBlock(),
+            Opcode::EXTENDS->value         => $this->parseExtends(),
+            Opcode::INCLUDE->value         => $this->parseInclude(),
+            Opcode::DO->value              => $this->parseExprStatement(Opcode::DO),
+            Opcode::RETURN->value          => $this->parseExprStatement(Opcode::RETURN),
+            Opcode::AUTOESCAPE->value      => $this->parseAutoescape(),
+            Opcode::VERBATIM->value        => $this->parseVerbatim(),
+            Opcode::BREAK->value           => $this->parseBare(Opcode::BREAK),
+            Opcode::CONTINUE->value        => $this->parseBare(Opcode::CONTINUE),
+            Opcode::MACRO->value           => $this->parseMacro(),
+            Opcode::CALL->value            => $this->parseCall(),
+            Opcode::CLOSE_DELIMITER->value => $this->parseEmpty(),
+            default                        => throw $this->cursor->unexpected(),
+        };
+    }
+
+    /**
+     * verbatim_statement ::= {% VERBATIM %} raw_fragment {% ENDVERBATIM %}
+     *                      | {% VERBATIM %} {% ENDVERBATIM %}
+     *
+     * The statement IS its raw fragment; an empty block is a RAW_FRAGMENT
+     * node without a value.
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    private function parseVerbatim(): array
+    {
+        $this->cursor->shift();
+        $this->cursor->expect(Opcode::CLOSE_DELIMITER);
+
+        if ($this->cursor->is(Opcode::RAW_FRAGMENT)) {
+            $fragment = $this->parseRawFragment();
+            $this->expectEndTag(Opcode::ENDVERBATIM);
+            $this->cursor->reduce(7);
+
+            return $fragment;
+        }
+
+        $this->expectEndTag(Opcode::ENDVERBATIM);
+
+        return $this->ast->literal(Opcode::RAW_FRAGMENT, null, $this->cursor->reduce(6));
     }
 }

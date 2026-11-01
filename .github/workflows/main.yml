@@ -105,6 +105,43 @@ jobs:
       - name: Run tests
         run: composer test-unit
 
+  # Parse every case of tests/fixtures/parity with this package and with the
+  # cphalcon C parser and fail on any difference outside the allow-list
+  differential:
+    name: "Differential vs ext-phalcon"
+    needs: phpcs
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP with ext-phalcon
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, ctype, phalcon-5.23.0
+          coverage: none
+          tools: composer:v2
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@26d8a556604053a9612623447203a691f406fbe6 # v4
+        with:
+          composer-options: "--prefer-dist"
+
+      # tests/differential.php exits 0 when the extension is missing
+      - name: Assert the extension is actually loaded
+        run: php -m | grep -qi '^phalcon$'
+
+      - name: Compare against the C parser
+        run: php tests/differential.php
+
   coverage:
     name: Code Coverage
     needs: tests
