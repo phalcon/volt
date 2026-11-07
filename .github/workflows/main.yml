@@ -102,6 +102,10 @@ jobs:
         with:
           composer-options: "--prefer-dist"
 
+      # ScannerTest checks keyword matching under a Turkish locale
+      - name: Generate the tr_TR.UTF-8 locale
+        run: sudo locale-gen tr_TR.UTF-8
+
       - name: Run tests
         run: composer test-unit
 

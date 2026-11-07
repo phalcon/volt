@@ -23,7 +23,6 @@ use function str_contains;
 use function strlen;
 use function strpos;
 use function strspn;
-use function strtolower;
 use function substr;
 use function substr_count;
 
@@ -89,11 +88,11 @@ final class Scanner
 
     private const DOUBLE_OR_INTEGER = '/[0-9]+(?:\.[0-9]+)?/A';
 
-    private const ENDVERBATIM = '/\{%-?[ \t\r\n]*endverbatim(?![a-zA-Z0-9_])/Ai';
+    private const ENDVERBATIM = '/\{%-?[ \t\r\n]*[eE][nN][dD][vV][eE][rR][bB][aA][tT][iI][mM](?![a-zA-Z0-9_])/A';
 
     private const IDENTIFIER = '/\\\\?[a-zA-Z_][a-zA-Z0-9_\\\\]*/A';
 
-    private const IS_NOT_ONE_SPACE = '/is not/Ai';
+    private const IS_NOT_ONE_SPACE = '/[iI][sS] [nN][oO][tT]/A';
 
     private const IS_NOT_SPACES = '/is +not/A';
 
@@ -152,6 +151,14 @@ final class Scanner
     ];
 
     /**
+     * Keywords and `is not` / `endverbatim` are matched case-insensitively
+     * byte by byte, as cphalcon's re2c scanner does: strtolower() follows the
+     * locale before PHP 8.2, and so does PCRE's `/i` once a locale is set -
+     * under a Turkish one `I` and `i` are not each other's case.
+     */
+    private const LOWER_CASE = 'abcdefghijklmnopqrstuvwxyz';
+
+    /**
      * Punctuation and operators, longest first within each leading character
      * so the first hit is the longest match.
      *
@@ -201,6 +208,8 @@ final class Scanner
      * Characters removed by whitespace control (phvolt_ltrim/phvolt_rtrim).
      */
     private const TRIM = " \t\n\r\v";
+
+    private const UPPER_CASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     private readonly string $code;
 
@@ -529,7 +538,7 @@ final class Scanner
      */
     private function scanWord(int $cursor, string $word): ScannerStatus
     {
-        $keyword = strtolower($word);
+        $keyword = strtr($word, self::UPPER_CASE, self::LOWER_CASE);
 
         if ($keyword === 'is') {
             $isNot = $this->matchIsNot($cursor);

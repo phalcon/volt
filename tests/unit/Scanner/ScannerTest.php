@@ -157,6 +157,34 @@ final class ScannerTest extends TestCase
         );
     }
 
+    /**
+     * cphalcon matches keywords byte by byte. Before PHP 8.2 strtolower()
+     * follows the locale, and PCRE's case-insensitive matching does on every
+     * version once a locale is set: under a Turkish one `I` and `i` are not
+     * each other's case. CI and the development image generate tr_TR.UTF-8;
+     * where it is missing the test runs under the current locale.
+     */
+    public function testKeywordsIgnoreTheLocale(): void
+    {
+        $previous = (string) setlocale(LC_CTYPE, '0');
+        setlocale(LC_CTYPE, 'tr_TR.UTF-8', 'tr_TR.ISO-8859-9', 'tr_TR');
+
+        try {
+            $tokens = $this->codeTokens('{% IF a IS NOT b %}{{ a IN b }}{% verbatim %}x{% ENDVERBATIM %}');
+        } finally {
+            setlocale(LC_CTYPE, $previous);
+        }
+
+        $this->assertSame(
+            [
+                ['IF', null], ['IDENTIFIER', 'a'], ['NOTEQUALS', null], ['IDENTIFIER', 'b'],
+                ['IDENTIFIER', 'a'], ['IN', null], ['IDENTIFIER', 'b'],
+                ['VERBATIM', null], ['RAW_FRAGMENT', 'x'], ['ENDVERBATIM', null],
+            ],
+            $tokens
+        );
+    }
+
     public function testLeftTrimCrossesAComment(): void
     {
         $this->assertSame(
