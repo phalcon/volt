@@ -2,7 +2,7 @@
 
 All notable changes are documented here. The format is based on [Keep a Changelog][keep_a_changelog] and this project adheres to [Semantic Versioning][semantic_versioning].
 
-## [Unreleased](https://github.com/phalcon/volt/releases/tag/vx.x.x) (2026-xx-xx)
+## [1.0.0](https://github.com/phalcon/volt/releases/tag/v1.0.0) (2026-11-19)
 
 ### Changed
 
