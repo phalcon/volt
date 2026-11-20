@@ -77,3 +77,18 @@ services:
       - .:/srv
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
+  volt-dev-8.6:
+    container_name: ${PROJECT_PREFIX:-volt}-dev-8.6
+    hostname: ${PROJECT_PREFIX:-volt}-dev-86
+    build:
+      dockerfile: resources/docker/develop/Dockerfile
+      args:
+        PHP_VERSION: 8.6
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    working_dir: /srv
+    volumes:
+      - .:/srv
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

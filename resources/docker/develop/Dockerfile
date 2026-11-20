@@ -8,10 +8,7 @@ ARG GID=1000
 ARG USER=phalcon
 ARG GROUP=phalcon
 
-ENV LANG=en_US.UTF-8 \
-    LANGUAGE=en_US.UTF-8 \
-    LC_ALL=en_US.UTF-8 \
-    COMPOSER_HOME=/app/.composer \
+ENV COMPOSER_HOME=/app/.composer \
     COMPOSER_ALLOW_SUPERUSER=1
 
 # hadolint ignore=DL3022
@@ -45,9 +42,19 @@ apt-get install -yq --no-install-recommends \
     wget \
     zip
 # Dev/test extensions
-install-php-extensions \
-    phalcon-5.23.0 \
-    xdebug
+if php -r 'exit(PHP_VERSION_ID < 80600 ? 0 : 1);'; then
+    install-php-extensions \
+        phalcon-5.23.0 \
+        xdebug
+else
+    # The PHP 8.6 image does not have mbstring (the older images have it for PECL).
+    # No release of ext-phalcon supports PHP 8.6 yet.
+    # Only an alpha of Xdebug supports PHP 8.6. PECL does not have it, so
+    # install it from the GitHub tag.
+    install-php-extensions \
+        mbstring \
+        xdebug/xdebug@3.6.0alpha1
+fi
 # ext-phalcon is the reference implementation for the parity scripts only
 # (tests/generate-golden.php, tests/differential.php). It is not loaded by
 # default so that the unit suite always exercises the pure-PHP parser. Load it
@@ -74,6 +81,10 @@ chown "${USER}:${GROUP}" /srv
 # Cleanup
 rm -rf /tmp/* /var/tmp/*
 EOT
+
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8
 
 WORKDIR /srv
 USER ${USER}
